@@ -17,6 +17,7 @@
 	<context:component-scan base-package="cn.bjfu.fesdmp.web" />
 	<!-- 该标签会默认配置 DefaultAnnotationHandlerMapping 和一个 AnnotionMethodHandlerAdapter
 		同时还会注册一个默认的ConversionService 即FormattingConversionServiceFactoryBean
+		LocalValidatorFactoryBean 
 	 -->
 	<mvc:annotation-driven>
 	<!-- 处理responseBody 里面日期类型 -->

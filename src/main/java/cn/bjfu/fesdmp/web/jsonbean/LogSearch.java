@@ -12,8 +12,9 @@ package cn.bjfu.fesdmp.web.jsonbean;
 import java.io.Serializable;
 import java.util.Date;
 
-import cn.bjfu.fesdmp.domain.enums.BusinessType;
-import cn.bjfu.fesdmp.domain.enums.OperationType;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Pattern;
+
 import cn.bjfu.fesdmp.frame.CustomDateSerializer;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -35,6 +36,7 @@ public class LogSearch implements Serializable {
 	 */
 	private static final long serialVersionUID = 6698224941625587845L;
 
+	@Pattern(regexp = "^(d{1,2}|1dd|2[0-4]d|25[0-5]).(d{1,2}|1dd|2[0-4]d|25[0-5]).(d{1,2}|1dd|2[0-4]d|25[0-5]).(d{1,2}|1dd|2[0-4]d|25[0-5])$")
 	private String userSourceIp;
 	private String operateContent;
 	private String userName;
@@ -43,6 +45,7 @@ public class LogSearch implements Serializable {
 	private String businessType;
 	
 	@JsonSerialize(using = CustomDateSerializer.class)
+	@Past
 	private Date startTime;
 	@JsonSerialize(using = CustomDateSerializer.class)
 	private Date endTime;
