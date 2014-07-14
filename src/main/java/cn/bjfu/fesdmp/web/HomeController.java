@@ -10,6 +10,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import cn.bjfu.fesdmp.domain.sys.User;
+
 /**
  * 
  * ClassName: HomeController <br />
@@ -31,7 +33,9 @@ public class HomeController extends BaseController {
 	}
 	
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public String index() {
+	public String index(User user) {
+		logger.info("index method");
+		logger.info(user);
 		return "frame/index";
 	}
 	

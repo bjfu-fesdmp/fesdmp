@@ -7,7 +7,7 @@
   <head>
   	<link href="<%=request.getContextPath() %>/resources/extjs/css/style.css" rel="stylesheet" type="text/css" />
   	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/extjs/jquery/jquery.min.js"></script>
-  	<script language="javascript">
+  	<script type="text/javascript">
   	var contextPath = "<%=request.getContextPath()%>";
 	$(document).ready(function(){
 	  	$("#userName").focus();
@@ -63,10 +63,14 @@
     <form action="<c:url value='/login'/>" method="post" id="loginForm">
    	<table width="90%" border="0" align="center" cellpadding="8" cellspacing="0">
       <tr>
-        <td height="40" id="content" class="spm_logintitle"><s:if test="#request.result != null">消息提示：<s:property value="result"/></s:if></td>
+        <td height="40" id="content" class="spm_logintitle">
+        <c:if test="${! empty errorMsg }">
+        	消息提示：<c:out value="${errorMsg }"/>
+        </c:if>
+        </td>
       </tr>
       <tr>
-        <td height="40"><label for="textfield"></label><input type="text" name="userName" id="userName" class="spm_loginuersinput"/></td>
+        <td height="40"><label for="textfield"></label><input type="text" name="userLoginname" id="userName" class="spm_loginuersinput"/></td>
       </tr>
       <tr>
         <td height="40"><input type="password" name="password" id="password" class="spm_loginpwinput"/></td>
