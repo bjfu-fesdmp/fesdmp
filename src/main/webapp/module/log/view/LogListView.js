@@ -70,16 +70,40 @@ Ext.define('Bjfu.log.view.LogListView',{
 			          		align: 'left',
 			          		width : 60
 			    }), 
-			    {
+			    { 
 			        text : '业务类型',
-			        dataIndex : 'businessType'
+			        dataIndex : 'businessType',
+			        renderer : function (value) {
+			        	if (value == "SYS_LOGIN") {
+			        		return "系统登录";
+			        	} else if (value == "SYS_LOGOUT") {
+			        		return "系统退出";
+			        	} else if (value == "SYS_OPERATE") {
+			        		return "系统操作";
+			        	} else {
+			        		return "其他业务";
+			        	}
+			        }
 			    },{
 			        text : '业务类型',
 			        dataIndex : 'businessTypeName',
 			        hidden:true
 			    },{
 			        text : '操作类型',
-			        dataIndex : 'operationType'
+			        dataIndex : 'operationType',
+			        renderer : function (value) {
+			        	if (value == "ADD") {
+			        		return "增加";
+			        	} else if (value == "DELETE") {
+			        		return "删除";
+			        	} else if (value == "UPDATE") {
+			        		return "修改";
+			        	} else if (value == "QUERY") {
+			        		return "查询";
+			        	} else {
+			        		return "其他";
+			        	}
+			        }
 			    },{
 			        text : '操作类型',
 			        dataIndex : 'operateTypeName',
@@ -123,14 +147,6 @@ Ext.define('Bjfu.log.view.LogListView',{
 			       		} else {
 			       			me.search_cache = null;
 			       		}
-			       		
-			       		gridStore.load({
-				      			params: {
-			           				limit :	25,
-			           				page : 1,
-			           				start : 0
-			           			}
-				      		});
 			       }
 			    }, "->", {
 		    	text:'高级查询',

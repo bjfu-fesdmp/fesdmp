@@ -37,7 +37,6 @@
 					           title: 'Error',
 					           msg: '系统退出异常！',
 					           buttons: Ext.MessageBox.OK,
-					           animateTarget: 'mb9',
 					           icon: Ext.MessageBox.ERROR
 					       });
 					}
@@ -149,7 +148,9 @@
 			                    text: '日志管理',
 								handler : function() {
 									Ext.getCmp('centerPanel').getLoader().load({
+										autoLoad : true,
 					    				url: Global_Path + "syslog/listView",
+					    				//url: Global_Path + "module/log/logListView.jsp",
 				                	 	scripts : true,
 				                	 	loadMask : true,
 				                	 	noCache : true	
@@ -206,11 +207,21 @@
            	autoScroll : true,
            	frame : false,
 			loader : Ext.create('Ext.ComponentLoader',{
-           	  url : Global_Path + "statistic/portal",                 
-     	      scripts: true,               
-     	      autoLoad : true,     
-     	      noCache: true 
-           })
+				autoLoad : true,     
+	     	  	noCache: true,
+           	  	url : Global_Path + "statistic/portal",                 
+     	      	scripts: true            
+            })
+           /*  loader : {
+            	url : Global_Path + "statistic/portal",  
+           	    scripts: true,               
+        	    autoLoad : true,     
+        	    noCache: true,
+        	    renderer : "html"
+            }, 
+           'beforeload': function() {
+               Ext.getCmp('centerPanel').removeAll();
+           }*/
 		});
 		var viewport = Ext.create('Ext.Viewport', {
        	 	autoRender : 'frameDiv',

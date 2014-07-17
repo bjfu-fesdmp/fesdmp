@@ -91,7 +91,7 @@ Ext.define('Bjfu.log.view.QueryLog',{
 		        handler: function() {
 		          	var form = this.up('form').getForm();
 		            var searchJson = JSON.stringify(this.up('form').getForm().getValues());
-		            Ext.getCmp("logListViewId").getStore().load({
+		            Ext.getCmp("logListViewId").getStore().loadPage(1, {
 		               		params: {
 		           				searchJson: searchJson
 		           			}
