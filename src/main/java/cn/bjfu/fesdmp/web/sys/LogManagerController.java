@@ -90,9 +90,9 @@ public class LogManagerController extends BaseController {
 		
 		this.systemLogService.queryByCondtinWithOperationTime(logSearch, order, page, JoinMode.AND);
 		Map<String, Object> result = new HashMap<String, Object>();
-		result.put("pageCount", page.getTotalRecord());
-		result.put("result", page.getDatas());
-		result.put("success", Boolean.TRUE);
+		result.put(PAGE_COUNT, page.getTotalRecord());
+		result.put(RESULT, page.getDatas());
+		result.put(SUCCESS, Boolean.TRUE);
 		return result;
 	}
 	

@@ -42,6 +42,12 @@ import cn.bjfu.fesdmp.domain.sys.User;
  * @see       
  */
 public class BaseController {
+	/**
+	 * 定义JSON 返回的常量值
+	 */
+	public static String PAGE_COUNT = "pageCount";
+	public static String RESULT = "result";
+	public static String SUCCESS = "success";
 	
 	public static String errorMsg = "";
 	
