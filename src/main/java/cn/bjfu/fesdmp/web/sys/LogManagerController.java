@@ -96,5 +96,6 @@ public class LogManagerController extends BaseController {
 		return result;
 	}
 	
+	
 }
  
