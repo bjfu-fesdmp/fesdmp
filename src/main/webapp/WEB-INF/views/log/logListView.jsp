@@ -6,7 +6,7 @@
 </head>
 <body>
 <div id ="systemLogPanel"></div>
-<script type="text/javascript">
+	<script type="text/javascript">
 		Ext.onReady(function() {
 			 Ext.Loader.setPath('Bjfu.log', Global_Path + 'module/log');
 	  	 	 Ext.Loader.setConfig({
@@ -20,10 +20,13 @@
 			var syslogListView = Ext.create('Bjfu.log.view.LogListView',{
 									id :'logListViewId',
 									width:'100%',
+									autoShow : true,
+									//autoRender : true,
 									height:400
 								});	
 											
 			Ext.create('Ext.panel.Panel',{
+				autoRender : true,
 				title:'日志管理',
 				width:'100%',
 				height:'100%',
@@ -37,6 +40,6 @@
 			    }
 			});
 		});
-</script>
+	</script>
 </body>
 </html>
