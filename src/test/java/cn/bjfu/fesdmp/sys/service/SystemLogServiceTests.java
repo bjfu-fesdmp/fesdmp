@@ -52,7 +52,7 @@ public class SystemLogServiceTests {
 		log.setOperateTime(new Date());
 		log.setOperationType(OperationType.DELETE);
 		log.setUserName("Lily002");
-		log.setUserSourceIp("202.204.110.22");
+		log.setUserSourceIp("202.204.10.222");
 		
 		this.systemLogService.addSysLog(log);
 		System.out.println("add success");
