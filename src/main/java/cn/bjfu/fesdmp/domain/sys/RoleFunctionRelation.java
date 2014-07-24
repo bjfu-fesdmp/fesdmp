@@ -1,8 +1,8 @@
 /** 
  * Project Name:fesdmp 
- * File Name:UserGroupRelation.java 
+ * File Name:RoleFunctionRelation.java 
  * Package Name:cn.bjfu.fesdmp.domain.sys 
- * Date:2014年7月24日 下午9:25:36 
+ * Date:2014年7月24日 下午9:55:35 
  * Copyright (c) 2014, 1153405224@qq.com All Rights Reserved. 
  * 
 */  
@@ -23,17 +23,17 @@ import javax.persistence.Table;
 
 /** 
  * ClassName:UserGroupRelation <br/> 
- * Function: 用户组映射表. <br/> 
- * Reason:   用户组映射表. <br/> 
- * Date:     2014年7月24日 下午9:25:36 <br/> 
+ * Function: 功能权限映射表. <br/> 
+ * Reason:   功能权限映射表. <br/> 
+ * Date:     2014年7月24日 下午9:55:35 <br/> 
  * @author   LuoYangBjfu 
  * @version   
  * @since    JDK 1.7 
  * @see       
  */
 @Entity
-@Table(name = "t_user_group_relation")
-public class UserGroupRelation implements Serializable {
+@Table(name = "t_role_function_relation")
+public class RoleFunctionRelation implements Serializable {
 
 	/**
 	 * @since JDK 1.7
@@ -43,12 +43,12 @@ public class UserGroupRelation implements Serializable {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	@OneToOne
-	@JoinColumn(name = "user_group_id")
-	private UserGroup userGroup;
-	@OneToOne
 	@JoinColumn(name = "role_id")
 	private Role role;
-	public UserGroupRelation() {}
+	@OneToOne
+	@JoinColumn(name = "function_id")
+	private Function function;
+	public RoleFunctionRelation() {}
 
 	public Integer getId() {
 		return id;
@@ -59,12 +59,12 @@ public class UserGroupRelation implements Serializable {
 	}
 
 
-	public UserGroup getUserGroup() {
-		return userGroup;
+	public Function getFunction() {
+		return function;
 	}
 
-	public void setUserGroup(UserGroup userGroup) {
-		this.userGroup = userGroup;
+	public void setFunction(Function function) {
+		this.function = function;
 	}
 
 	public Role getRole() {
@@ -79,7 +79,7 @@ public class UserGroupRelation implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((userGroup == null) ? 0 : userGroup.hashCode());
+		result = prime * result + ((function == null) ? 0 : function.hashCode());
 		result = prime * result + ((role == null) ? 0 : role.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		
@@ -94,11 +94,11 @@ public class UserGroupRelation implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		UserGroupRelation other = (UserGroupRelation) obj;
-		if (userGroup == null) {
-			if (other.userGroup != null)
+		RoleFunctionRelation other = (RoleFunctionRelation) obj;
+		if (function == null) {
+			if (other.function != null)
 				return false;
-		} else if (!userGroup.equals(other.userGroup))
+		} else if (!function.equals(other.function))
 			return false;
 		if (id == null) {
 			if (other.id != null)
@@ -115,6 +115,6 @@ public class UserGroupRelation implements Serializable {
 
 	@Override
 	public String toString() {
-		return "UserGroupRelation [id=" + id + ", userGroup=" + userGroup + ", role=" + role+ "]";
+		return "RoleFunctionRelation [id=" + id + ", function=" + function + ", role=" + role+ "]";
 	}
 }
