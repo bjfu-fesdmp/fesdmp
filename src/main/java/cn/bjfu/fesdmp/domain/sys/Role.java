@@ -1,8 +1,8 @@
 /** 
  * Project Name:fesdmp 
- * File Name:UserGroup.java 
+ * File Name:Role.java 
  * Package Name:cn.bjfu.fesdmp.domain.sys 
- * Date:2014年7月24日 下午8:25:36 
+ * Date:2014年7月24日 下午9:25:46 
  * Copyright (c) 2014, 1153405224@qq.com All Rights Reserved. 
  * 
 */  
@@ -22,18 +22,18 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /** 
- * ClassName:UserGroup <br/> 
- * Function: 用户组表. <br/> 
- * Reason:   用户组表. <br/> 
- * Date:     2014年7月24日 下午8:25:36 <br/> 
+ * ClassName:Role <br/> 
+ * Function: 角色表. <br/> 
+ * Reason:   角色表. <br/> 
+ * Date:     2014年7月24日 下午9:25:46 <br/> 
  * @author   LuoYangBjfu 
  * @version   
  * @since    JDK 1.7 
  * @see       
  */
 @Entity
-@Table(name = "t_user_group")
-public class UserGroup implements Serializable {
+@Table(name = "t_role")
+public class Role implements Serializable {
 
 	/**
 	 * @since JDK 1.7
@@ -43,13 +43,14 @@ public class UserGroup implements Serializable {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	@Column(nullable = false)
-	private String userGroupName;
+	private String roleName;
+	private String roleDescription;
 	@OneToOne
 	@JoinColumn(name = "creater_id")
 	private User creater;
 	@Column(nullable = false)
 	private Date createTime;
-	public UserGroup() {}
+	public Role() {}
 
 	public Integer getId() {
 		return id;
@@ -59,14 +60,23 @@ public class UserGroup implements Serializable {
 		this.id = id;
 	}
 
-	public String getUserGroupName() {
-		return userGroupName;
+	public String getRoleName() {
+		return roleName;
 	}
 
-	public void setUserGroupName(String userGroupName) {
-		this.userGroupName = userGroupName;
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
 	}
 
+	public String getRoleDescription() {
+		return roleDescription;
+	}
+
+	public void setRoleDescription(String roleDescription) {
+		this.roleDescription = roleDescription;
+	}
+	
+	
 	public User getCreater() {
 		return creater;
 	}
@@ -92,7 +102,9 @@ public class UserGroup implements Serializable {
 		result = prime * result + ((creater == null) ? 0 : creater.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result
-				+ ((userGroupName == null) ? 0 : userGroupName.hashCode());
+				+ ((roleName == null) ? 0 : roleName.hashCode());
+		result = prime * result
+				+ ((roleDescription == null) ? 0 : roleDescription.hashCode());
 		return result;
 	}
 
@@ -104,7 +116,7 @@ public class UserGroup implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		UserGroup other = (UserGroup) obj;
+		Role other = (Role) obj;
 		if (createTime == null) {
 			if (other.createTime != null)
 				return false;
@@ -120,16 +132,21 @@ public class UserGroup implements Serializable {
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
-		if (userGroupName == null) {
-			if (other.userGroupName != null)
+		if (roleName == null) {
+			if (other.roleName != null)
 				return false;
-		} else if (!userGroupName.equals(other.userGroupName))
+		} else if (!roleName.equals(other.roleName))
+			return false;
+		if (roleDescription == null) {
+			if (other.roleDescription != null)
+				return false;
+		} else if (!roleDescription.equals(other.roleDescription))
 			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", userGroupName=" + userGroupName + ", createTime=" + createTime+ "]";
+		return "Role [id=" + id + ", roleName=" + roleName+ ", roleDescription=" + roleDescription + ", createTime=" + createTime+ "]";
 	}
 }
