@@ -7,16 +7,16 @@ import java.lang.reflect.Method;
 
 import org.apache.commons.beanutils.BeanUtils;
 /**
- * ½«Ò»¸öÀàµÄÊôĞÔÖµ¿½±´µ½ÁíÍâÒ»¸öÀàµÄÊôĞÔÖµÀïÃæ
+ * å°†ä¸€ä¸ªç±»çš„å±æ€§å€¼æ‹·è´åˆ°å¦å¤–ä¸€ä¸ªç±»çš„å±æ€§å€¼é‡Œé¢
  * Description:
  * Copyright (C) 2014 BOCO All Right Reserved.
- * createDate£ºMay 28, 2014
- * author£ºzhanghong
+ * createDateï¼šMay 28, 2014
+ * authorï¼šzhanghong
  * @version ISMP V1.0
  */
 public class BeanCopyUtils {
 	/**
-	 * ½«obj1ÖĞµÄÊôĞÔÖµ¿½±´µ½obj2¶ÔÏóÊôĞÔÖĞ
+	 * å°†obj1ä¸­çš„å±æ€§å€¼æ‹·è´åˆ°obj2å¯¹è±¡å±æ€§ä¸­
 	 * Definition: 
 	 * author: zhanghong
 	 * Created date: May 28, 2014
@@ -36,7 +36,7 @@ public class BeanCopyUtils {
 	/**
 	 * 
 	 * copy:<br />
-	 * ¸´ÖÆÒ»¸ö¶ÔÏóµ½ÁíÍâÒ»¸ö
+	 * å¤åˆ¶ä¸€ä¸ªå¯¹è±¡åˆ°å¦å¤–ä¸€ä¸ª
 	 *
 	 * @author zhangzhaoyu
 	 * @param object
