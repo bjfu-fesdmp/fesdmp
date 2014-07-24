@@ -55,7 +55,7 @@ public class User implements Serializable {
 	private User creater;
 	@Column(nullable = false)
 	private Date createTime;
-	@Column(nullable = false)
+	@Column(columnDefinition = " tinyint default 1 ", nullable = false)
 	private Byte userStatus;
 	@Column(columnDefinition = " tinyint default 0 ", nullable = false)
 	private Byte isAdmin;
