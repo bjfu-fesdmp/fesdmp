@@ -16,7 +16,7 @@ public class ResourceGroup implements Serializable{
 	private static final long serialVersionUID = -3859481618494568413L;
 	
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer groupId;
+	private Integer id;
 	@Column(nullable = false)
 	private Integer groupParentId;
 	@Column(nullable = false)
@@ -26,11 +26,11 @@ public class ResourceGroup implements Serializable{
 	public ResourceGroup() {}
 	
 	public Integer getGroupId() {
-		return groupId;
+		return id;
 	}
 	
-	public void setGroupId(Integer groupId) {
-		this.groupId = groupId;
+	public void setGroupId(Integer id) {
+		this.id = id;
 	}
 	
 	public Integer getGroupParentId() {
@@ -62,7 +62,7 @@ public class ResourceGroup implements Serializable{
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((groupId == null) ? 0 : groupId.hashCode());
+				+ ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((groupParentId == null) ? 0 : groupParentId.hashCode());
 		result = prime * result + ((groupName == null) ? 0 : groupName.hashCode());
 		result = prime * result + ((memo == null) ? 0 : memo.hashCode());
@@ -78,10 +78,10 @@ public class ResourceGroup implements Serializable{
 		if (getClass() != obj.getClass())
 			return false;
 		ResourceGroup other = (ResourceGroup) obj;
-		if (groupId == null) {
-			if (other.groupId != null)
+		if (id == null) {
+			if (other.id != null)
 				return false;
-		} else if (!groupId.equals(other.groupId))
+		} else if (!id.equals(other.id))
 			return false;
 		if (groupParentId == null) {
 			if (other.groupParentId != null)
@@ -104,7 +104,7 @@ public class ResourceGroup implements Serializable{
 
 	@Override
 	public String toString() {
-		return "ResouceGroup [groupId=" + groupId + ", groupParentId=" + groupParentId + ", groupName="
+		return "ResouceGroup [id=" + id + ", groupParentId=" + groupParentId + ", groupName="
 				+ groupName + ", memo=" + memo +  "]";
 	}
 }

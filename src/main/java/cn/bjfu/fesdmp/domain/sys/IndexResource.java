@@ -12,6 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+@Entity
+@Table(name = "t_index_resource")
 public class IndexResource implements Serializable{
 
 	private static final long serialVersionUID = 4563893285739204858L;

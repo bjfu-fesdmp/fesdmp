@@ -19,7 +19,7 @@ public class ResourceRelation implements Serializable {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	@OneToOne
-	@JoinColumn(name = "group_id")
+	@JoinColumn(name = "resource_group_id")
 	private ResourceGroup resourceGroup;
 	@OneToOne
 	@JoinColumn(name = "index_resource_id")
