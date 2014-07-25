@@ -20,10 +20,10 @@ public class ResourceRelation implements Serializable {
 	private Integer id;
 	@OneToOne
 	@JoinColumn(name = "group_id")
-	private Integer resourceGroupId;
+	private ResourceGroup resourceGroup;
 	@OneToOne
 	@JoinColumn(name = "index_resource_id")
-	private Integer indexResourceId;
+	private IndexResource indexResource;
 	
 	public ResourceRelation() {}
 	
@@ -35,20 +35,20 @@ public class ResourceRelation implements Serializable {
 		this.id = id;
 	}
 	
-	public Integer getResourceGroupId() {
-		return resourceGroupId;
+	public ResourceGroup getResourceGroupId() {
+		return resourceGroup;
 	}
 	
-	public void setResourceGroupId(Integer resourceGroupId) {
-		this.resourceGroupId = resourceGroupId;
+	public void setResourceGroupId(ResourceGroup resourceGroup) {
+		this.resourceGroup = resourceGroup;
 	}
 	 
-	public Integer getIndexResourceId() {
-		return indexResourceId;
+	public IndexResource getIndexResourceId() {
+		return indexResource;
 	}
 	
-	public void setIndexResourceId(Integer indexResourceId) {
-		this.indexResourceId = indexResourceId;
+	public void setIndexResourceId(IndexResource indexResource) {
+		this.indexResource = indexResource;
 	}
 	
 	@Override
@@ -57,8 +57,8 @@ public class ResourceRelation implements Serializable {
 		int result = 1;
 		result = prime * result
 				+ ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((resourceGroupId == null) ? 0 : resourceGroupId.hashCode());
-		result = prime * result + ((indexResourceId == null) ? 0 : indexResourceId.hashCode());
+		result = prime * result + ((resourceGroup == null) ? 0 : resourceGroup.hashCode());
+		result = prime * result + ((indexResource == null) ? 0 : indexResource.hashCode());
 		return result;
 	}
 	
@@ -76,15 +76,15 @@ public class ResourceRelation implements Serializable {
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
-		if (resourceGroupId == null) {
-			if (other.resourceGroupId != null)
+		if (resourceGroup == null) {
+			if (other.resourceGroup != null)
 				return false;
-		} else if (!resourceGroupId.equals(other.resourceGroupId))
+		} else if (!resourceGroup.equals(other.resourceGroup))
 			return false;
-		if (indexResourceId == null) {
-			if (other.indexResourceId != null)
+		if (indexResource == null) {
+			if (other.indexResource != null)
 				return false;
-		} else if (!indexResourceId.equals(other.indexResourceId))
+		} else if (!indexResource.equals(other.indexResource))
 			return false;
 		return true;
 	}
@@ -92,7 +92,7 @@ public class ResourceRelation implements Serializable {
 
 	@Override
 	public String toString() {
-		return "ResouceGroup [id=" + id + ", resourceGroupId=" + resourceGroupId + ", indexResourceId="
-				+ indexResourceId + "]";
+		return "ResouceGroup [id=" + id + ", resourceGroup=" + resourceGroup + ", indexResource="
+				+ indexResource + "]";
 	}
 }
