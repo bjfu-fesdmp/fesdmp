@@ -44,7 +44,7 @@ public class User implements Serializable {
 	private Integer id;
 	private String userName;
 	@Column(unique = true, nullable = false)
-	private String userLoginname;
+	private String userLoginName;
 	@Column(nullable = false)
 	private String password;
 	@Column(unique = true)
@@ -78,12 +78,12 @@ public class User implements Serializable {
 		this.userName = userName;
 	}
 
-	public String getUserLoginname() {
-		return userLoginname;
+	public String getUserLoginName() {
+		return userLoginName;
 	}
 
-	public void setUserLoginname(String userLoginname) {
-		this.userLoginname = userLoginname;
+	public void setUserLoginName(String userLoginName) {
+		this.userLoginName = userLoginName;
 	}
 
 	public String getPassword() {
@@ -155,7 +155,7 @@ public class User implements Serializable {
 		result = prime * result
 				+ ((password == null) ? 0 : password.hashCode());
 		result = prime * result
-				+ ((userLoginname == null) ? 0 : userLoginname.hashCode());
+				+ ((userLoginName == null) ? 0 : userLoginName.hashCode());
 		result = prime * result
 				+ ((userName == null) ? 0 : userName.hashCode());
 		result = prime * result
@@ -204,10 +204,10 @@ public class User implements Serializable {
 				return false;
 		} else if (!password.equals(other.password))
 			return false;
-		if (userLoginname == null) {
-			if (other.userLoginname != null)
+		if (userLoginName == null) {
+			if (other.userLoginName != null)
 				return false;
-		} else if (!userLoginname.equals(other.userLoginname))
+		} else if (!userLoginName.equals(other.userLoginName))
 			return false;
 		if (userName == null) {
 			if (other.userName != null)
@@ -229,8 +229,8 @@ public class User implements Serializable {
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", userName=" + userName + ", userLoginname="
-				+ userLoginname + ", password=" + password + ", email=" + email
+		return "User [id=" + id + ", userName=" + userName + ", userLoginName="
+				+ userLoginName + ", password=" + password + ", email=" + email
 				+ ", userPhone=" + userPhone + ", createTime=" + createTime
 				+ ", userStatus=" + userStatus + ", isAdmin=" + isAdmin + "]";
 	}
