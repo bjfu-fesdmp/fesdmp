@@ -8,13 +8,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cn.bjfu.fesdmp.domain.sys.SystemLog;
 import cn.bjfu.fesdmp.domain.sys.User;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
+import cn.bjfu.fesdmp.json.UserJson;
 import cn.bjfu.fesdmp.sys.dao.IUserDao;
 import cn.bjfu.fesdmp.sys.service.IUserService;
 import cn.bjfu.fesdmp.utils.Pagination;
 import cn.bjfu.fesdmp.web.jsonbean.LogSearch;
+import cn.bjfu.fesdmp.web.jsonbean.UserSearch;
 
 
 @Service
@@ -54,5 +57,9 @@ public class UserService implements IUserService {
 		return this.userDao.findByCondition(condition, order, page, joinMode);
 	}
 
-
+	@Override
+	public List<User> findByCondtinGetCreater(UserSearch condition,
+			IOrder order, Pagination<User> page, JoinMode joinMode) {
+		return this.userDao.findByCondtinGetCreater(condition, order, page,joinMode);
+	}
 }

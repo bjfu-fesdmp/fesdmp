@@ -3,7 +3,9 @@
 package cn.bjfu.fesdmp.web.sys;  
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -26,11 +28,12 @@ import cn.bjfu.fesdmp.domain.sys.User;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.frame.dao.Order;
+import cn.bjfu.fesdmp.json.UserJson;
 import cn.bjfu.fesdmp.sys.service.IUserService;
 import cn.bjfu.fesdmp.utils.PageInfoBean;
 import cn.bjfu.fesdmp.utils.Pagination;
 import cn.bjfu.fesdmp.web.BaseController;
-import cn.bjfu.fesdmp.web.jsonbean.LogSearch;
+import cn.bjfu.fesdmp.web.jsonbean.UserSearch;
 
 
 @Controller
@@ -56,7 +59,7 @@ public class UserManagerController extends BaseController {
 		
 		logger.info("userList method.");
 		logger.info(pageInfo);
-		LogSearch logSearch = null;
+		UserSearch userSearch = null;
 		
 		Pagination<User> page = new Pagination<User>();
 		page.setPageSize(pageInfo.getLimit());
@@ -67,14 +70,34 @@ public class UserManagerController extends BaseController {
 		order.addOrderBy("id", "DESC");
 		
 		if (!StringUtils.isEmpty(pageInfo.getSearchJson())) {
-			logSearch = mapper.readValue(pageInfo.getSearchJson(), LogSearch.class);
+			userSearch = mapper.readValue(pageInfo.getSearchJson(), UserSearch.class);
 		}
 		
-		logger.info(logSearch);
+		logger.info(userSearch);
+		
+		
+		this.userService.findByCondtinGetCreater(userSearch,order,page, JoinMode.AND);
 		
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put(PAGE_COUNT, page.getTotalRecord());
-		result.put(RESULT, page.getDatas());
+		List<UserJson> userJsonList = new ArrayList<UserJson>();
+		for (int i=0; i<page.getDatas().size(); i++) {
+			User user = page.getDatas().get(i);
+			UserJson userJson = new UserJson();
+			userJson.setId(user.getId());
+			userJson.setEmail(user.getEmail());
+			userJson.setCreaterId(user.getCreater().getId());
+			userJson.setCreateTime(user.getCreateTime());
+			userJson.setIsAdmin(user.getIsAdmin());
+			userJson.setUserLoginName(user.getUserLoginName());
+			userJson.setUserName(user.getUserName());
+			userJson.setUserPhone(user.getUserPhone());
+			userJson.setUserStatus(user.getUserStatus());
+			userJsonList.add(userJson);
+		}
+
+		result.put(RESULT, userJsonList);
+//		result.put(RESULT, page.getDatas());
 		result.put(SUCCESS, Boolean.TRUE);
 		return result;
 	}

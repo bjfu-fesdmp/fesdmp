@@ -81,10 +81,6 @@ Ext.define('Bjfu.user.view.UserView',{
 			        	}
 			        }
 			    },{
-			        text : '密码',
-			        dataIndex : 'password',
-			        hidden:true
-			    } ,{
 			        text : '邮箱',
 			        dataIndex : 'email',
 			        width : '10%'
@@ -104,8 +100,8 @@ Ext.define('Bjfu.user.view.UserView',{
 			        }
 			    },{
 			        text : '创建者id',
-			        dataIndex : 'creater_id',
-			        width : '15%'
+			        dataIndex : 'createrId',
+			        width : '10%'
 			    }
 			],
 			tbar : [ "->", {
