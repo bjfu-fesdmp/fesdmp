@@ -231,8 +231,9 @@ public class User implements Serializable {
 	public String toString() {
 		return "User [id=" + id + ", userName=" + userName + ", userLoginName="
 				+ userLoginName + ", password=" + password + ", email=" + email
-				+ ", userPhone=" + userPhone + ", createTime=" + createTime
+				+ ", userPhone=" + userPhone +  ", createTime=" + createTime
 				+ ", userStatus=" + userStatus + ", isAdmin=" + isAdmin + "]";
+
 	}
 }
  
