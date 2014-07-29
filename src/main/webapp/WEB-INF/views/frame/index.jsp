@@ -186,9 +186,19 @@
 						                    }
 						                }
 				            ]
-				        }
-			                }, {
-				                text: '指标管理'
+				        	}
+			               }, {
+				                text: '指标管理',
+ 								handler:  function () {
+									Ext.getCmp('centerPanel').getLoader().load({
+									autoLoad : true,	
+									url: Global_Path + "indexResource/listView",
+									scripts ： true,
+									loadMask : true,
+									noCache : true
+									});
+								} 
+				
 					        }, {
 			                    text: '字典管理',
 			                    handler: function () {

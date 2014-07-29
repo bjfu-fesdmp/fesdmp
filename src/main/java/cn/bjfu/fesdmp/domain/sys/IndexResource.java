@@ -18,7 +18,7 @@ public class IndexResource implements Serializable{
 
 	private static final long serialVersionUID = 4563893285739204858L;
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer indexResourceId;
+	private Integer id;
 	@Column (nullable = false)
 	private String indexName;
 	@Column (nullable = false)
@@ -41,11 +41,11 @@ public class IndexResource implements Serializable{
 	public IndexResource() {}
 	
 	public Integer getIndexResouceId() {
-		return indexResourceId;
+		return id;
 	}
 	
-	public void setIndexResouceId(Integer indexResourceId) {
-		this.indexResourceId = indexResourceId;
+	public void setIndexResouceId(Integer id) {
+		this.id = id;
 	}
 	
 	public String getIndexName() {
@@ -116,7 +116,7 @@ public class IndexResource implements Serializable{
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((indexResourceId == null) ? 0 : indexResourceId.hashCode());
+				+ ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((indexName == null) ? 0 : indexName.hashCode());
 		result = prime * result + ((indexEnName == null) ? 0 : indexEnName.hashCode());
 		result = prime * result + ((indexUnit == null) ? 0 : indexUnit.hashCode());
@@ -142,10 +142,10 @@ public class IndexResource implements Serializable{
 		if (getClass() != obj.getClass())
 			return false;
 		IndexResource other = (IndexResource) obj;
-		if (indexResourceId == null) {
-			if (other.indexResourceId != null)
+		if (id == null) {
+			if (other.id != null)
 				return false;
-		} else if (!indexResourceId.equals(other.indexResourceId))
+		} else if (!id.equals(other.id))
 			return false;
 		if (indexName == null) {
 			if (other.indexName != null)
@@ -192,7 +192,7 @@ public class IndexResource implements Serializable{
 
 	@Override
 	public String toString() {
-		return "User [indexResourceId=" + indexResourceId + ", indexName=" + indexName + ", indexEnName="
+		return "User [id=" + id + ", indexName=" + indexName + ", indexEnName="
 				+ indexEnName + ", indexUnit=" + indexUnit + ", indexMemo=" + indexMemo
 				+ ", creater=" + creater + ", createTime=" + createTime
 				+ ", modifier=" + modifier + ", modifyTime=" + modifyTime + "]";
