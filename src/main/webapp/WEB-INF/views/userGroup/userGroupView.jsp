@@ -2,23 +2,23 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>用户管理</title>
+	<title>用户组管理</title>
 </head>
 <body>
-<div id ="userPanel"></div>
+<div id ="userGroupPanel"></div>
 	<script type="text/javascript">
 		Ext.onReady(function() {
-			 Ext.Loader.setPath('Bjfu.user', Global_Path + 'module/user');
+			 Ext.Loader.setPath('Bjfu.userGroup', Global_Path + 'module/userGroup');
 	  	 	 Ext.Loader.setConfig({
 		    	enabled: true,
 		    	paths: {
-		    		'Bjfu.user.view.UserView': Global_Path + 'module/user/view/UserView.js',
-		    		'Bjfu.user.view.QueryUser' : Global_Path + 'module/user/view/QueryUser.js'
+		    		'Bjfu.userGroup.view.UserGroupView': Global_Path + 'module/userGroup/view/UserGroupView.js',
+		    		'Bjfu.userGroup.view.QueryUserGroup' : Global_Path + 'module/userGroup/view/QueryUserGroup.js'
 		    	}
 			 });
 		  	 	
-			var sysuserView = Ext.create('Bjfu.user.view.UserView',{
-									id :'userViewId',
+			var sysuserGroupView = Ext.create('Bjfu.userGroup.view.UserGroupView',{
+									id :'userGroupViewId',
 									width:'100%',
 									autoShow : true,
 									//autoRender : true,
@@ -31,8 +31,8 @@
 				width:'100%',
 				height:'100%',
 				layout:'fit',
-				items:[sysuserView],
-				renderTo:'userPanel',
+				items:[sysuserGroupView],
+				renderTo:'userGroupPanel',
 				listeners : {
 					'boxready' : function(){
 				 		this.updateBox(Ext.getCmp('centerPanel').getSize());

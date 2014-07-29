@@ -1,6 +1,6 @@
-Ext.define('Bjfu.user.view.UserView',{
+Ext.define('Bjfu.userGroup.view.UserGroupView',{
 	extend : 'Ext.grid.Panel',
-	alias:'widget.UserView',
+	alias:'widget.UserGroupView',
 	forceFit : true,
 	layout : 'fit',
     autoScroll: true,
@@ -12,12 +12,12 @@ Ext.define('Bjfu.user.view.UserView',{
 	overflowY : 'scroll', //只显示上下滚动的滚动条
 	overflowX : 'hidden',
 	selType : 'checkboxmodel',	// 单选，复选框
-	requires : ['Bjfu.user.model.User'],
+	requires : ['Bjfu.userGroup.model.UserGroup'],
 	
 	initComponent : function() {
 		var me = this;
 		var gridStore = Ext.create('Ext.data.Store', {
-			model : 'Bjfu.user.model.User',
+			model : 'Bjfu.userGroup.model.UserGroup',
 			pageSize : 25,
 			proxy : {
 				type : 'ajax',
@@ -27,7 +27,7 @@ Ext.define('Bjfu.user.view.UserView',{
 	                update : 'POST',
 	                destroy: 'POST'
 				},
-				url : Global_Path+'sysuser/userList',
+				url : Global_Path+'sysuserGroup/userGroupList',
 				reader : {
 					type : 'json',
 					root : 'result',
@@ -56,7 +56,7 @@ Ext.define('Bjfu.user.view.UserView',{
 			forceFit:true,
 			columns : [
 				{
-					text : '用户id',
+					text : '用户组id',
 			        dataIndex : 'id',
 			        hidden : true
 				},
@@ -65,39 +65,8 @@ Ext.define('Bjfu.user.view.UserView',{
 			          		align: 'left',
 			          		width : 60
 			    }),{
-			        text : '用户名',
-			        dataIndex : 'userName',
-			    },{
-			        text : '用户登陆名',
-			        dataIndex : 'userLoginName',
-			    },{
-			        text : '超级管理员',
-			        dataIndex: 'isAdmin',
-			        renderer : function (value) {
-			        	if (value == "1") {
-			        		return "是";
-			        	} else {
-			        		return "否";
-			        	}
-			        }
-			    },{
-			        text : '邮箱',
-			        dataIndex : 'email',
-			        width : '10%'
-			    },{
-			        text : '电话',
-			        dataIndex : 'userPhone',
-			        width : '10%'
-			    },{
-			        text : '用户状态',
-			        dataIndex : 'userStatus',
-			        renderer : function (value) {
-			        	if (value == "1") {
-			        		return "正常";
-			        	} else {
-			        		return "锁定";
-			        	}
-			        }
+			        text : '用户组名',
+			        dataIndex : 'userGroupName',
 			    },{
 			        text : '创建者id',
 			        dataIndex : 'createrId',
@@ -113,7 +82,7 @@ Ext.define('Bjfu.user.view.UserView',{
 		          scope:this,
 		          icon:Global_Path+'/resources/extjs/images/add.png',
 		          handler : function(){
-		        	var addForm = Ext.create('Bjfu.user.view.AddUser',{
+		        	var addForm = Ext.create('Bjfu.userGroup.view.AddUserGroup',{
 		        	});
 		        	Ext.create('Ext.window.Window',{
 		        		title:'新增用户信息',

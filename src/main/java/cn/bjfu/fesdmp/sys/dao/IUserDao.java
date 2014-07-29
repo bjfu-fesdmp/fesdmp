@@ -16,8 +16,6 @@ import cn.bjfu.fesdmp.web.jsonbean.UserSearch;
 
 public interface IUserDao extends IGenericDao<User> {
 
-	public abstract List<User> findByCondtinGetCreater(final UserSearch condition, 
-			IOrder order, Pagination<User> page, JoinMode joinMode);
 
 }
  

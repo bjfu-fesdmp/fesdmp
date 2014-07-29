@@ -24,44 +24,44 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import cn.bjfu.fesdmp.domain.sys.User;
+import cn.bjfu.fesdmp.domain.sys.UserGroup;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.frame.dao.Order;
-import cn.bjfu.fesdmp.json.UserJson;
-import cn.bjfu.fesdmp.sys.service.IUserService;
+import cn.bjfu.fesdmp.json.UserGroupJson;
+import cn.bjfu.fesdmp.sys.service.IUserGroupService;
 import cn.bjfu.fesdmp.utils.PageInfoBean;
 import cn.bjfu.fesdmp.utils.Pagination;
 import cn.bjfu.fesdmp.web.BaseController;
-import cn.bjfu.fesdmp.web.jsonbean.UserSearch;
+import cn.bjfu.fesdmp.web.jsonbean.UserGroupSearch;
 
 
 @Controller
-@RequestMapping(value = "/sysuser")
-public class UserManagerController extends BaseController {
+@RequestMapping(value = "/sysuserGroup")
+public class UserGroupManagerController extends BaseController {
 	private static final Logger logger = Logger.getLogger(UserManagerController.class);
 	//private Gson gson = new GsonBuilder().serializeNulls().setDateFormat("yyyy-MM-dd").create();
 	private ObjectMapper mapper = new ObjectMapper();
 	@Autowired
-	private IUserService userService;
+	private IUserGroupService userGroupService;
 	
 	@RequestMapping(value = "/listView", method = RequestMethod.GET)
-	public String userPage() {
+	public String userGroupPage() {
 		logger.info("sysuserPage method.");
-		return "user/userView";
+		return "userGroup/userGroupView";
 	}
 	
-	@RequestMapping(value = "/userList", method = RequestMethod.POST)
+	@RequestMapping(value = "/userGroupList", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> userList(PageInfoBean pageInfo) throws Exception {
+	public Map<String, Object> userGroupList(PageInfoBean pageInfo) throws Exception {
 		
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		
-		logger.info("userList method.");
+		logger.info("userGroupList method.");
 		logger.info(pageInfo);
-		UserSearch userSearch = null;
+		UserGroupSearch userGroupSearch = null;
 		
-		Pagination<User> page = new Pagination<User>();
+		Pagination<UserGroup> page = new Pagination<UserGroup>();
 		page.setPageSize(pageInfo.getLimit());
 		page.setCurrentPage(pageInfo.getPage());
 		
@@ -70,34 +70,29 @@ public class UserManagerController extends BaseController {
 		order.addOrderBy("id", "DESC");
 		
 		if (!StringUtils.isEmpty(pageInfo.getSearchJson())) {
-			userSearch = mapper.readValue(pageInfo.getSearchJson(), UserSearch.class);
+			userGroupSearch = mapper.readValue(pageInfo.getSearchJson(), UserGroupSearch.class);
 		}
 		
-		logger.info(userSearch);
+		logger.info(userGroupSearch);
 		
 		
-		this.userService.queryByCondition(userSearch,order,page, JoinMode.AND);
+		this.userGroupService.queryByCondition(userGroupSearch,order,page, JoinMode.AND);;
 		
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put(PAGE_COUNT, page.getTotalRecord());
-		List<UserJson> userJsonList = new ArrayList<UserJson>();
+		List<UserGroupJson> userGroupJsonList = new ArrayList<UserGroupJson>();
 		for (int i=0; i<page.getDatas().size(); i++) {
-			User user = page.getDatas().get(i);
-			UserJson userJson = new UserJson();
-			userJson.setId(user.getId());
-			userJson.setEmail(user.getEmail());
-			userJson.setCreaterId(user.getCreater().getId());
-			userJson.setCreateTime(user.getCreateTime());
-			userJson.setIsAdmin(user.getIsAdmin());
-			userJson.setUserLoginName(user.getUserLoginName());
-			userJson.setUserName(user.getUserName());
-			userJson.setUserPhone(user.getUserPhone());
-			userJson.setUserStatus(user.getUserStatus());
-			userJsonList.add(userJson);
+			UserGroup userGroup = page.getDatas().get(i);
+			UserGroupJson userGroupJson = new UserGroupJson();
+			userGroupJson.setId(userGroup.getId());
+			userGroupJson.setCreaterId(userGroup.getCreater().getId());
+			userGroupJson.setCreateTime(userGroup.getCreateTime());
+			userGroupJson.setUserGroupName(userGroup.getUserGroupName());
+			userGroupJsonList.add(userGroupJson);
 		}
 
-		result.put(RESULT, userJsonList);
-//		result.put(RESULT, page.getDatas());
+		result.put(RESULT, userGroupJsonList);
+		//result.put(RESULT, page.getDatas());
 		result.put(SUCCESS, Boolean.TRUE);
 		return result;
 	}
