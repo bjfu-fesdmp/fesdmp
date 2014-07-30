@@ -13,7 +13,8 @@
 		    	enabled: true,
 		    	paths: {
 		    		'Bjfu.userGroup.view.UserGroupView': Global_Path + 'module/userGroup/view/UserGroupView.js',
-		    		'Bjfu.userGroup.view.QueryUserGroup' : Global_Path + 'module/userGroup/view/QueryUserGroup.js'
+		    		'Bjfu.userGroup.view.QueryUserGroup' : Global_Path + 'module/userGroup/view/QueryUserGroup.js',
+		    		'Bjfu.userGroup.view.AddUserGroup' : Global_Path + 'module/userGroup/view/AddUserGroup.js'
 		    	}
 			 });
 		  	 	

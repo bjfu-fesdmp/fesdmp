@@ -91,8 +91,8 @@ Ext.define('Bjfu.userGroup.view.UserGroupView',{
 		        		modal:true,
 		        		resizable:false,
 		        	    border:false,
-		        		width:600,
-		        		height:430,
+		        		width:300,
+		        		height:230,
 		        		layout:'fit',
 		        		items:[addForm]
 		        	}).show();
@@ -103,9 +103,9 @@ Ext.define('Bjfu.userGroup.view.UserGroupView',{
 		    	icon : Global_Path + '/resources/extjs/images/search.png',
 	    		handler : function(btn) {
 		       		var gridStore = btn.up('gridpanel').store;
-		      		var queryForm = Ext.create('Bjfu.log.view.QueryLog');
+		      		var queryForm = Ext.create('Bjfu.userGroup.view.QueryUserGroup');
 		  			Ext.create('Ext.window.Window', {
-						title : '日志信息高级查询',
+						title : '用户组信息高级查询',
 			       		height : 250,
 			       		width:600,
 			       		closable : true,

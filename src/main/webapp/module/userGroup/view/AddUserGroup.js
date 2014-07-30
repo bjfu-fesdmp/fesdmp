@@ -1,4 +1,4 @@
-Ext.define('Bjfu.user.view.AddUser',{
+Ext.define('Bjfu.userGroup.view.AddUserGroup',{
 	extend:'Ext.form.Panel',
 	bodyPadding: 5,
 	border:false,
@@ -10,7 +10,7 @@ Ext.define('Bjfu.user.view.AddUser',{
     	    defaults: {  
     	    	labelAlign:'right',
     	        layout: 'anchor',
-    	        columnWidth:.50,
+    	        columnWidth:.90,
     	        margin: '3 25 3 0',
     	        defaults: {
     	            anchor: '100%'
@@ -18,77 +18,15 @@ Ext.define('Bjfu.user.view.AddUser',{
     	    },
 		    defaultType: 'textfield',
     	    items: [{
-    	        fieldLabel: '用户名称<font color="red">*</font>',//验重
-    	        name: 'userName',
+    	        fieldLabel: '用户组名称<font color="red">*</font>',//验重
+    	        name: 'userGroupName',
     	        allowBlank : false,
     	        maxLength : 50,
 				maxLengthText : '长度不能超过50个字符',    	        
-    	        listeners:{
-	    	        'blur' : function(_this, the, e) {
-						var v = _this.getValue();
-						var vv = Ext.String.trim(v);
-						_this.setValue(vv);			
-							if (vv.length > 0) {
-								Ext.Ajax.request({
-									url : Global_Path + '/smp/user!checkUserName',
-									params : {
-										userName : vv
-									},
-									success : function(response) {
-										var result = Ext.decode(response.responseText);
-										if(result.success){
-											if(result.__msg == 'false'){
-												_this.setValue('');
-												Ext.Msg.alert("提示", "该用户名已经存在");
-												return;
-												}
-										}else{
-												Ext.Msg.alert("错误",result.__msg);
-										}
-									},
-									failure: function(response) {
-										var result = Ext.decode(response.responseText);
-										Ext.Msg.alert('错误', result.__msg);
-									}
-								});
-							}			    
-    	        	}
-    	        } 
-    	    },{
-    	        fieldLabel: '用户登录名', 
-    	        name: 'userLogname'
-    	    },{
-    	        fieldLabel: '手机号码', 
-    	        name: 'phone'
-    	    },{
-    	        fieldLabel: '邮件',
-    	        name: 'email'
-    	    },{
-    	        fieldLabel: '登录密码<font color="red">*</font>',
-    	        name: 'password',
-    	        id: 'passwordId',
-    	        inputType : 'password',
-    	        allowBlank : false,
-				blankText : "不能为空，请填写",
-				maxLength : 30
-    	    },{
-    	        fieldLabel: '确认密码<font color="red">*</font>',
-    	        name: 'checkPwd',
-    	        inputType : 'password',
-    	        vtype : 'password',
-				compareTo : 'passwordId',
-    	        allowBlank : false,
-				blankText : "不能为空，请填写",
-				maxLength : 30
     	    },{
     	    	fieldLabel:'用户编号',
     	    	name:'id',
     	    	xtype:'hiddenfield'
-    	    },{
-    	    	fieldLabel:'锁定状态',
-    	    	name:'status',
-    	    	xtype:'hiddenfield',
-    	    	value:1
     	    }]
     	});
     	me.callParent(arguments);
@@ -107,22 +45,21 @@ Ext.define('Bjfu.user.view.AddUser',{
 		            var form = this.up('form').getForm();
 		            var window = this.up('window');
 		            if (form.isValid()) {
-		            	var userValues = form.getValues();
+		            	var userGroupValues = form.getValues();
 		            		Ext.Ajax.request({
-		    	 	   			url:Global_Path+'/smp/user!addUserList',
+		    	 	   			url:Global_Path+'sysuserGroup/addUserGroup',
 		    	 	   			method:'post',
 		    	 	   			params:{
-		    	 	   					formData:Ext.encode(userValues)
+		    	 	   					formData:Ext.encode(userGroupValues)
 		    	 	   			},
 		    	 	   		success: function(response) {
 		                    	var	result =  Ext.decode(response.responseText);
 		                    	if(result.success){
-		                    		Ext.Msg.alert('提示',result.__msg);
+		                    		Ext.Msg.alert('提示','添加用户组成功');
 		    						window.close();
-		    	 	   			Ext.getCmp('userGrid').store.reload();
-		    	 	   			Ext.getCmp('userGrid').store.loadRawData();
+		    	 	   			Ext.getCmp('userGroupViewId').store.reload();
 		                    	}else{
-		                    		Ext.Msg.alert('提示',result.__msg);
+		                    		Ext.Msg.alert('提示','添加用户组失败');
 		                    		window.close();
 		                    	}
 		                    },

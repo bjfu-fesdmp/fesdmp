@@ -1,4 +1,4 @@
-Ext.define('Bjfu.log.view.QueryLog',{
+Ext.define('Bjfu.user.view.QueryUser',{
 	extend:'Ext.form.Panel',
 	bodyPadding: 5,
 	border:false,
@@ -21,59 +21,20 @@ Ext.define('Bjfu.log.view.QueryLog',{
     	        fieldLabel: '用户名',
     	        name: 'userName'
     	    },{
-    	        id : 'userSourceIp',
+    	        id : 'userLoginName',
     	    	xtype : 'textfield',
-    	        fieldLabel: '用户源地址',
-    	        name: 'userSourceIp'
+    	        fieldLabel: '用户登录名',
+    	        name: 'userLoginName'
     	    },{
-    	    	id : 'businessType',
-    	    	xtype : 'combo',
-    	        fieldLabel : '业务类型',
-    	        name : 'businessType',
-    	        store : Ext.create('Bjfu.fesdmp.BusinessType'),
-    	        editable : false,
-    	       // mode : 'remote',
-    	        displayField : 'name',
-    	        valueField : 'val',
-    	        emptyText : '请选择...'
-    	    },{
-    	    	id : 'operationType',
-    	    	xtype : 'combo',
-    	        fieldLabel: '操作类型',
-    	        name: 'operationType',
-    	        store : Ext.create('Bjfu.fesdmp.OperatitonType'),
-    	        editable : false,
-    	      //  mode : 'remote',
-    	        displayField : 'name',
-    	        valueField : 'val',
-    	        emptyText : '请选择...'
-    	    },{
-    	    	xtype : 'datefield',
-				fieldLabel : '开始时间',
-				altFormats: 'Y-m-d',
-				format : 'Y-m-d',
-				id : 'startTime',
-				name : 'startTime',
-				maxValue : new Date(),
-				editable : false,
-				vtype : 'daterange',
-				endDateField :"endTime"
-    	    },{
-    	    	xtype : 'datefield',
-				fieldLabel : '结束时间',
-				altFormats: 'Y-m-d',
-				format : 'Y-m-d',
-				id : 'endTime',
-				name : 'endTime',
-				maxValue : new Date(),
-				vtype : 'daterange',
-				editable : false,
-				startDateField : "startTime"
-    	    },{
-    	    	id : 'operateContent',
+    	    	id : 'email',
     	    	xtype : 'textfield',
-    	        fieldLabel: '操作内容',
-    	        name: 'operateContent'
+    	        fieldLabel: '邮箱',
+    	        name: 'email'
+    	    },{
+    	    	id : 'userPhone',
+    	    	xtype : 'textfield',
+    	        fieldLabel: '电话',
+    	        name: 'userPhone'
     	    }]
     	});
     	me.callParent(arguments);
@@ -91,7 +52,7 @@ Ext.define('Bjfu.log.view.QueryLog',{
 		        handler: function() {
 		          	var form = this.up('form').getForm();
 		            var searchJson = JSON.stringify(this.up('form').getForm().getValues());
-		            Ext.getCmp("logListViewId").getStore().loadPage(1, {
+		            Ext.getCmp("userViewId").getStore().loadPage(1, {
 		               		params: {
 		           				searchJson: searchJson
 		           			}

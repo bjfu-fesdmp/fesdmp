@@ -134,9 +134,9 @@ Ext.define('Bjfu.user.view.UserView',{
 		    	icon : Global_Path + '/resources/extjs/images/search.png',
 	    		handler : function(btn) {
 		       		var gridStore = btn.up('gridpanel').store;
-		      		var queryForm = Ext.create('Bjfu.log.view.QueryLog');
+		      		var queryForm = Ext.create('Bjfu.user.view.QueryUser');
 		  			Ext.create('Ext.window.Window', {
-						title : '日志信息高级查询',
+						title : '用户高级查询',
 			       		height : 250,
 			       		width:600,
 			       		closable : true,
