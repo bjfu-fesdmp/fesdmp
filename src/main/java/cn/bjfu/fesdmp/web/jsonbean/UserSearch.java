@@ -1,11 +1,4 @@
-/** 
- * Project Name:fesdmp 
- * File Name:LogSearch.java 
- * Package Name:cn.bjfu.fesdmp.web.bean 
- * Date:2014年7月11日 下午3:13:23 
- * Copyright (c) 2014, zhangzhaoyu0524@163.com All Rights Reserved. 
- * 
-*/  
+
   
 package cn.bjfu.fesdmp.web.jsonbean;  
 

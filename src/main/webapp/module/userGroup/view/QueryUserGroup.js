@@ -1,4 +1,4 @@
-Ext.define('Bjfu.user.view.QueryUser',{
+Ext.define('Bjfu.userGroup.view.QueryUserGroup',{
 	extend:'Ext.form.Panel',
 	bodyPadding: 5,
 	border:false,
@@ -16,25 +16,10 @@ Ext.define('Bjfu.user.view.QueryUser',{
     	    },
 		    defaultType: 'textfield',
     	    items: [{
-    	    	id : 'userName',
+    	    	id : 'userGroupName',
     	    	xtype : 'textfield',
-    	        fieldLabel: '用户名',
-    	        name: 'userName'
-    	    },{
-    	        id : 'userLoginName',
-    	    	xtype : 'textfield',
-    	        fieldLabel: '用户登录名',
-    	        name: 'userLoginName'
-    	    },{
-    	    	id : 'email',
-    	    	xtype : 'textfield',
-    	        fieldLabel: '邮箱',
-    	        name: 'email'
-    	    },{
-    	    	id : 'userPhone',
-    	    	xtype : 'textfield',
-    	        fieldLabel: '电话',
-    	        name: 'userPhone'
+    	        fieldLabel: '用户组名',
+    	        name: 'userGroupName'
     	    }]
     	});
     	me.callParent(arguments);
@@ -52,7 +37,7 @@ Ext.define('Bjfu.user.view.QueryUser',{
 		        handler: function() {
 		          	var form = this.up('form').getForm();
 		            var searchJson = JSON.stringify(this.up('form').getForm().getValues());
-		            Ext.getCmp("userViewId").getStore().loadPage(1, {
+		            Ext.getCmp("userGroupViewId").getStore().loadPage(1, {
 		               		params: {
 		           				searchJson: searchJson
 		           			}

@@ -76,7 +76,7 @@ public class UserManagerController extends BaseController {
 		logger.info(userSearch);
 		
 		
-		this.userService.findByCondtinGetCreater(userSearch,order,page, JoinMode.AND);
+		this.userService.queryByCondition(userSearch,order,page, JoinMode.AND);
 		
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put(PAGE_COUNT, page.getTotalRecord());

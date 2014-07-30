@@ -164,11 +164,6 @@
 				                		}, {
 				                    		text: '资源组管理'
 				                		}, {
-				                    		text: '用户组管理',
-				                    		handler: function () {
-				                        		Ext.Msg.alert("提示", "来自菜单的消息");
-				                    		}
-				                		}, {
 					                    	text: '角色管理',
 					                    	handler: function () {
 					                        	Ext.Msg.alert("提示", "来自菜单的消息");
@@ -184,7 +179,18 @@
 		                	 					noCache : true	
 			    							});
 						                    }
-						                }
+						                }, {
+							                    text: '用户组管理',
+							                    handler: function () {
+													Ext.getCmp('centerPanel').getLoader().load({
+													autoLoad : true,
+				    								url: Global_Path + "sysuserGroup/listView",
+			                	 					scripts : true,
+			                	 					loadMask : true,
+			                	 					noCache : true	
+				    							});
+							                    }
+							                }
 				            ]
 				        	}
 			               }, {
