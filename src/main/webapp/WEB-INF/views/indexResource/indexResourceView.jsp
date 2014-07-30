@@ -12,12 +12,12 @@
 	  	 	 Ext.Loader.setConfig({
 		    	enabled: true,
 		    	paths: {
-		    		'Bjfu.indexResource.view.IndexResourceListView': Global_Path + 'module/indexResource/view/IndexResourceListView.js',
+		    		'Bjfu.indexResource.view.IndexResourceListView': Global_Path + 'module/indexResource/view/IndexResourceListView.js'
 		    	//	'Bjfu.log.view.QueryLog' : Global_Path + 'module/log/view/QueryLog.js'
 		    	}
 			 });
 		  	 	
-			var indexListView = Ext.create('Bjfu.indexResource.view.indexResourceListView',{
+			var indexResourceListView = Ext.create('Bjfu.indexResource.view.IndexResourceListView',{
 									id :'indexResourceListViewId',
 									width:'100%',
 									autoShow : true,

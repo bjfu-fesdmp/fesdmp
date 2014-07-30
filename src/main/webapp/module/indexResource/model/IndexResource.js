@@ -1,4 +1,4 @@
-Ext.define('Bjfu.log.model.Index',{
+Ext.define('Bjfu.indexResource.model.IndexResource',{
 	extend : 'Ext.data.Model',
 	fields : [{
     	name : 'id',   					

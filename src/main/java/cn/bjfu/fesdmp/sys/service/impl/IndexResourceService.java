@@ -20,42 +20,42 @@ import cn.bjfu.fesdmp.utils.Pagination;
 public class IndexResourceService implements IIndexResourceService {
 
 	@Autowired
-	private IIndexResourceDao indexDao;
+	private IIndexResourceDao indexResourceDao;
 	
 	@Override
 	public void addIndResource(IndexResource indexResource) {
-		this.indexDao.insert(indexResource);
+		this.indexResourceDao.insert(indexResource);
 	}
 
 	@Override
 	public void deleteIndResource(IndexResource indexResource) {
-		this.indexDao.delete(indexResource);
+		this.indexResourceDao.delete(indexResource);
 	}
 
 	@Transactional(readOnly = true)
 	@Override
 	public List<IndexResource> queryAll(IOrder order) {
-		return this.indexDao.findAll(order);
+		return this.indexResourceDao.findAll(order);
 	}
 	
 	@Transactional(readOnly = true)
 	@Override
 	public void queryByCondition(Object condition, IOrder order,
 			Pagination<IndexResource> page) {
-		this.indexDao.findByCondition(condition, order, page);
+		this.indexResourceDao.findByCondition(condition, order, page);
 	}
 	
 	@Transactional(readOnly = true)
 	@Override
 	public List<IndexResource> queryByCondition(Object condition, IOrder order,
 			Pagination<IndexResource> page, JoinMode joinMode) {
-		return this.indexDao.findByCondition(condition, order, page, joinMode);
+		return this.indexResourceDao.findByCondition(condition, order, page, joinMode);
 	}
 
 /*	@Override
 	public List<IndexResource> queryByCondtinWithOperationTime(LogSearch condition,
 			IOrder order, Pagination<IndexResource> page, JoinMode joinMode) {
-		return this.indexDao.findByCondtinWithOperationTime(condition, order, page, joinMode);
+		return this.indexResourceDao.findByCondtinWithOperationTime(condition, order, page, joinMode);
 	}*/
 
 }

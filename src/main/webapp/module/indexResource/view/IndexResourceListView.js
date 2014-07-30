@@ -9,7 +9,7 @@ Ext.define('Bjfu.indexResource.view.IndexResourceListView',{
               Ext.create('Ext.grid.plugin.RowEditing', {
                   clicksToEdit: 1
               })
-          ]
+          ],
 	layoutConfig : {
 		animate : true
 	},
@@ -18,7 +18,14 @@ Ext.define('Bjfu.indexResource.view.IndexResourceListView',{
 	overflowY : 'scroll', //只显示上下滚动的滚动条
 	overflowX : 'hidden',
 	selType : 'checkboxmodel',	// 单选，复选框
-	requires : ['Bjfu.indexResource.model.IndexResource'],
+	requires : [
+	            'Bjfu.indexResource.model.IndexResource',
+	            'Ext.selection.CellModel',
+	            'Ext.grid.*',
+	            'Ext.data.*',
+	            'Ext.util.*',
+	            'Ext.form.*'
+	            ],
 	
 	initComponent : function() {
 		var me = this;
@@ -36,7 +43,7 @@ Ext.define('Bjfu.indexResource.view.IndexResourceListView',{
 				/*extraParams: {  
 	                searchJson : '{ismpewStatus : 1}'
 	            },*/  
-				url : Global_Path+'indexResource/indexResourceList',//////////////////////待改
+				url : Global_Path+'indexresource/indexResourceList',//////////////////////待改
 				reader : {
 					type : 'json',
 					root : 'result',
@@ -84,7 +91,6 @@ Ext.define('Bjfu.indexResource.view.IndexResourceListView',{
 		                xtype: 'textfield',
 		                allowBlank: false
 		            }
-	//		        hidden:true
 			    },{
 			        text : '英文名称',
 			        dataIndex : 'indexEnName',
@@ -93,17 +99,16 @@ Ext.define('Bjfu.indexResource.view.IndexResourceListView',{
 		                xtype: 'textfield',
 		                allowBlank: false
 		            }
-	//		        hidden:true
 			    } ,{
 			        text : '描述',
 			        sortable : false,
-			        dataIndex : 'indexMemo,
-			        width : '30%'
+			        dataIndex : 'indexMemo',
+			        width : '30%',
 			        editor : 'textfield'
 			    },{
 			        text : '添加人',
-			        dataIndex : 'createrId',
-			        width : '10%'
+			        dataIndex : 'creater_id',
+			        width : '8%'
 			    },{
 			        text : '添加时间',
 			        dataIndex : 'createTime',
@@ -111,13 +116,25 @@ Ext.define('Bjfu.indexResource.view.IndexResourceListView',{
 			    },{
 			        text : '修改人',
 			        dataIndex : 'modifier_id',
-			        width : '10%'
+			        width : '8%'
 			    },{
 			    	text : '修改时间',
 			    	dataIndex : 'modifyTime',
 			    	width : '10%'
-			    }
-			],
+			    },{
+			    	text : '删除',
+	                xtype: 'actioncolumn',
+	                width: 30,
+	                sortable: false,
+	                menuDisabled: true,
+	                width : '4%',
+	                items: [{
+	                    icon: Global_Path + '/resources/extjs/images/delete.png',
+	                    tooltip: '删除',
+	                    scope: this,
+	                    handler: this.onRemoveClick
+	                }]
+	            }],
 			tbar : [{
 				 	fieldLabel: '查询关键词',
 					xtype : 'textfield',
@@ -140,6 +157,10 @@ Ext.define('Bjfu.indexResource.view.IndexResourceListView',{
 			       			me.search_cache = null;
 			       		}
 			       }
+			    }, "->", {
+		            text: '添加指标',
+		            scope: this,
+		            handler: this.onAddClick
 			    }],
 			loadMask:true,
 			bbar : Ext.create('Ext.toolbar.Paging', {
@@ -152,5 +173,32 @@ Ext.define('Bjfu.indexResource.view.IndexResourceListView',{
 		});
 		
 		me.callParent(arguments);
-	}
+	},
+	
+	onAddClick: function(){
+		
+        var rec = new Bjfu.indexResource.model.IndexResource({
+            id: '',
+            indexName: '',
+            indexEnName: '',
+            indexUnit: '',
+            indexMemo: '',
+            creater_id: 0,
+            createTime: Ext.Date.clearTime(new Date()),
+      //    createTime:  Ext.Date.format(dt, Ext.Date.patterns.ISO8601Long),
+            modifier_id: 0,
+            modifyTime: '1970-01-01 00:00:00'
+        });
+
+        this.getStore().insert(0, rec);
+        this.cellEditing.startEditByPosition({
+            row: 0,
+            column: 0
+        });
+    },
+
+    onRemoveClick: function(grid, rowIndex){
+        this.getStore().removeAt(rowIndex);
+    }
+    
 });

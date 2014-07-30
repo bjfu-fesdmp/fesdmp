@@ -192,8 +192,8 @@
  								handler:  function () {
 									Ext.getCmp('centerPanel').getLoader().load({
 									autoLoad : true,	
-									url: Global_Path + "indexResource/listView",
-									scripts ： true,
+									url: Global_Path + "indexresource/listView",
+									scripts : true,
 									loadMask : true,
 									noCache : true
 									});

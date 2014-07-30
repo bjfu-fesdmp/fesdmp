@@ -29,10 +29,11 @@ import cn.bjfu.fesdmp.sys.service.IIndexResourceService;
 import cn.bjfu.fesdmp.utils.PageInfoBean;
 import cn.bjfu.fesdmp.utils.Pagination;
 import cn.bjfu.fesdmp.web.BaseController;
+import cn.bjfu.fesdmp.web.jsonbean.IndexResourceSearch;
 import cn.bjfu.fesdmp.web.jsonbean.LogSearch;
 
 @Controller
-@RequestMapping(value = "/indexResource")
+@RequestMapping(value = "/indexresource")
 public class IndexManagerController extends BaseController {
 	private static final Logger logger = Logger.getLogger(IndexManagerController.class);
 	private Gson gson = new GsonBuilder().serializeNulls().setDateFormat("yyyy-MM-dd").create();
@@ -43,7 +44,7 @@ public class IndexManagerController extends BaseController {
 	@RequestMapping(value = "/listView", method = RequestMethod.GET)
 	public String indexResourcePage() {
 		logger.info("indexResourcePage method.");
-		return "indexResource/listView";
+		return "indexResource/indexResourceView";
 	}
 	
 	@RequestMapping(value = "/indexResourceList", method = RequestMethod.POST)
@@ -52,9 +53,10 @@ public class IndexManagerController extends BaseController {
 		
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		
-		logger.info("indexList method.");
+		logger.info("indexResourceList method.");
 		logger.info(pageInfo);
 //		LogSearch logSearch = null;
+		IndexResourceSearch indResourceSearch = null;
 		
 		Pagination<IndexResource> page = new Pagination<IndexResource>();
 		page.setPageSize(pageInfo.getLimit());
@@ -69,9 +71,15 @@ public class IndexManagerController extends BaseController {
 		}
 		
 		logger.info(logSearch);*/
+		if (!StringUtils.isEmpty(pageInfo.getSearchJson())) {
+			indResourceSearch = mapper.readValue(pageInfo.getSearchJson(), IndexResourceSearch.class);
+		}
+		
+		logger.info(indResourceSearch);
 		
 //		this.indexService.queryByCondtinWithOperationTime(logSearch, order, page, JoinMode.AND);
-		this.indexService.queryAll(order);
+//		this.indexService.queryAll(order);
+		this.indexService.queryByCondition(indResourceSearch, order, page, JoinMode.OR );
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put(PAGE_COUNT, page.getTotalRecord());
 		result.put(RESULT, page.getDatas());
