@@ -40,11 +40,11 @@ public class IndexResource implements Serializable{
 	
 	public IndexResource() {}
 	
-	public Integer getIndexResouceId() {
+	public Integer getId() {
 		return id;
 	}
 	
-	public void setIndexResouceId(Integer id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 	
@@ -104,7 +104,7 @@ public class IndexResource implements Serializable{
 		this.modifier = modifier;
 	}
 	
-	public Date getModifyTime(Date modifyTime) {
+	public Date getModifyTime() {
 		return modifyTime;
 	}
 	public void setModifyTime(Date modifyTime) {
