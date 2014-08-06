@@ -2,7 +2,10 @@
 package cn.bjfu.fesdmp.web.sys;  
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -22,9 +25,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import cn.bjfu.fesdmp.domain.sys.IndexResource;
+import cn.bjfu.fesdmp.domain.sys.User;
+import cn.bjfu.fesdmp.domain.sys.UserGroup;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.frame.dao.Order;
+import cn.bjfu.fesdmp.json.IndexResourceJson;
 import cn.bjfu.fesdmp.sys.service.IIndexResourceService;
 import cn.bjfu.fesdmp.utils.PageInfoBean;
 import cn.bjfu.fesdmp.utils.Pagination;
@@ -35,8 +41,19 @@ import cn.bjfu.fesdmp.web.jsonbean.LogSearch;
 @Controller
 @RequestMapping(value = "/indexresource")
 public class IndexManagerController extends BaseController {
+	
+	private String formData;
+	
+	public String getFormData() {
+		return formData;
+	}
+	
+	public void setFormData(String formData) {
+		this.formData = formData;
+	}
+	
 	private static final Logger logger = Logger.getLogger(IndexManagerController.class);
-	private Gson gson = new GsonBuilder().serializeNulls().setDateFormat("yyyy-MM-dd").create();
+//	private Gson gson = new GsonBuilder().serializeNulls().setDateFormat("yyyy-MM-dd").create();
 	private ObjectMapper mapper = new ObjectMapper();
 	@Autowired
 	private IIndexResourceService indexService;
@@ -49,13 +66,12 @@ public class IndexManagerController extends BaseController {
 	
 	@RequestMapping(value = "/indexResourceList", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> indexList(PageInfoBean pageInfo) throws Exception {
+	public Map<String, Object> indexResourceList(PageInfoBean pageInfo) throws Exception {
 		
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		
 		logger.info("indexResourceList method.");
 		logger.info(pageInfo);
-//		LogSearch logSearch = null;
 		IndexResourceSearch indResourceSearch = null;
 		
 		Pagination<IndexResource> page = new Pagination<IndexResource>();
@@ -63,30 +79,83 @@ public class IndexManagerController extends BaseController {
 		page.setCurrentPage(pageInfo.getPage());
 		
 		IOrder order = new Order();
-//		order.addOrderBy("operateTime", "DESC");
 		order.addOrderBy("id", "DESC");
-		
-/*		if (!StringUtils.isEmpty(pageInfo.getSearchJson())) {
-			logSearch = mapper.readValue(pageInfo.getSearchJson(), LogSearch.class);
-		}
-		
-		logger.info(logSearch);*/
+
 		if (!StringUtils.isEmpty(pageInfo.getSearchJson())) {
 			indResourceSearch = mapper.readValue(pageInfo.getSearchJson(), IndexResourceSearch.class);
 		}
 		
 		logger.info(indResourceSearch);
 		
-//		this.indexService.queryByCondtinWithOperationTime(logSearch, order, page, JoinMode.AND);
-//		this.indexService.queryAll(order);
-		this.indexService.queryByCondition(indResourceSearch, order, page, JoinMode.OR );
+		this.indexService.queryByCondition(indResourceSearch, order, page, JoinMode.AND );
+		
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put(PAGE_COUNT, page.getTotalRecord());
-		result.put(RESULT, page.getDatas());
+		List<IndexResourceJson> indexResourceJsonList = new ArrayList<IndexResourceJson>();
+		for (int i=0; i<page.getDatas().size(); i++) {
+			IndexResource indexResource = page.getDatas().get(i);
+			IndexResourceJson indexResourceJson = new IndexResourceJson();
+			indexResourceJson.setId(indexResource.getId());
+			indexResourceJson.setIndexName(indexResource.getIndexName());
+			indexResourceJson.setIndexEnName(indexResource.getIndexEnName());
+			indexResourceJson.setIndexUnit(indexResource.getIndexUnit());
+			indexResourceJson.setIndexMemo(indexResource.getIndexMemo());
+			if(indexResource.getCreater()!=null)
+				indexResourceJson.setCreaterId(indexResource.getCreater().getId());
+			indexResourceJson.setCreateTime(indexResource.getCreateTime());
+			if(indexResource.getModifier()!=null)
+				indexResourceJson.setModifierId(indexResource.getModifier().getId());
+			indexResourceJson.setModifyTime(indexResource.getModifyTime());
+			indexResourceJsonList.add(indexResourceJson);
+		}
+
+		result.put(RESULT,indexResourceJsonList);
 		result.put(SUCCESS, Boolean.TRUE);
 		return result;
 	}
 	
+	@RequestMapping(value = "/addIndexResource", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> addIndexResource(String formData) throws Exception {
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		logger.info("addIndexResource method.");
+		IndexResource indexResource = null;
+		if (!StringUtils.isEmpty(formData)) {
+			indexResource = mapper.readValue(formData,IndexResource.class);
+		}
+		logger.info(indexResource);
+		Date dt=new Date();
+		indexResource.setCreateTime(dt);
+		Date dtm = new Date(70,0,1,0,0,0);
+		indexResource.setModifyTime(dtm);
+		this.indexService.addIndResource(indexResource);
+
+		Map<String, Object> result = new HashMap<String, Object>();
+
+		result.put(SUCCESS, Boolean.TRUE);
+		return result;
+	}
 	
+	@RequestMapping(value = "/deleteIndexResource", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> deleteIndexResource(String formData) throws Exception {
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		logger.info("addIndexResource method.");
+		IndexResource indexResource = null;
+		if (!StringUtils.isEmpty(formData)) {
+			indexResource = mapper.readValue(formData,IndexResource.class);
+		}
+		logger.info(indexResource);
+		Date dt=new Date();
+		indexResource.setCreateTime(dt);
+		Date dtm = new Date(70,0,1,0,0,0);
+		indexResource.setModifyTime(dtm);
+		this.indexService.addIndResource(indexResource);
+
+		Map<String, Object> result = new HashMap<String, Object>();
+
+		result.put(SUCCESS, Boolean.TRUE);
+		return result;
+	}
 }
  

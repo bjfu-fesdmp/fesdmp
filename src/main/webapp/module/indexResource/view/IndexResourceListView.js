@@ -4,27 +4,28 @@ Ext.define('Bjfu.indexResource.view.IndexResourceListView',{
 	forceFit : true,
 	layout : 'fit',
     autoScroll: true,
-    setlType : 'rowmodel',/////////////////可以单行编辑
+	layoutConfig : {
+		animate : true
+	},
+/*    setlType : 'rowmodel',/////////////////可以单行编辑
     plugins: [
               Ext.create('Ext.grid.plugin.RowEditing', {
                   clicksToEdit: 1
               })
-          ],
-	layoutConfig : {
-		animate : true
-	},
+          ],*/
 	search_cache: null,	  //用于分页时缓存高级查询条件
 	split : true,
 	overflowY : 'scroll', //只显示上下滚动的滚动条
 	overflowX : 'hidden',
 	selType : 'checkboxmodel',	// 单选，复选框
 	requires : [
-	            'Bjfu.indexResource.model.IndexResource',
-	            'Ext.selection.CellModel',
+	            'Bjfu.indexResource.model.IndexResource'
+	           
+/*	             ,'Ext.selection.CellModel',
 	            'Ext.grid.*',
 	            'Ext.data.*',
 	            'Ext.util.*',
-	            'Ext.form.*'
+	            'Ext.form.*'*/
 	            ],
 	
 	initComponent : function() {
@@ -132,35 +133,85 @@ Ext.define('Bjfu.indexResource.view.IndexResourceListView',{
 	                    icon: Global_Path + '/resources/extjs/images/delete.png',
 	                    tooltip: '删除',
 	                    scope: this,
-	                    handler: this.onRemoveClick
+	                    handler: function(grid, rowIndex){
+	                        this.getStore().removeAt(rowIndex);
+	                        Ext.Ajax.request({
+		    	 	   			url:Global_Path+'indexresource/deleteIndexResource',
+		    	 	   			method:'post',
+		    	 	   			params:{
+		    	 	   					formData:Ext.encode(rowIndex)
+		    	 	   			},
+		    	 	   		success: function(response) {
+		                    	var	result =  Ext.decode(response.responseText);
+		                    	if(result.success){
+		                    		Ext.Msg.alert('提示','删除指标成功');
+		    						window.close();
+		    	 	   			Ext.getCmp('userGroupViewId').store.reload();
+		                    	}else{
+		                    		Ext.Msg.alert('提示','删除指标失败');
+		                    		window.close();
+		                    	}
+		                    },
+		                    failure: function(form, action) {
+		                        Ext.Msg.alert('Failed', action.result.msg);
+		                    }
+		    	 	   		});
+	                    }
 	                }]
 	            }],
-			tbar : [{
+			tbar : [/*{
 				 	fieldLabel: '查询关键词',
 					xtype : 'textfield',
 					id : 'indexResource.searchWord',
 					name : 'searchWord',
 					width : 300,
 					emptyText : '指标名称'
-				},{
-			       	text : '查询' ,
-			       	icon : Global_Path + '/resources/extjs/images/search.png',
-			       	scope : this, 
-			       	handler : function(btn) {
-			       		var gridStore = btn.up('gridpanel').store;
-			       		var searchWord = Ext.getCmp("indexResource.searchWord").getValue();
-			       		if (searchWord != "") {
-			       			var searchStr = "{'indexName' : '"+ searchWord +"'}";
-			       			// 缓存查询条件
-				       		me.search_cache = searchStr;
-			       		} else {
-			       			me.search_cache = null;
-			       		}
-			       }
-			    }, "->", {
+				},*/{
 		            text: '添加指标',
-		            scope: this,
-		            handler: this.onAddClick
+			          scope:this,
+			          icon:Global_Path+'/resources/extjs/images/add.png',
+			          handler : function(){
+			        	var addForm = Ext.create('Bjfu.indexResource.view.AddIndexResource',{
+			        	});
+			        	Ext.create('Ext.window.Window',{
+			        		title:'添加指标',
+			        		closable:true,
+			        		closeAction:'destroy',
+			        		modal:true,
+			        		resizable:false,
+			        	    border:false,
+			        		width:300,
+			        		height:230,
+			        		layout:'fit',
+			        		items:[addForm]
+			        	}).show();
+			        	} 
+			    }, "->" ,{
+			       	text : '高级查询' ,
+			       	scope: this,
+			    	icon : Global_Path + '/resources/extjs/images/search.png',
+		    		handler : function(btn) {
+			       		var gridStore = btn.up('gridpanel').store;
+			      		var queryForm = Ext.create('Bjfu.indexResource.view.QueryIndexResource');
+			  			Ext.create('Ext.window.Window', {
+							title : '指标高级查询',
+				       		height : 250,
+				       		width : 400,
+				       		closable : true,
+				       		closeAction : 'destroy',
+				       		border : false,
+				       		modal : true,
+				       		resizable : false,
+				       		layout : 'fit',
+				       		items : [queryForm],
+				       		listeners : {
+								'close' : function(){
+									me.search_cache = JSON.stringify(queryForm.getForm().getValues());
+									this.destroy();
+								}
+							}
+				       	}).show();
+			       }
 			    }],
 			loadMask:true,
 			bbar : Ext.create('Ext.toolbar.Paging', {
@@ -174,31 +225,9 @@ Ext.define('Bjfu.indexResource.view.IndexResourceListView',{
 		
 		me.callParent(arguments);
 	},
-	
-	onAddClick: function(){
-		
-        var rec = new Bjfu.indexResource.model.IndexResource({
-            id: '',
-            indexName: '',
-            indexEnName: '',
-            indexUnit: '',
-            indexMemo: '',
-            creater_id: 0,
-            createTime: Ext.Date.clearTime(new Date()),
-      //    createTime:  Ext.Date.format(dt, Ext.Date.patterns.ISO8601Long),
-            modifier_id: 0,
-            modifyTime: '1970-01-01 00:00:00'
-        });
 
-        this.getStore().insert(0, rec);
-        this.cellEditing.startEditByPosition({
-            row: 0,
-            column: 0
-        });
-    },
-
-    onRemoveClick: function(grid, rowIndex){
+/*    onRemoveClick: function(grid, rowIndex){
         this.getStore().removeAt(rowIndex);
-    }
+    }*/
     
 });

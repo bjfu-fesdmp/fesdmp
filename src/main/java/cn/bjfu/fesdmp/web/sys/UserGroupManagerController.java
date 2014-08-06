@@ -93,7 +93,6 @@ public class UserGroupManagerController extends BaseController {
 
 		this.userGroupService.queryByCondition(userGroupSearch, order, page,
 				JoinMode.AND);
-		;
 
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put(PAGE_COUNT, page.getTotalRecord());
@@ -102,14 +101,10 @@ public class UserGroupManagerController extends BaseController {
 			UserGroup userGroup = page.getDatas().get(i);
 			UserGroupJson userGroupJson = new UserGroupJson();
 			userGroupJson.setId(userGroup.getId());
-
 			userGroupJson.setCreateTime(userGroup.getCreateTime());
 			userGroupJson.setUserGroupName(userGroup.getUserGroupName());
 			if(userGroup.getCreater()!=null)
 			userGroupJson.setCreaterId(userGroup.getCreater().getId());
-			
-			
-			
 			userGroupJsonList.add(userGroupJson);
 		}
 
