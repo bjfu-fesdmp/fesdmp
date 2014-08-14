@@ -7,12 +7,16 @@ Ext.define('Bjfu.indexResource.view.IndexResourceListView',{
 	layoutConfig : {
 		animate : true
 	},
-/*    setlType : 'rowmodel',/////////////////可以单行编辑
+    setlType : 'rowmodel',/////////////////可以单行编辑
     plugins: [
               Ext.create('Ext.grid.plugin.RowEditing', {
-                  clicksToEdit: 1
+            	  pluginId:'rowEditing', 
+        	      saveBtnText: '保存', 
+        	      cancelBtnText: "取消", 
+        	      autoCancel: false, 
+        	      clicksToEdit: 2
               })
-          ],*/
+          ],
 	search_cache: null,	  //用于分页时缓存高级查询条件
 	split : true,
 	overflowY : 'scroll', //只显示上下滚动的滚动条
@@ -30,6 +34,13 @@ Ext.define('Bjfu.indexResource.view.IndexResourceListView',{
 	
 	initComponent : function() {
 		var me = this;
+		var rowEditing = Ext.create('Ext.grid.plugin.RowEditing',{
+			pluginId:'rowEditing', 
+	        saveBtnText: '保存', 
+	        cancelBtnText: "取消", 
+	        autoCancel: false, 
+	        clicksToEdit:2
+		});
 		var gridStore = Ext.create('Ext.data.Store', {
 			model : 'Bjfu.indexResource.model.IndexResource',
 			pageSize : 25,
@@ -65,8 +76,6 @@ Ext.define('Bjfu.indexResource.view.IndexResourceListView',{
 					}
 				}
 			},
-			/*sorters : ["ProductName", "CatID"],
-			filters : [{"property" : "ProductName" ,"value" : 1}],*/
 			autoLoad : true
 		});
 		
@@ -122,51 +131,8 @@ Ext.define('Bjfu.indexResource.view.IndexResourceListView',{
 			    	text : '修改时间',
 			    	dataIndex : 'modifyTime',
 			    	width : '10%'
-			    },{
-			    	text : '删除',
-	                xtype: 'actioncolumn',
-	                width: 30,
-	                sortable: false,
-	                menuDisabled: true,
-	                width : '4%',
-	                items: [{
-	                    icon: Global_Path + '/resources/extjs/images/delete.png',
-	                    tooltip: '删除',
-	                    scope: this,
-	                    handler: function(grid, rowIndex){
-	                        this.getStore().removeAt(rowIndex);
-	                        Ext.Ajax.request({
-		    	 	   			url:Global_Path+'indexresource/deleteIndexResource',
-		    	 	   			method:'post',
-		    	 	   			params:{
-		    	 	   					formData:Ext.encode(rowIndex)
-		    	 	   			},
-		    	 	   		success: function(response) {
-		                    	var	result =  Ext.decode(response.responseText);
-		                    	if(result.success){
-		                    		Ext.Msg.alert('提示','删除指标成功');
-		    						window.close();
-		    	 	   			Ext.getCmp('userGroupViewId').store.reload();
-		                    	}else{
-		                    		Ext.Msg.alert('提示','删除指标失败');
-		                    		window.close();
-		                    	}
-		                    },
-		                    failure: function(form, action) {
-		                        Ext.Msg.alert('Failed', action.result.msg);
-		                    }
-		    	 	   		});
-	                    }
-	                }]
-	            }],
-			tbar : [/*{
-				 	fieldLabel: '查询关键词',
-					xtype : 'textfield',
-					id : 'indexResource.searchWord',
-					name : 'searchWord',
-					width : 300,
-					emptyText : '指标名称'
-				},*/{
+			    }],
+			tbar : [{
 		            text: '添加指标',
 			          scope:this,
 			          icon:Global_Path+'/resources/extjs/images/add.png',
@@ -185,8 +151,44 @@ Ext.define('Bjfu.indexResource.view.IndexResourceListView',{
 			        		layout:'fit',
 			        		items:[addForm]
 			        	}).show();
-			        	} 
-			    }, "->" ,{
+			          } 
+			    },{ 
+		        	text: '删除' ,
+		        	icon:Global_Path+'/resources/extjs/images/delete.png',
+		        	scope:this,
+		        	handler : function(o){
+	                	var gird = o.ownerCt.ownerCt;
+				    	var record = gird.getSelectionModel().getSelection();		        	
+			        	if(record.length==0)
+			        		{
+			        		Ext.Msg.alert('提示','请选择删除的记录！');
+			        		return;
+			        	}else{
+			        		//1.先得到ID的数据(domtId)
+			        		var st = gird.getStore();
+			        		var ids = [];
+			        		Ext.Array.each(record,function(data){
+			        			ids.push(data.get('id'));
+			        			Ext.Msg.confirm("提示","确定删除所选记录吗？",function(btn){
+			        				if(btn=='yes'){
+			        						Ext.Ajax.request({
+			        							url:Global_Path+'indexresource/deleteIndexResource',
+												params:{ids:ids.join(",")},
+												method:'POST',
+												timeout:2000,
+												success:function(response,opts){
+													Ext.Array.each(record,function(data){
+														st.remove(data);
+													});
+													Ext.getCmp('indexResourceListViewId').store.reload();
+			        							}
+			        						})
+			        				}
+			        			})
+			        		});
+			        	}    
+		    		}
+		        }, "->" ,{
 			       	text : '高级查询' ,
 			       	scope: this,
 			    	icon : Global_Path + '/resources/extjs/images/search.png',
@@ -224,10 +226,5 @@ Ext.define('Bjfu.indexResource.view.IndexResourceListView',{
 		});
 		
 		me.callParent(arguments);
-	},
-
-/*    onRemoveClick: function(grid, rowIndex){
-        this.getStore().removeAt(rowIndex);
-    }*/
-    
+	}, 
 });

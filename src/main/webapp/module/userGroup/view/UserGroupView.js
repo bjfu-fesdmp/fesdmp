@@ -97,6 +97,42 @@ Ext.define('Bjfu.userGroup.view.UserGroupView',{
 		        		items:[addForm]
 		        	}).show();
 		        	} 
+		        },{ 
+		        	text: '删除' ,
+		        	icon:Global_Path+'/resources/extjs/images/delete.png',
+		        	scope:this,
+		        	handler : function(o){
+	                	var gird = o.ownerCt.ownerCt;
+				    	var record = gird.getSelectionModel().getSelection();		        	
+			        	if(record.length==0)
+			        		{
+			        		Ext.Msg.alert('提示','请选择删除的记录！');
+			        		return;
+			        	}else{
+			        		//1.先得到ID的数据(domtId)
+			        		var st = gird.getStore();
+			        		var ids = [];
+			        		Ext.Array.each(record,function(data){
+			        			ids.push(data.get('id'));
+			        			Ext.Msg.confirm("提示","确定删除所选记录吗？",function(btn){
+			        				if(btn=='yes'){
+			        						Ext.Ajax.request({
+			        							url:Global_Path+'sysuserGroup/deleteUserGroup',
+												params:{ids:ids.join(",")},
+												method:'POST',
+												timeout:2000,
+												success:function(response,opts){
+													Ext.Array.each(record,function(data){
+														st.remove(data);
+													});
+													Ext.getCmp('userGroupViewId').store.reload();
+			        							}
+			        						})
+			        				}
+			        			})
+			        		});
+			        	}    
+		    		}
 		        }, "->", {
 		    	text:'高级查询',
 		    	scope:this,

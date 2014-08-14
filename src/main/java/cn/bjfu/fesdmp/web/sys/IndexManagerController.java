@@ -136,24 +136,36 @@ public class IndexManagerController extends BaseController {
 		return result;
 	}
 	
+//	@RequestMapping(value = "/deleteIndexResource", method = RequestMethod.POST)
+//	@ResponseBody
+//	public Map<String, Object> deleteIndexResource(String formData) throws Exception {
+//		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+//		logger.info("addIndexResource method.");
+//		IndexResource indexResource = null;
+//		if (!StringUtils.isEmpty(formData)) {
+//			indexResource = mapper.readValue(formData,IndexResource.class);
+//		}
+//		logger.info(indexResource);
+//		Date dt=new Date();
+//		indexResource.setCreateTime(dt);
+//		Date dtm = new Date(70,0,1,0,0,0);
+//		indexResource.setModifyTime(dtm);
+//		this.indexService.addIndResource(indexResource);
+//
+//		Map<String, Object> result = new HashMap<String, Object>();
+//
+//		result.put(SUCCESS, Boolean.TRUE);
+//		return result;
+//	}
+	
 	@RequestMapping(value = "/deleteIndexResource", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> deleteIndexResource(String formData) throws Exception {
+	public Map<String, Object> deleteIndexResource(String ids) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-		logger.info("addIndexResource method.");
-		IndexResource indexResource = null;
-		if (!StringUtils.isEmpty(formData)) {
-			indexResource = mapper.readValue(formData,IndexResource.class);
-		}
-		logger.info(indexResource);
-		Date dt=new Date();
-		indexResource.setCreateTime(dt);
-		Date dtm = new Date(70,0,1,0,0,0);
-		indexResource.setModifyTime(dtm);
-		this.indexService.addIndResource(indexResource);
-
+		logger.info("deleteIndexResource method.");
+		System.out.println(ids);
+		this.indexService.deleteIndResource(Integer.parseInt(ids));
 		Map<String, Object> result = new HashMap<String, Object>();
-
 		result.put(SUCCESS, Boolean.TRUE);
 		return result;
 	}

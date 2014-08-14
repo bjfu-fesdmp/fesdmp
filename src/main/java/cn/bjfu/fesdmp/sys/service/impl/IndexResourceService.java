@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.bjfu.fesdmp.domain.sys.IndexResource;
+import cn.bjfu.fesdmp.domain.sys.UserGroup;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.sys.dao.IIndexResourceDao;
@@ -28,8 +29,8 @@ public class IndexResourceService implements IIndexResourceService {
 	}
 
 	@Override
-	public void deleteIndResource(IndexResource indexResource) {
-		this.indexResourceDao.delete(indexResource);
+	public void deleteIndResource(int id) {
+		this.indexResourceDao.delete(this.indexResourceDao.findByKey(id));
 	}
 
 	@Transactional(readOnly = true)
@@ -57,6 +58,9 @@ public class IndexResourceService implements IIndexResourceService {
 			IOrder order, Pagination<IndexResource> page, JoinMode joinMode) {
 		return this.indexResourceDao.findByCondtinWithOperationTime(condition, order, page, joinMode);
 	}*/
+	public  IndexResource findByKey(int id){
+		return this.indexResourceDao.findByKey(id);
+	}
 
 }
  

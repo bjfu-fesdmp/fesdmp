@@ -13,6 +13,7 @@ import cn.bjfu.fesdmp.domain.sys.User;
 import cn.bjfu.fesdmp.domain.sys.UserGroup;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
+import cn.bjfu.fesdmp.json.UserGroupJson;
 import cn.bjfu.fesdmp.json.UserJson;
 import cn.bjfu.fesdmp.sys.dao.IUserDao;
 import cn.bjfu.fesdmp.sys.dao.IUserGroupDao;
@@ -36,10 +37,11 @@ public class UserGroupService implements IUserGroupService {
 	}
 
 	@Override
-	public void deleteUserGroup(UserGroup userGroup) {
-		this.userGroupDao.delete(userGroup);
+	public void deleteUserGroup(int id) {
+		this.userGroupDao.delete(this.userGroupDao.findByKey(id));
 	}
-
+	
+	
 	@Transactional(readOnly = true)
 	@Override
 	public List<UserGroup> queryAll(IOrder order) {
@@ -58,6 +60,9 @@ public class UserGroupService implements IUserGroupService {
 	public List<UserGroup> queryByCondition(Object condition, IOrder order,
 			Pagination<UserGroup> page, JoinMode joinMode) {
 		return this.userGroupDao.findByCondition(condition, order, page, joinMode);
+	}
+	public  UserGroup findByKey(int id){
+		return this.userGroupDao.findByKey(id);
 	}
 
 }
