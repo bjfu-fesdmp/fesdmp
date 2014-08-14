@@ -17,15 +17,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import cn.bjfu.fesdmp.domain.sys.IndexResource;
-import cn.bjfu.fesdmp.domain.sys.User;
 import cn.bjfu.fesdmp.domain.sys.UserGroup;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
@@ -36,7 +30,6 @@ import cn.bjfu.fesdmp.utils.PageInfoBean;
 import cn.bjfu.fesdmp.utils.Pagination;
 import cn.bjfu.fesdmp.web.BaseController;
 import cn.bjfu.fesdmp.web.jsonbean.IndexResourceSearch;
-import cn.bjfu.fesdmp.web.jsonbean.LogSearch;
 
 @Controller
 @RequestMapping(value = "/indexresource")
@@ -136,28 +129,6 @@ public class IndexManagerController extends BaseController {
 		return result;
 	}
 	
-//	@RequestMapping(value = "/deleteIndexResource", method = RequestMethod.POST)
-//	@ResponseBody
-//	public Map<String, Object> deleteIndexResource(String formData) throws Exception {
-//		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-//		logger.info("addIndexResource method.");
-//		IndexResource indexResource = null;
-//		if (!StringUtils.isEmpty(formData)) {
-//			indexResource = mapper.readValue(formData,IndexResource.class);
-//		}
-//		logger.info(indexResource);
-//		Date dt=new Date();
-//		indexResource.setCreateTime(dt);
-//		Date dtm = new Date(70,0,1,0,0,0);
-//		indexResource.setModifyTime(dtm);
-//		this.indexService.addIndResource(indexResource);
-//
-//		Map<String, Object> result = new HashMap<String, Object>();
-//
-//		result.put(SUCCESS, Boolean.TRUE);
-//		return result;
-//	}
-	
 	@RequestMapping(value = "/deleteIndexResource", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> deleteIndexResource(String ids) throws Exception {
@@ -165,6 +136,18 @@ public class IndexManagerController extends BaseController {
 		logger.info("deleteIndexResource method.");
 		System.out.println(ids);
 		this.indexService.deleteIndResource(Integer.parseInt(ids));
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put(SUCCESS, Boolean.TRUE);
+		return result;
+	}
+	
+	@RequestMapping(value = "/modifyIndexResource", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> modifyIndexResource(String formData) throws Exception {
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		logger.info("modifyIndexResource method.");
+		IndexResource indexResource = mapper.readValue(formData,IndexResource.class);
+		this.indexService.modifyIndResource(indexResource);;
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put(SUCCESS, Boolean.TRUE);
 		return result;

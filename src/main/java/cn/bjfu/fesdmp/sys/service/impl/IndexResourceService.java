@@ -1,6 +1,7 @@
 
 package cn.bjfu.fesdmp.sys.service.impl;  
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.bjfu.fesdmp.domain.sys.IndexResource;
-import cn.bjfu.fesdmp.domain.sys.UserGroup;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.sys.dao.IIndexResourceDao;
@@ -60,6 +60,19 @@ public class IndexResourceService implements IIndexResourceService {
 	}*/
 	public  IndexResource findByKey(int id){
 		return this.indexResourceDao.findByKey(id);
+	}
+
+	@Override
+	public void modifyIndResource(IndexResource indexResource) {
+		IndexResource indexResourceNew = this.indexResourceDao.findByKey(indexResource.getId());
+		indexResourceNew.setIndexName(indexResource.getIndexName());
+		indexResourceNew.setIndexEnName(indexResource.getIndexEnName());
+		indexResourceNew.setIndexUnit(indexResource.getIndexUnit());
+		indexResourceNew.setIndexMemo(indexResource.getIndexMemo());
+		indexResourceNew.setModifier(indexResource.getModifier());
+		indexResourceNew.setModifyTime(new Date());
+		this.indexResourceDao.update(indexResourceNew);
+		
 	}
 
 }

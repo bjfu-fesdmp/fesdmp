@@ -162,12 +162,27 @@
 				        		    items: [{
 				                   		text: '组织部门管理'
 				                		}, {
-				                    		text: '资源组管理'
+				                    		text: '资源组管理',
+											handler: function () {
+					                        	Ext.getCmp('centerPanel').getLoader().load({
+												autoLoad : true,
+												url: Global_Path + "resourceGroup/listView",
+	 											scripts : true,
+	 											loadMask : true,
+	 											noCache : true	
+											});
+					                   		}
 				                		}, {
 					                    	text: '角色管理',
 					                    	handler: function () {
-					                        	Ext.Msg.alert("提示", "来自菜单的消息");
-					                    }
+					                        	Ext.getCmp('centerPanel').getLoader().load({
+												autoLoad : true,
+												url: Global_Path + "role/listView",
+	 											scripts : true,
+	 											loadMask : true,
+	 											noCache : true	
+											});
+					                   		}
 					                	}, {
 						                    text: '用户管理',
 						                    handler: function () {

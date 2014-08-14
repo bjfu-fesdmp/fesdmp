@@ -2,8 +2,6 @@ package cn.bjfu.fesdmp.json;
 
 import java.util.Date;
 
-
-
 public class IndexResourceJson {
 	private Integer id;
 	private String indexName;

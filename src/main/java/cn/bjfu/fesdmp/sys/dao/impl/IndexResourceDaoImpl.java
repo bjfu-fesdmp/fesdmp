@@ -21,7 +21,7 @@ import cn.bjfu.fesdmp.web.jsonbean.LogSearch;
 @Repository
 public class IndexResourceDaoImpl extends AbstractGenericDao<IndexResource> implements IIndexResourceDao {
 	
-	private static final Logger logger = Logger.getLogger(SystemLogDaoImpl.class);
+	private static final Logger logger = Logger.getLogger(IndexResourceDaoImpl.class);
 	
 	public IndexResourceDaoImpl() {
 		super(IndexResource.class);

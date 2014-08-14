@@ -25,11 +25,11 @@ public class ResourceGroup implements Serializable{
 	
 	public ResourceGroup() {}
 	
-	public Integer getGroupId() {
+	public Integer getId() {
 		return id;
 	}
 	
-	public void setGroupId(Integer id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 	

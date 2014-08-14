@@ -133,7 +133,7 @@ Ext.define('Bjfu.indexResource.view.IndexResourceListView',{
 			    	width : '10%'
 			    }],
 			tbar : [{
-		            text: '添加指标',
+		            text: '新增',
 			          scope:this,
 			          icon:Global_Path+'/resources/extjs/images/add.png',
 			          handler : function(){
@@ -152,7 +152,38 @@ Ext.define('Bjfu.indexResource.view.IndexResourceListView',{
 			        		items:[addForm]
 			        	}).show();
 			          } 
-			    },{ 
+			    },{
+				       text: '修改',
+				       scope:this, 
+				        icon:Global_Path+'/resources/extjs/images/update.png',
+				          handler : function(o){
+				        	 var gird = o.ownerCt.ownerCt;
+						     var record = gird.getSelectionModel().getSelection();
+						     	if(record.length>1||record.length==0)
+						     		{
+						     			Ext.Msg.alert('提示','请选择一条记录！');
+						     			return;
+						     		}else{
+				        	
+				        	var modifyForm = Ext.create('Bjfu.indexResource.view.ModifyIndexResource',{
+											});
+				        	modifyForm.loadRecord(record[0]);
+				        	Ext.create('Ext.window.Window',{
+				        		title:'修改指标界面',
+				        		closable:true,
+				        		closeAction:'destroy',
+				        		modal:true,
+				        		border:false,
+				        		resizable:false,
+				        		width:400,
+				        		height:250,
+				        		layout:'fit',
+				        		items:[modifyForm]
+				        	}).show();
+				        	
+				        	}
+				        	}
+				    },{ 
 		        	text: '删除' ,
 		        	icon:Global_Path+'/resources/extjs/images/delete.png',
 		        	scope:this,

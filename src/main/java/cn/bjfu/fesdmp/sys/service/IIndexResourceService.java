@@ -13,7 +13,7 @@ import cn.bjfu.fesdmp.utils.Pagination;
 public interface IIndexResourceService{
 
 	public abstract void addIndResource(IndexResource indexResource);
-//	public abstract void deleteIndResource(IndexResource indexResource);
+	public abstract void modifyIndResource(IndexResource indexResource);
 	public abstract void deleteIndResource(int id);
 	public abstract List<IndexResource> queryAll(IOrder order);
 	public abstract void queryByCondition(final Object condition, IOrder order, Pagination<IndexResource> page);
