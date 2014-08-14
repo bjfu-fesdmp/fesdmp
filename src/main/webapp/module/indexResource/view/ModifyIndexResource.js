@@ -73,8 +73,8 @@ Ext.define('Bjfu.indexResource.view.ModifyIndexResource',{
 		                    	if(result.success){
 		                    		Ext.Msg.alert('提示','修改指标成功');
 		    						window.close();
-		    	 	   			Ext.getCmp('userGroupViewId').store.reload();
-		    	 	   			Ext.getCmp('userGroupViewId').store.loadRawData();
+		    	 	   			Ext.getCmp('indexResourceListViewId').store.reload();
+		    	 	   			Ext.getCmp('indexResourceListViewId').store.loadRawData();
 		                    	}else{
 		                    		Ext.Msg.alert('提示','修改指标失败');
 		                    		window.close();

@@ -35,7 +35,13 @@ public class UserGroupService implements IUserGroupService {
 	public void addUserGroup(UserGroup userGroup) {
 		this.userGroupDao.insert(userGroup);
 	}
-
+	
+	@Override
+	public void modifyUserGroup(UserGroup userGroup) {
+		UserGroup userGroupNew = this.userGroupDao.findByKey(userGroup.getId());
+		userGroupNew.setUserGroupName(userGroup.getUserGroupName());
+		this.userGroupDao.update(userGroupNew);
+	}
 	@Override
 	public void deleteUserGroup(int id) {
 		this.userGroupDao.delete(this.userGroupDao.findByKey(id));

@@ -97,7 +97,38 @@ Ext.define('Bjfu.userGroup.view.UserGroupView',{
 		        		items:[addForm]
 		        	}).show();
 		        	} 
-		        },{ 
+		        },{
+			       text: '修改',
+			       scope:this, 
+			        icon:Global_Path+'/resources/extjs/images/update.png',
+			          handler : function(o){
+			        	 var gird = o.ownerCt.ownerCt;
+					     var record = gird.getSelectionModel().getSelection();
+					     	if(record.length>1||record.length==0)
+					     		{
+					     			Ext.Msg.alert('提示','请选择一条记录！');
+					     			return;
+					     		}else{
+			        	
+			        	var modifyForm = Ext.create('Bjfu.userGroup.view.ModifyUserGroup',{
+										});
+			        	modifyForm.loadRecord(record[0]);
+			        	Ext.create('Ext.window.Window',{
+			        		title:'修改用户组界面',
+			        		closable:true,
+			        		closeAction:'destroy',
+			        		modal:true,
+			        		border:false,
+			        		resizable:false,
+			        		width:400,
+			        		height:250,
+			        		layout:'fit',
+			        		items:[modifyForm]
+			        	}).show();
+			        	
+			        	}
+			        	}
+			        },{ 
 		        	text: '删除' ,
 		        	icon:Global_Path+'/resources/extjs/images/delete.png',
 		        	scope:this,

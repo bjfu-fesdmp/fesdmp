@@ -73,7 +73,7 @@ Ext.define('Bjfu.indexResource.view.AddIndexResource',{
 		                    	if(result.success){
 		                    		Ext.Msg.alert('提示','添加指标成功');
 		    						window.close();
-		    	 	   			Ext.getCmp('userGroupViewId').store.reload();
+		    	 	   			Ext.getCmp('indexResourceListViewId').store.reload();
 		                    	}else{
 		                    		Ext.Msg.alert('提示','添加指标失败');
 		                    		window.close();

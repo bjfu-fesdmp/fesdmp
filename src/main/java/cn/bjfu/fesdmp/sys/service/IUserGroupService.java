@@ -17,6 +17,7 @@ import cn.bjfu.fesdmp.utils.Pagination;
 public interface IUserGroupService {
 
 	public abstract void addUserGroup(UserGroup userGroup);
+	public abstract void modifyUserGroup(UserGroup userGroup);
 	public abstract void deleteUserGroup(int id);
 	public abstract List<UserGroup> queryAll(IOrder order);
 	public abstract void queryByCondition(final Object condition, IOrder order, Pagination<UserGroup> page);

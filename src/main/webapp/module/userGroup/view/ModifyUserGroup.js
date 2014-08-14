@@ -1,4 +1,4 @@
-Ext.define('Bjfu.resourceGroup.view.AddResourceGroup',{
+Ext.define('Bjfu.userGroup.view.ModifyUserGroup',{
 	extend:'Ext.form.Panel',
 	bodyPadding: 5,
 	border:false,
@@ -18,8 +18,8 @@ Ext.define('Bjfu.resourceGroup.view.AddResourceGroup',{
     	    },
 		    defaultType: 'textfield',
     	    items: [{
-    	        fieldLabel: '资源组名称<font color="red">*</font>',//验重
-    	        name: 'resourceGroupName',
+    	        fieldLabel: '用户组名称<font color="red">*</font>',//验重
+    	        name: 'userGroupName',
     	        allowBlank : false,
     	        maxLength : 50,
 				maxLengthText : '长度不能超过50个字符',    	        
@@ -45,21 +45,22 @@ Ext.define('Bjfu.resourceGroup.view.AddResourceGroup',{
 		            var form = this.up('form').getForm();
 		            var window = this.up('window');
 		            if (form.isValid()) {
-		            	var resourceGroupValues = form.getValues();
+		            	var userGroupValues = form.getValues();
 		            		Ext.Ajax.request({
-		    	 	   			url:Global_Path+'resourceGroup/addResourceGroup',
+		    	 	   			url:Global_Path+'sysuserGroup/modifyUserGroup',
 		    	 	   			method:'post',
 		    	 	   			params:{
-		    	 	   					formData:Ext.encode(resourceGroupValues)
+		    	 	   					formData:Ext.encode(userGroupValues)
 		    	 	   			},
 		    	 	   		success: function(response) {
 		                    	var	result =  Ext.decode(response.responseText);
 		                    	if(result.success){
-		                    		Ext.Msg.alert('提示','添加资源组成功');
+		                    		Ext.Msg.alert('提示','修改用户组成功');
 		    						window.close();
-		    	 	   			Ext.getCmp('resourceGroupViewId').store.reload();
+		    	 	   			Ext.getCmp('userGroupViewId').store.reload();
+		    	 	   			Ext.getCmp('userGroupViewId').store.loadRawData();
 		                    	}else{
-		                    		Ext.Msg.alert('提示','添加资源组失败');
+		                    		Ext.Msg.alert('修改','添加用户组失败');
 		                    		window.close();
 		                    	}
 		                    },
