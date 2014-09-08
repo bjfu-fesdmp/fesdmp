@@ -78,7 +78,6 @@ public class UserGroupManagerController extends BaseController {
 		this.userGroupService.queryByCondition(userGroupSearch, order, page,
 				JoinMode.AND);
 
-
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put(PAGE_COUNT, page.getTotalRecord());
 		List<UserGroupJson> userGroupJsonList = new ArrayList<UserGroupJson>();
@@ -120,7 +119,7 @@ public class UserGroupManagerController extends BaseController {
 
 @RequestMapping(value = "/getUserGroupList", method = RequestMethod.POST)
 @ResponseBody
-public String getUserGroupList(PageInfoBean pageInfo)
+public Map<String, Object> getUserGroupList()
 		throws Exception {
 
 	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
@@ -128,8 +127,6 @@ public String getUserGroupList(PageInfoBean pageInfo)
 	UserGroupSearch userGroupSearch = null;
 
 	Pagination<UserGroup> page = new Pagination<UserGroup>();
-	page.setPageSize(pageInfo.getLimit());
-	page.setCurrentPage(pageInfo.getPage());
 	IOrder order = new Order();
 	order.addOrderBy("id", "DESC");
 
@@ -139,8 +136,19 @@ public String getUserGroupList(PageInfoBean pageInfo)
 			JoinMode.AND);
 	
 
-	String result=page.getDatas().toString();
-	System.out.println(result+"0101010101001");
+	Map<String, Object> result = new HashMap<String, Object>();
+	List<UserGroupJson> userGroupJsonList = new ArrayList<UserGroupJson>();
+	for (int i = 0; i < page.getDatas().size(); i++) {
+		UserGroup userGroup = page.getDatas().get(i);
+		UserGroupJson userGroupJson = new UserGroupJson();
+		userGroupJson.setId(userGroup.getId());
+		userGroupJson.setCreateTime(userGroup.getCreateTime());
+		userGroupJson.setUserGroupName(userGroup.getUserGroupName());
+		if(userGroup.getCreater()!=null)
+		userGroupJson.setCreaterId(userGroup.getCreater().getId());
+		userGroupJsonList.add(userGroupJson);
+	}
+	result.put(RESULT, userGroupJsonList);
 	return result;
 }
 

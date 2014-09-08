@@ -24,7 +24,7 @@ Ext.define('Bjfu.userGroup.view.AddUserGroup',{
     	        maxLength : 50,
 				maxLengthText : '长度不能超过50个字符',    	        
     	    },{
-    	    	fieldLabel:'用户编号',
+    	    	fieldLabel:'用户组编号',
     	    	name:'id',
     	    	xtype:'hiddenfield'
     	    }]
