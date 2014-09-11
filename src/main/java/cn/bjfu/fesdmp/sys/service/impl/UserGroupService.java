@@ -68,6 +68,7 @@ public class UserGroupService implements IUserGroupService {
 		return this.userGroupDao.findByCondition(condition, order, page, joinMode);
 	}
 	public  UserGroup findByKey(int id){
+		
 		return this.userGroupDao.findByKey(id);
 	}
 

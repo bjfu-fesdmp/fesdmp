@@ -44,10 +44,10 @@ Ext.define('Bjfu.user.view.AddUser',{
 				maxLengthText : '长度不能超过50个字符',    	        
     	    },{
     	        fieldLabel: '用户登录名', 
-    	        name: 'userLogname'
+    	        name: 'userLoginName'
     	    },{
     	        fieldLabel: '手机号码', 
-    	        name: 'phone'
+    	        name: 'userPhone'
     	    },{
     	        fieldLabel: '邮件',
     	        name: 'email'
@@ -59,16 +59,18 @@ Ext.define('Bjfu.user.view.AddUser',{
     	        allowBlank : false,
 				blankText : "不能为空，请填写",
 				maxLength : 30
-    	    },{
-    	        fieldLabel: '确认密码<font color="red">*</font>',//要确认密码
-    	        name: 'checkPwd',
-    	        inputType : 'password',
-    	        vtype : 'password',
-    	        initialPassField : 'passwordId',
-    	        allowBlank : true,
-				blankText : "不能为空，请填写",
-				maxLength : 30
-    	    },{
+    	    }
+//    	    ,{
+//    	        fieldLabel: '确认密码<font color="red">*</font>',//要确认密码
+//    	        name: 'checkPwd',
+//    	        inputType : 'password',
+//    	        vtype : 'password',
+//    	        initialPassField : 'passwordId',
+//    	        allowBlank : true,
+//				blankText : "不能为空，请填写",
+//				maxLength : 30
+//    	    }
+    	    ,{
     	    	id : 'userGroup',
     	    	xtype : 'combo',
     	        fieldLabel : '所属用户组<font color="red">*</font>',
@@ -79,15 +81,6 @@ Ext.define('Bjfu.user.view.AddUser',{
     	        displayField : 'userGroupName',
     	        valueField : 'id',
     	        emptyText : '请选择...'	
-    	    },{
-    	    	fieldLabel:'用户编号',
-    	    	name:'id',
-    	    	xtype:'hiddenfield'
-    	    },{
-    	    	fieldLabel:'锁定状态',
-    	    	name:'status',
-    	    	xtype:'hiddenfield',
-    	    	value:1
     	    }]
     	});
     	me.callParent(arguments);

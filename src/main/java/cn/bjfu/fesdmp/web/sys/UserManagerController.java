@@ -4,6 +4,7 @@ package cn.bjfu.fesdmp.web.sys;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,11 +26,16 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import cn.bjfu.fesdmp.domain.sys.User;
+import cn.bjfu.fesdmp.domain.sys.UserGroup;
+import cn.bjfu.fesdmp.domain.sys.UserUserGroupRelation;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.frame.dao.Order;
+import cn.bjfu.fesdmp.json.AddUserJson;
 import cn.bjfu.fesdmp.json.UserJson;
+import cn.bjfu.fesdmp.sys.dao.IUserGroupDao;
 import cn.bjfu.fesdmp.sys.service.IUserService;
+import cn.bjfu.fesdmp.sys.service.impl.UserGroupService;
 import cn.bjfu.fesdmp.utils.PageInfoBean;
 import cn.bjfu.fesdmp.utils.Pagination;
 import cn.bjfu.fesdmp.web.BaseController;
@@ -44,7 +50,8 @@ public class UserManagerController extends BaseController {
 	private ObjectMapper mapper = new ObjectMapper();
 	@Autowired
 	private IUserService userService;
-	
+	private IUserGroupDao userGroupDao;
+	private UserGroupService userGroupService;
 	@RequestMapping(value = "/listView", method = RequestMethod.GET)
 	public String userPage() {
 		logger.info("sysuserPage method.");
@@ -85,12 +92,16 @@ public class UserManagerController extends BaseController {
 			User user = page.getDatas().get(i);
 			UserJson userJson = new UserJson();
 			userJson.setId(user.getId());
+			if(user.getEmail()!=null)
 			userJson.setEmail(user.getEmail());
+			if(user.getCreater()!=null)
 			userJson.setCreaterId(user.getCreater().getId());
 			userJson.setCreateTime(user.getCreateTime());
 			userJson.setIsAdmin(user.getIsAdmin());
 			userJson.setUserLoginName(user.getUserLoginName());
+			if(user.getUserName()!=null)
 			userJson.setUserName(user.getUserName());
+			if(user.getUserPhone()!=null)
 			userJson.setUserPhone(user.getUserPhone());
 			userJson.setUserStatus(user.getUserStatus());
 			userJsonList.add(userJson);
@@ -101,6 +112,33 @@ public class UserManagerController extends BaseController {
 		result.put(SUCCESS, Boolean.TRUE);
 		return result;
 	}
-	
+	@RequestMapping(value = "/addUser", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> addUser(String formData) throws Exception {
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		logger.info("userList method.");
+		AddUserJson addUserJson = new AddUserJson();
+		User user = new User();
+		UserUserGroupRelation userUserGroupRelation =new UserUserGroupRelation();
+		if (!StringUtils.isEmpty(formData)) {
+			addUserJson = mapper.readValue(formData,AddUserJson.class);
+		}
+		logger.info(addUserJson);
+		Date dt=new Date();
+		user.setCreateTime(dt);
+		user.setEmail(addUserJson.getEmail());
+		user.setPassword(addUserJson.getPassword());
+		user.setUserLoginName(addUserJson.getUserLoginName());
+		user.setUserName(addUserJson.getUserName());
+		user.setUserPhone(addUserJson.getUserPhone());
+		user.setIsAdmin((byte)0);
+		user.setUserStatus((byte)1);
+		this.userService.addUser(user,addUserJson.getUserGroup());
+
+		Map<String, Object> result = new HashMap<String, Object>();
+
+		result.put(SUCCESS, Boolean.TRUE);
+		return result;
+	}
 	
 }
