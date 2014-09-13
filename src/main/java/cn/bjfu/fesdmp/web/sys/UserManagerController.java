@@ -50,8 +50,6 @@ public class UserManagerController extends BaseController {
 	private ObjectMapper mapper = new ObjectMapper();
 	@Autowired
 	private IUserService userService;
-	private IUserGroupDao userGroupDao;
-	private UserGroupService userGroupService;
 	@RequestMapping(value = "/listView", method = RequestMethod.GET)
 	public String userPage() {
 		logger.info("sysuserPage method.");
@@ -140,5 +138,31 @@ public class UserManagerController extends BaseController {
 		result.put(SUCCESS, Boolean.TRUE);
 		return result;
 	}
-	
+	@RequestMapping(value = "/modifyUser", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> modifyUser(String formData) throws Exception {
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		logger.info("modifyUserGroup method.");
+		AddUserJson addUserJson = mapper.readValue(formData,AddUserJson.class);		
+		this.userService.modifyUser(addUserJson);
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put(SUCCESS, Boolean.TRUE);
+		return result;
+	}
+	@RequestMapping(value = "/deleteUser", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> deleteUser(String ids) throws Exception {
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		logger.info("deleteUserGroup method.");
+		logger.info(ids);
+		Map<String, Object> result = new HashMap<String, Object>();
+		User user=this.userService.findByKey(Integer.parseInt(ids));
+		if (user.getIsAdmin()==0){
+		this.userService.deleteUser(Integer.parseInt(ids));
+		result.put(SUCCESS, Boolean.TRUE);
+		}
+		else
+			result.put(SUCCESS, Boolean.FALSE);	
+			return result;	
+	}
 }

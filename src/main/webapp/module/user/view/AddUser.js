@@ -1,3 +1,10 @@
+Ext.apply(Ext.form.VTypes, {
+	password : function(val, field) {
+		var pwd = field.compareTo;
+		return (val == Ext.getCmp(pwd).getValue());
+		},
+	passwordText : "确认密码不一致！！！"
+});
 Ext.define('userGroupList', {
     extend: 'Ext.data.Store',
     fields: ['id', 'userGroupName'],
@@ -43,13 +50,17 @@ Ext.define('Bjfu.user.view.AddUser',{
     	        maxLength : 50,
 				maxLengthText : '长度不能超过50个字符',    	        
     	    },{
-    	        fieldLabel: '用户登录名', 
-    	        name: 'userLoginName'
+    	        fieldLabel: '用户登录名<font color="red">*</font>', 
+    	        name: 'userLoginName',
+    	        allowBlank : false,
+    	        maxLength : 50,
+				maxLengthText : '长度不能超过50个字符'
     	    },{
     	        fieldLabel: '手机号码', 
     	        name: 'userPhone'
     	    },{
-    	        fieldLabel: '邮件',
+    	        fieldLabel: '邮件<font color="red">*</font>',
+    	        allowBlank : false,
     	        name: 'email'
     	    },{
     	        fieldLabel: '登录密码<font color="red">*</font>',
@@ -59,18 +70,16 @@ Ext.define('Bjfu.user.view.AddUser',{
     	        allowBlank : false,
 				blankText : "不能为空，请填写",
 				maxLength : 30
-    	    }
-//    	    ,{
-//    	        fieldLabel: '确认密码<font color="red">*</font>',//要确认密码
-//    	        name: 'checkPwd',
-//    	        inputType : 'password',
-//    	        vtype : 'password',
-//    	        initialPassField : 'passwordId',
-//    	        allowBlank : true,
-//				blankText : "不能为空，请填写",
-//				maxLength : 30
-//    	    }
-    	    ,{
+    	    },{
+    	        fieldLabel: '确认密码<font color="red">*</font>',
+    	        name: 'checkPwd',
+    	        inputType : 'password',
+    	        vtype : 'password',
+				compareTo : 'passwordId',
+    	        allowBlank : false,
+				blankText : "不能为空，请填写",
+				maxLength : 30
+    	    },{
     	    	id : 'userGroup',
     	    	xtype : 'combo',
     	        fieldLabel : '所属用户组<font color="red">*</font>',

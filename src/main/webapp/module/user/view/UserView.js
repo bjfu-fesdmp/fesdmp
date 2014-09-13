@@ -128,7 +128,109 @@ Ext.define('Bjfu.user.view.UserView',{
 		        		items:[addForm]
 		        	}).show();
 		        	} 
-		        }, "->", {
+		        },{
+					   text: '修改',
+					   scope:this, 
+					   icon:Global_Path+'/resources/extjs/images/update.png',
+					   handler : function(o){
+						   var gird = o.ownerCt.ownerCt;
+						   var record = gird.getSelectionModel().getSelection();
+						   if(record.length>1||record.length==0)
+						   		{
+							   		Ext.Msg.alert('提示','请选择一条记录！');
+							   		return;
+						   		}else{
+					        		var userId = record[0].data.id;
+					        	
+					        		var userGroupId = "";
+					        		var userGroupName = "";
+				        			Ext.Ajax.request({
+				        				url : Global_Path+'sysuserGroup/findUserGroupIdAndName',
+										async:false,
+										params : {
+											id : userId
+										},
+										reader : {
+											type : 'json',
+											root : 'result'
+										},
+										success : function(response) {
+											var result = Ext.decode(response.responseText);
+													userGroupId = result.result.id;
+													userGroupName = result.result.userGroupName;
+
+										},
+										failure: function(response) {
+													userGroupId.setValue(''); 
+													userGroupNmae.setValue(''); 
+									    }
+									}); 
+						   			var modifyForm = Ext.create('Bjfu.user.view.ModifyUser',{
+										userId:userId,
+										userGroupId:userGroupId,
+										userGroupName:userGroupName
+												});
+					        	modifyForm.loadRecord(record[0]);
+					        	Ext.create('Ext.window.Window',{
+					        		title:'修改用户界面',
+					        		closable:true,
+					        		closeAction:'destroy',
+					        		modal:true,
+					        		border:false,
+					        		resizable:false,
+					        		width:400,
+					        		height:250,
+					        		layout:'fit',
+					        		items:[modifyForm]
+					        	}).show();
+					        	
+					        	}
+					        	}
+					        },{ 
+			        	text: '删除' ,
+			        	icon:Global_Path+'/resources/extjs/images/delete.png',
+			        	scope:this,
+			        	handler : function(o){
+		                	var gird = o.ownerCt.ownerCt;
+					    	var record = gird.getSelectionModel().getSelection();		        	
+							   if(record.length>1||record.length==0)
+						   		{
+							   		Ext.Msg.alert('提示','请选择一条记录！');
+							   		return;
+				        	}else{
+				        		//1.先得到ID的数据(domtId)
+				        		var st = gird.getStore();
+				        		var ids = [];
+				        		Ext.Array.each(record,function(data){
+				        			ids.push(data.get('id'));
+				        			Ext.Msg.confirm("提示","确定删除所选记录吗？",function(btn){
+				        				if(btn=='yes'){
+				        						Ext.Ajax.request({
+				        							url:Global_Path+'sysuser/deleteUser',
+													params:{ids:ids.join(",")},
+													method:'POST',
+													timeout:2000,
+													success:function(response,opts){
+								                    	var	result =  Ext.decode(response.responseText);
+								                    	if(result.success){
+															Ext.Array.each(record,function(data){
+																st.remove(data);
+															});
+								                    		Ext.Msg.alert('提示','删除用户成功');
+								    						window.close();
+								    	 	   			Ext.getCmp('userViewId').store.reload();
+								                    	}else{
+								                    		Ext.Msg.alert('提示','该用户是超级管理员无法删除');
+								                    		window.close();
+								                    	}
+				        							}
+				        						})
+				        				}
+				        			})
+				        		});
+				        	}    
+			    		}
+			        }, "->", {
 		    	text:'高级查询',
 		    	scope:this,
 		    	icon : Global_Path + '/resources/extjs/images/search.png',

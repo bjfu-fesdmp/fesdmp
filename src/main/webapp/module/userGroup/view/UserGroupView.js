@@ -135,10 +135,10 @@ Ext.define('Bjfu.userGroup.view.UserGroupView',{
 		        	handler : function(o){
 	                	var gird = o.ownerCt.ownerCt;
 				    	var record = gird.getSelectionModel().getSelection();		        	
-			        	if(record.length==0)
-			        		{
-			        		Ext.Msg.alert('提示','请选择删除的记录！');
-			        		return;
+						   if(record.length>1||record.length==0)
+					   		{
+						   		Ext.Msg.alert('提示','请选择一条记录！');
+						   		return;
 			        	}else{
 			        		//1.先得到ID的数据(domtId)
 			        		var st = gird.getStore();
@@ -153,10 +153,18 @@ Ext.define('Bjfu.userGroup.view.UserGroupView',{
 												method:'POST',
 												timeout:2000,
 												success:function(response,opts){
-													Ext.Array.each(record,function(data){
-														st.remove(data);
-													});
-													Ext.getCmp('userGroupViewId').store.reload();
+							                    	var	result =  Ext.decode(response.responseText);
+							                    	if(result.success){
+														Ext.Array.each(record,function(data){
+															st.remove(data);
+														});
+							                    		Ext.Msg.alert('提示','删除用户组成功');
+							    						window.close();
+							    	 	   			Ext.getCmp('userGroupViewId').store.reload();
+							                    	}else{
+							                    		Ext.Msg.alert('提示','该用户组下有用户，无法删除');
+							                    		window.close();
+							                    	}
 			        							}
 			        						})
 			        				}

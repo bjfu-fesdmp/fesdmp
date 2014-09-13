@@ -21,6 +21,7 @@ import cn.bjfu.fesdmp.sys.dao.IUserGroupDao;
 import cn.bjfu.fesdmp.sys.dao.IUserUserGroupRelationDao;
 import cn.bjfu.fesdmp.sys.service.IUserGroupService;
 import cn.bjfu.fesdmp.sys.service.IUserService;
+import cn.bjfu.fesdmp.sys.service.IUserUserGroupRelationService;
 import cn.bjfu.fesdmp.utils.Pagination;
 import cn.bjfu.fesdmp.web.jsonbean.LogSearch;
 import cn.bjfu.fesdmp.web.jsonbean.UserSearch;
@@ -28,50 +29,36 @@ import cn.bjfu.fesdmp.web.jsonbean.UserSearch;
 
 @Service
 @Transactional
-public class UserGroupService implements IUserGroupService {
+public class UserUserGroupRelationService implements IUserUserGroupRelationService {
+
 
 	@Autowired
-	private IUserGroupDao userGroupDao;
+	private IUserUserGroupRelationDao userUserGroupRelationDao;
 
-	@Override
-	public void addUserGroup(UserGroup userGroup) {
-		this.userGroupDao.insert(userGroup);
-	}
-	
-	@Override
-	public void modifyUserGroup(UserGroup userGroup) {
-		UserGroup userGroupNew = this.userGroupDao.findByKey(userGroup.getId());
-		userGroupNew.setUserGroupName(userGroup.getUserGroupName());
-		this.userGroupDao.update(userGroupNew);
-	}
-	@Override
-	public void deleteUserGroup(int id) {
-		this.userGroupDao.delete(this.userGroupDao.findByKey(id));
-	}
-	
-	
-	@Transactional(readOnly = true)
-	@Override
-	public List<UserGroup> queryAll(IOrder order) {
-		return this.userGroupDao.findAll(order);
-	}
 	
 	@Transactional(readOnly = true)
 	@Override
 	public void queryByCondition(Object condition, IOrder order,
-			Pagination<UserGroup> page) {
-		this.userGroupDao.findByCondition(condition, order, page);
+			Pagination<UserUserGroupRelation> page) {
+		this.userUserGroupRelationDao.findByCondition(condition, order, page);
 	}
 	
 	@Transactional(readOnly = true)
 	@Override
-	public List<UserGroup> queryByCondition(Object condition, IOrder order,
-			Pagination<UserGroup> page, JoinMode joinMode) {
-		return this.userGroupDao.findByCondition(condition, order, page, joinMode);
+	public List<UserUserGroupRelation> queryByCondition(Object condition, IOrder order,
+			Pagination<UserUserGroupRelation> page, JoinMode joinMode) {
+		return this.userUserGroupRelationDao.findByCondition(condition, order, page, joinMode);
 	}
-	public  UserGroup findByKey(int id){
-		
-		return this.userGroupDao.findByKey(id);
+	public  UserUserGroupRelation findByKey(int id){	
+		return this.userUserGroupRelationDao.findByKey(id);
+	}
+
+	
+	public UserUserGroupRelation findUserUserGroupRelationByUserId(String userId) {
+		return this.userUserGroupRelationDao.findUserUserGroupRelationByUserId(userId);	
 	}
 	
+	public UserUserGroupRelation findUserUserGroupRelationByUserGroupId(String userGroupId) {
+		return this.userUserGroupRelationDao.findUserUserGroupRelationByUserGroupId(userGroupId);	
+	}
 }

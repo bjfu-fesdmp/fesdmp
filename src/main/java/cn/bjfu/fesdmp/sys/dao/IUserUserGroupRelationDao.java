@@ -16,7 +16,7 @@ import cn.bjfu.fesdmp.web.jsonbean.UserSearch;
 
 
 public interface IUserUserGroupRelationDao extends IGenericDao<UserUserGroupRelation> {
-
-
+	public abstract UserUserGroupRelation findUserUserGroupRelationByUserId(String userId);
+	public abstract UserUserGroupRelation findUserUserGroupRelationByUserGroupId(String userGroupId);
 }
  

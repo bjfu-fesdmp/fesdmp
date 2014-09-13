@@ -21,16 +21,26 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
+
+
+
+
+
+import cn.bjfu.fesdmp.domain.sys.User;
 import cn.bjfu.fesdmp.domain.sys.UserGroup;
+import cn.bjfu.fesdmp.domain.sys.UserUserGroupRelation;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.frame.dao.Order;
+import cn.bjfu.fesdmp.json.AddUserJson;
 import cn.bjfu.fesdmp.json.UserGroupJson;
 import cn.bjfu.fesdmp.sys.service.IUserGroupService;
+import cn.bjfu.fesdmp.sys.service.IUserUserGroupRelationService;
 import cn.bjfu.fesdmp.utils.PageInfoBean;
 import cn.bjfu.fesdmp.utils.Pagination;
 import cn.bjfu.fesdmp.web.BaseController;
 import cn.bjfu.fesdmp.web.jsonbean.UserGroupSearch;
+import cn.bjfu.fesdmp.web.jsonbean.UserUserGroupRelationSearch;
 
 @Controller
 @RequestMapping(value = "/sysuserGroup")
@@ -42,7 +52,8 @@ public class UserGroupManagerController extends BaseController {
 	private ObjectMapper mapper = new ObjectMapper();
 	@Autowired
 	private IUserGroupService userGroupService;
-
+	@Autowired
+	private IUserUserGroupRelationService userUserGroupRelationService;
 	@RequestMapping(value = "/listView", method = RequestMethod.GET)
 	public String userGroupPage() {
 		logger.info("sysuserGeoupPage method.");
@@ -157,10 +168,15 @@ public Map<String, Object> getUserGroupList()
 public Map<String, Object> deleteUserGroup(String ids) throws Exception {
 	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 	logger.info("deleteUserGroup method.");
-	System.out.println(ids);
-	this.userGroupService.deleteUserGroup(Integer.parseInt(ids));
+	logger.info(ids);
 	Map<String, Object> result = new HashMap<String, Object>();
+	if(this.userUserGroupRelationService.findUserUserGroupRelationByUserGroupId(ids).getId()!=null){
+		result.put(SUCCESS, Boolean.FALSE);	
+	}
+	else{
+	this.userGroupService.deleteUserGroup(Integer.parseInt(ids));
 	result.put(SUCCESS, Boolean.TRUE);
+	}
 	return result;
 }
 @RequestMapping(value = "/modifyUserGroup", method = RequestMethod.POST)
@@ -171,6 +187,17 @@ public Map<String, Object> modifyUserGroup(String formData) throws Exception {
 	UserGroup userGroup = mapper.readValue(formData,UserGroup.class);
 	this.userGroupService.modifyUserGroup(userGroup);
 	Map<String, Object> result = new HashMap<String, Object>();
+	result.put(SUCCESS, Boolean.TRUE);
+	return result;
+}
+@RequestMapping(value = "/findUserGroupIdAndName", method = RequestMethod.POST)
+@ResponseBody
+public Map<String, Object> findUserGroupIdAndName(String id) throws Exception {
+	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+	logger.info("findUserGroupIdAndName method.");
+	UserUserGroupRelation userUserGroupRelation=userUserGroupRelationService.findUserUserGroupRelationByUserId(id);
+	Map<String, Object> result = new HashMap<String, Object>();
+	result.put(RESULT, userUserGroupRelation.getUserGroup());
 	result.put(SUCCESS, Boolean.TRUE);
 	return result;
 }

@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class AddUserJson {
 
-
+	private Integer id;
 	private String userName;
 	private String userLoginName;
 	private String email;
@@ -49,7 +49,13 @@ public class AddUserJson {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+	public String getCheckPwd() {
+		return checkPwd;
+	}
+
+	public void setCheckPwd(String checkPwd) {
+		this.checkPwd = checkPwd;
+	}
 	public String getUserPhone() {
 		return userPhone;
 	}
@@ -65,7 +71,13 @@ public class AddUserJson {
 	public void setUserGroup(int userGroup) {
 		this.userGroup = userGroup;
 	}
+	public Integer getId() {
+		return id;
+	}
 
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
 
 }

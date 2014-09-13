@@ -14,6 +14,7 @@ import cn.bjfu.fesdmp.domain.sys.UserGroup;
 import cn.bjfu.fesdmp.domain.sys.UserUserGroupRelation;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
+import cn.bjfu.fesdmp.json.AddUserJson;
 import cn.bjfu.fesdmp.json.UserJson;
 import cn.bjfu.fesdmp.sys.dao.IUserDao;
 import cn.bjfu.fesdmp.sys.dao.IUserGroupDao;
@@ -49,8 +50,31 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public void deleteUser(User user) {
-		this.userDao.delete(user);
+	public void modifyUser(AddUserJson addUserJson){
+		User user = this.userDao.findByKey(addUserJson.getId());
+		UserUserGroupRelation userUserGroupRelation=this.userUserGroupRelationDao.findUserUserGroupRelationByUserId(Integer.toString(addUserJson.getId()));
+		UserGroup userGroup=this.userGroupDao.findByKey(addUserJson.getUserGroup());
+		userUserGroupRelation.setUserGroup(userGroup);
+		user.setUserName(addUserJson.getUserName());
+		if (addUserJson.getUserLoginName()!="")
+			user.setUserLoginName(addUserJson.getUserLoginName());
+		else
+			user.setUserLoginName(null);
+		if (addUserJson.getUserPhone()!="")
+		user.setUserPhone((addUserJson.getUserPhone()));
+		else
+			user.setUserPhone(null);
+		if (addUserJson.getEmail()!="")
+		user.setEmail(addUserJson.getEmail());
+		else
+			user.setEmail(null);
+		this.userDao.update(user);
+		this.userUserGroupRelationDao.update(userUserGroupRelation);
+	}
+	@Override
+	public void deleteUser(int id) {
+		this.userUserGroupRelationDao.delete(this.userUserGroupRelationDao.findUserUserGroupRelationByUserId(Integer.toString(id)));
+		this.userDao.delete(this.userDao.findByKey(id));
 	}
 
 	@Transactional(readOnly = true)
@@ -72,6 +96,9 @@ public class UserService implements IUserService {
 			Pagination<User> page, JoinMode joinMode) {
 		return this.userDao.findByCondition(condition, order, page, joinMode);
 	}
-
+	public  User findByKey(int id){
+		
+		return this.userDao.findByKey(id);
+	}
 
 }

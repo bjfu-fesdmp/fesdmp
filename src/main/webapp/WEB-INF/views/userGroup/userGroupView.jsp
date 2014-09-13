@@ -29,7 +29,7 @@
 											
 			Ext.create('Ext.panel.Panel',{
 				autoRender : true,
-				title:'用户管理',
+				title:'用户组管理',
 				width:'100%',
 				height:'100%',
 				layout:'fit',

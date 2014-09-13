@@ -14,6 +14,7 @@
 		    	paths: {
 		    		'Bjfu.user.view.AddUser': Global_Path + 'module/user/view/AddUser.js',
 		    		'Bjfu.user.view.UserView': Global_Path + 'module/user/view/UserView.js',
+		    		'Bjfu.user.view.ModifyUser': Global_Path + 'module/user/view/ModifyUser.js',
 		    		'Bjfu.user.view.QueryUser' : Global_Path + 'module/user/view/QueryUser.js'
 		    	}
 			 });
