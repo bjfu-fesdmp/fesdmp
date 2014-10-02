@@ -26,6 +26,7 @@ public class IndexResourceService implements IIndexResourceService {
 	@Override
 	public void addIndResource(IndexResource indexResource) {
 		this.indexResourceDao.insert(indexResource);
+		this.indexResourceDao.createResourceListByTime(indexResource.getIndexEnName(), "2014");
 	}
 
 	@Override

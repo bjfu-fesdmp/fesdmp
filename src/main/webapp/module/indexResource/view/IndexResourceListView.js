@@ -116,6 +116,12 @@ Ext.define('Bjfu.indexResource.view.IndexResourceListView',{
 			        width : '30%',
 			        editor : 'textfield'
 			    },{
+			        text : '单位',
+			        sortable : false,
+			        dataIndex : 'indexUnit',
+			        width : '30%',
+			        editor : 'textfield'
+			    },{
 			        text : '添加人',
 			        dataIndex : 'creater_id',
 			        width : '8%'

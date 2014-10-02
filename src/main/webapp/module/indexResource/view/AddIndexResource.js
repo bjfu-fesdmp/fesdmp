@@ -24,13 +24,13 @@ Ext.define('Bjfu.indexResource.view.AddIndexResource',{
     	        maxLength : 50,
 				maxLengthText : '长度不能超过50个字符'    	        
     	    },{
-    	    	fieldLabel : '英文名称',
+    	    	fieldLabel : '英文名称<font color="red">*</font>',
     	    	name :'indexEnName',
     	    	allowBlank : false,
     	    	maxLength : 50,
  				maxLengthText : '长度不能超过50个字符' 
     	    },{
-    	    	fieldLabel : '指标单位',
+    	    	fieldLabel : '指标单位<font color="red">*</font>',
     	    	name : 'indexUnit',
     	    	allowBlank : false,
     	    	maxLength : 50,

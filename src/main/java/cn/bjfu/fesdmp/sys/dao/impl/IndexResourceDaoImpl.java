@@ -7,9 +7,12 @@ import java.util.List;
 import javax.persistence.Query;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import cn.bjfu.fesdmp.domain.sys.IndexResource;
+import cn.bjfu.fesdmp.domain.sys.UserUserGroupRelation;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.sys.dao.IIndexResourceDao;
@@ -22,7 +25,8 @@ import cn.bjfu.fesdmp.web.jsonbean.LogSearch;
 public class IndexResourceDaoImpl extends AbstractGenericDao<IndexResource> implements IIndexResourceDao {
 	
 	private static final Logger logger = Logger.getLogger(IndexResourceDaoImpl.class);
-	
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 	public IndexResourceDaoImpl() {
 		super(IndexResource.class);
 	}
@@ -58,6 +62,9 @@ public class IndexResourceDaoImpl extends AbstractGenericDao<IndexResource> impl
 		}
 		
 	}*/
-
+	public void createResourceListByTime(String resource,String year){
+		String sql = "CREATE TABLE "+year+"_"+resource+"(time VARCHAR(50) PRIMARY KEY,data VARCHAR(50))";
+		jdbcTemplate.execute(sql);
+	}
 }
  

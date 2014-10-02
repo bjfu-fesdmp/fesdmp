@@ -12,6 +12,6 @@ public interface IIndexResourceDao extends IGenericDao<IndexResource> {
 /*
 	public abstract List<IndexResource> findByCondtinWithOperationTime(final LogSearch condition, 
 			IOrder order, Pagination<IndexResource> page, JoinMode joinMode);*/
-	
+	public abstract void createResourceListByTime(String resource,String year);
 }
  

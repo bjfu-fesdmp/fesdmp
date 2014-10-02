@@ -125,22 +125,22 @@
 			            ]
 			        }
 			},' ',{
-				text : '指标管理',
-				menu: {
-			            items: [
-			                {
-			                    text: '选项1'
-			                }, {
-			                    text: '选项2'
-			                }, {
-			                    text: '选项3',
-			                    handler: function () {
-			                        Ext.Msg.alert("提示", "来自菜单的消息");
-			                    }
-			                }
-			            ]
-			        }
-			},' ',{
+//				text : '指标管理',
+//				menu: {
+//			            items: [
+//			                {
+//			                    text: '选项1'
+//			                }, {
+//			                    text: '选项2'
+//			                }, {
+//			                    text: '选项3',
+//			                    handler: function () {
+//			                        Ext.Msg.alert("提示", "来自菜单的消息");
+//			                    }
+//			                }
+//			            ]
+//			        }
+//			},' ',{
 				text : '系统管理',
 				menu: {
 			            items: [

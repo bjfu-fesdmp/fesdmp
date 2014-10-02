@@ -8,6 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -122,9 +125,7 @@ public class IndexManagerController extends BaseController {
 		Date dtm = new Date(70,0,1,0,0,0);
 		indexResource.setModifyTime(dtm);
 		this.indexService.addIndResource(indexResource);
-
 		Map<String, Object> result = new HashMap<String, Object>();
-
 		result.put(SUCCESS, Boolean.TRUE);
 		return result;
 	}
