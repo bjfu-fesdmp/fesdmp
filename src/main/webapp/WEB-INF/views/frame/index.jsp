@@ -113,7 +113,18 @@
 				menu: {
 			            items: [
 			                {
-			                    text: '选项1'
+			                 
+			                    text: '数据展示',
+								handler : function() {
+									Ext.getCmp('centerPanel').getLoader().load({
+										autoLoad : true,
+    									url: Global_Path + "dataDisplay/listView",
+            	 						scripts : true,
+            	 						loadMask : true,
+            	 						noCache : true	
+    								});
+								}
+                
 			                }, {
 			                    text: '选项2'
 			                }, {
@@ -150,7 +161,6 @@
 									Ext.getCmp('centerPanel').getLoader().load({
 										autoLoad : true,
 					    				url: Global_Path + "syslog/listView",
-					    				//url: Global_Path + "module/log/logListView.jsp",
 				                	 	scripts : true,
 				                	 	loadMask : true,
 				                	 	noCache : true	

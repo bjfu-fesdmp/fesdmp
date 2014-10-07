@@ -1,4 +1,12 @@
- 
+/** 
+ * Project Name:fesdmp 
+ * File Name:SystemLogDaoImpl.java 
+ * Package Name:cn.bjfu.fesdmp.sys.dao.impl 
+ * Date:2014年7月9日 上午12:38:25 
+ * Copyright (c) 2014, zhangzhaoyu0524@163.com All Rights Reserved. 
+ * 
+*/  
+  
 package cn.bjfu.fesdmp.sys.dao.impl;  
 
 import java.util.Date;
@@ -7,34 +15,32 @@ import java.util.List;
 import javax.persistence.Query;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import cn.bjfu.fesdmp.domain.sys.IndexResource;
-import cn.bjfu.fesdmp.domain.sys.UserUserGroupRelation;
+import cn.bjfu.fesdmp.domain.sys.SystemLog;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
-import cn.bjfu.fesdmp.sys.dao.IIndexResourceDao;
+import cn.bjfu.fesdmp.json.DataJson;
+import cn.bjfu.fesdmp.sys.dao.IDataDao;
 import cn.bjfu.fesdmp.sys.dao.ISystemLogDao;
 import cn.bjfu.fesdmp.utils.DateFormat;
 import cn.bjfu.fesdmp.utils.Pagination;
+import cn.bjfu.fesdmp.web.jsonbean.DataSearch;
 import cn.bjfu.fesdmp.web.jsonbean.LogSearch;
 
 @Repository
-public class IndexResourceDaoImpl extends AbstractGenericDao<IndexResource> implements IIndexResourceDao {
+public class DataDaoImpl extends AbstractGenericDao<DataJson> implements IDataDao {
 	
-	private static final Logger logger = Logger.getLogger(IndexResourceDaoImpl.class);
-	@Autowired
-	private JdbcTemplate jdbcTemplate;
-	public IndexResourceDaoImpl() {
-		super(IndexResource.class);
+	private static final Logger logger = Logger.getLogger(DataDaoImpl.class);
+	
+	public DataDaoImpl() {
+		super(DataJson.class);
 	}
 
-/*	@Override
-	public List<IndexResource> findByCondtinWithOperationTime(LogSearch condition,
-			IOrder order, Pagination<IndexResource> page, JoinMode joinMode) {
-		String jpal = " SELECT p FROM IndexResource p ";
+	@Override
+	public List<DataJson> findByCondtinWithOperationTime(DataSearch condition,
+			IOrder order, Pagination<DataJson> page, JoinMode joinMode) {
+		String jpal = " SELECT p FROM SystemLog p ";
 		if (condition != null) {
 			jpal += convertBeanToJPAL(condition, joinMode);
 			if (condition.getStartTime() != null && condition.getEndTime() != null) {
@@ -54,17 +60,14 @@ public class IndexResourceDaoImpl extends AbstractGenericDao<IndexResource> impl
 		Query query = super.getEntityManager().createQuery(jpal);
 		if (page != null) {
 			page.setTotalRecord(query.getResultList().size());
-			List<IndexResource> result =  query.setFirstResult(page.getOffset()).setMaxResults(page.getPageSize()).getResultList();
+			List<DataJson> result =  query.setFirstResult(page.getOffset()).setMaxResults(page.getPageSize()).getResultList();
 			page.setDatas(result);
 			return result;
 		}else{
 			return query.getResultList();
 		}
 		
-	}*/
-	public void createResourceListByTime(String resource,String year){
-		String sql = "CREATE TABLE "+year+"_"+resource+"(id INT AUTO_INCREMENT PRIMARY KEY,time VARCHAR(50),data VARCHAR(50))";
-		jdbcTemplate.execute(sql);
 	}
+
 }
  
