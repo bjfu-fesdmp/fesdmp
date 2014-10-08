@@ -78,7 +78,7 @@ public class DataDisplayManagerController extends BaseController {
 		page.setCurrentPage(pageInfo.getPage());
 		
 		IOrder order = new Order();
-		order.addOrderBy("operateTime", "DESC");
+		order.addOrderBy("time", "DESC");
 		order.addOrderBy("id", "DESC");
 		
 		if (!StringUtils.isEmpty(pageInfo.getSearchJson())) {
