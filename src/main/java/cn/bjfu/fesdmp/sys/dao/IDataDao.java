@@ -15,6 +15,7 @@ import cn.bjfu.fesdmp.domain.sys.SystemLog;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.json.DataJson;
+import cn.bjfu.fesdmp.json.TableJson;
 import cn.bjfu.fesdmp.utils.Pagination;
 import cn.bjfu.fesdmp.web.jsonbean.DataSearch;
 import cn.bjfu.fesdmp.web.jsonbean.LogSearch;
@@ -23,8 +24,9 @@ import cn.bjfu.fesdmp.web.jsonbean.LogSearch;
 public interface IDataDao extends IGenericDao<DataJson> {
 
 
-	public abstract List<DataJson> findByCondtinWithOperationTime(final DataSearch condition, 
+	public abstract List<DataJson> findByCondtinWithOperationTime(String tableName,final DataSearch condition, 
 			IOrder order, Pagination<DataJson> page, JoinMode joinMode);
+	public abstract List<TableJson> findTable();
 	
 }
  

@@ -7,6 +7,7 @@ import java.util.List;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.json.DataJson;
+import cn.bjfu.fesdmp.json.TableJson;
 import cn.bjfu.fesdmp.utils.Pagination;
 import cn.bjfu.fesdmp.web.jsonbean.DataSearch;
 
@@ -18,7 +19,8 @@ public interface IDataService {
 	public abstract void queryByCondition(final Object condition, IOrder order, Pagination<DataJson> page);
 	public abstract List<DataJson> queryByCondition(final Object condition, IOrder order,
 			Pagination<DataJson> page, JoinMode joinMode);
-	public List<DataJson> queryByCondtinWithOperationTime(DataSearch condition,
+	public List<DataJson> queryByCondtinWithOperationTime(String tableName,DataSearch condition,
 			IOrder order, Pagination<DataJson> page, JoinMode joinMode);
+	public List<TableJson> findTable();
 }
  

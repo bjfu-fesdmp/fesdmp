@@ -24,9 +24,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -65,7 +67,7 @@ public class DataDisplayManagerController extends BaseController {
 	
 	@RequestMapping(value = "/dataDisplayList", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> dataDisplayList(PageInfoBean pageInfo) throws Exception {
+	public Map<String, Object> dataDisplayList(PageInfoBean pageInfo,String tableName) throws Exception {
 		
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		
@@ -86,8 +88,7 @@ public class DataDisplayManagerController extends BaseController {
 		}
 		
 		logger.info(dataSearch);
-		
-		this.dataService.queryByCondtinWithOperationTime(dataSearch, order, page, JoinMode.AND);
+		this.dataService.queryByCondtinWithOperationTime(tableName,dataSearch, order, page, JoinMode.AND);
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put(PAGE_COUNT, page.getTotalRecord());
 		result.put(RESULT, page.getDatas());
@@ -96,7 +97,19 @@ public class DataDisplayManagerController extends BaseController {
 	}
 	
 	
-	
+	@RequestMapping(value = "/tableList", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> tableList() throws Exception {
+		
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		
+		logger.info("tableList method.");
+
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put(RESULT, this.dataService.findTable());
+		result.put(SUCCESS, Boolean.TRUE);
+		return result;
+	}
 	
 	
   @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)

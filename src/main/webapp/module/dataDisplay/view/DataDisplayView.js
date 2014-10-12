@@ -1,3 +1,12 @@
+Ext.define('tableChoose', {
+    extend: 'Ext.data.Store',
+    fields: ['table_name'],
+    data : [
+        {"table_name":"12333"}
+    ]
+});
+
+
 Ext.define('Bjfu.dataDisplay.view.DataDisplayView',{
 	extend : 'Ext.grid.Panel',
 	alias:'widget.DataDisplayView',
@@ -7,6 +16,7 @@ Ext.define('Bjfu.dataDisplay.view.DataDisplayView',{
 	layoutConfig : {
 		animate : true
 	},
+	 store : Ext.create('tableChoose'),
 	search_cache: null,	  //用于分页时缓存高级查询条件
 	split : true,
 	overflowY : 'scroll', //只显示上下滚动的滚动条
@@ -16,6 +26,7 @@ Ext.define('Bjfu.dataDisplay.view.DataDisplayView',{
 	
 	initComponent : function() {
 		var me = this;
+		var table_name=me.table_name;
 		var gridStore = Ext.create('Ext.data.Store', {
 			model : 'Bjfu.dataDisplay.model.DataDisplay',
 			pageSize : 25,
@@ -27,10 +38,10 @@ Ext.define('Bjfu.dataDisplay.view.DataDisplayView',{
 	                update : 'POST',
 	                destroy: 'POST'
 				},
-				/*extraParams: {  
-	                searchJson : '{ismpewStatus : 1}'
-	            },*/  
 				url : Global_Path+'dataDisplay/dataDisplayList',
+ 	   			params:{
+ 	   			tableName:"0"
+	   			},
 				reader : {
 					type : 'json',
 					root : 'result',
@@ -39,7 +50,7 @@ Ext.define('Bjfu.dataDisplay.view.DataDisplayView',{
 				}
 			},
 			listeners : {
-				'beforeload': function(store, operation, eOpts) {
+				'beforeload': function(store,record, operation, eOpts) {
 					if (me.search_cache != null) {
 						Ext.apply(store.proxy.extraParams, { 
 							searchJson : me.search_cache
@@ -49,6 +60,8 @@ Ext.define('Bjfu.dataDisplay.view.DataDisplayView',{
 							searchJson : ""
 						});
 					}
+					
+					
 				}
 			},
 			autoLoad : true
@@ -134,7 +147,6 @@ Ext.define('Bjfu.dataDisplay.view.DataDisplayView',{
 					emptyMsg : "没有数据"
 			})
 		});
-		
 		me.callParent(arguments);
 	}
 });

@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.json.DataJson;
+import cn.bjfu.fesdmp.json.TableJson;
 import cn.bjfu.fesdmp.sys.dao.IDataDao;
 import cn.bjfu.fesdmp.sys.service.IDataService;
 import cn.bjfu.fesdmp.utils.Pagination;
@@ -61,10 +62,14 @@ public class DataService implements IDataService {
 	}
 
 	@Override
-	public List<DataJson> queryByCondtinWithOperationTime(DataSearch condition,
+	public List<DataJson> queryByCondtinWithOperationTime(String tableName,DataSearch condition,
 			IOrder order, Pagination<DataJson> page, JoinMode joinMode) {
-		return this.dataDao.findByCondtinWithOperationTime(condition, order, page, joinMode);
+		return this.dataDao.findByCondtinWithOperationTime(tableName,condition, order, page, joinMode);
 	}
-
+	
+	@Override
+	public List<TableJson> findTable(){
+		return this.dataDao.findTable();
+	};
 }
  

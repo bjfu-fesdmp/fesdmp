@@ -13,25 +13,37 @@
 		    	enabled: true,
 		    	paths: {
 		    		'Bjfu.dataDisplay.view.DataDisplayView': Global_Path + 'module/dataDisplay/view/DataDisplayView.js',
+		    		'Bjfu.dataDisplay.view.TableDisplayView': Global_Path + 'module/dataDisplay/view/TableDisplayView.js',
 		    		'Bjfu.dataDisplay.view.FileUpload': Global_Path + 'module/dataDisplay/view/FileUpload.js'
 		    	}
 			 });
 		  	 	
 			var dataDisplayView = Ext.create('Bjfu.dataDisplay.view.DataDisplayView',{
 									id :'dataDisplayId',
-									width:'100%',
+									region:"center",
+									width:'80%',
 									autoShow : true,
-									//autoRender : true,
 									height:400
 								});	
-											
+			var tableDisplayView = Ext.create('Bjfu.dataDisplay.view.TableDisplayView',{
+				id :'tableDisplayId',
+				title:'数据表',
+				region:"west",
+			    collapsible:true,
+			    split:true,//显示分隔条  
+				width:'20%',
+				autoShow : true,
+				height:400
+			});						
+			
+			
 			Ext.create('Ext.panel.Panel',{
 				autoRender : true,
 				title:'数据展示',
 				width:'100%',
 				height:'100%',
-				layout:'fit',
-				items:[dataDisplayView],
+				layout:'border',
+				items:[tableDisplayView,dataDisplayView],
 				renderTo:'dataDisplayPanel',
 				listeners : {
 					'boxready' : function(){
@@ -39,6 +51,7 @@
 				 	}
 			    }
 			});
+			
 		});
 	</script>
 </body>

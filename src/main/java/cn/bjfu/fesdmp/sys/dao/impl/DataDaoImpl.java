@@ -1,40 +1,30 @@
-/** 
- * Project Name:fesdmp 
- * File Name:SystemLogDaoImpl.java 
- * Package Name:cn.bjfu.fesdmp.sys.dao.impl 
- * Date:2014年7月9日 上午12:38:25 
- * Copyright (c) 2014, zhangzhaoyu0524@163.com All Rights Reserved. 
- * 
-*/  
   
 package cn.bjfu.fesdmp.sys.dao.impl;  
 
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
+import java.util.Map; 
+import java.sql.DatabaseMetaData;  
+import java.sql.SQLException;  
+import java.util.Properties;  
 
-import javax.persistence.Query;
+
 
 import org.apache.log4j.Logger;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import cn.bjfu.fesdmp.domain.sys.SystemLog;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.json.DataJson;
+import cn.bjfu.fesdmp.json.TableJson;
 import cn.bjfu.fesdmp.sys.dao.IDataDao;
-import cn.bjfu.fesdmp.sys.dao.ISystemLogDao;
-import cn.bjfu.fesdmp.utils.DateFormat;
+import cn.bjfu.fesdmp.utils.JdbcByPropertiesUtil;
 import cn.bjfu.fesdmp.utils.Pagination;
 import cn.bjfu.fesdmp.web.jsonbean.DataSearch;
-import cn.bjfu.fesdmp.web.jsonbean.LogSearch;
 
 @Repository
 public class DataDaoImpl extends AbstractGenericDao<DataJson> implements IDataDao {
@@ -46,11 +36,46 @@ public class DataDaoImpl extends AbstractGenericDao<DataJson> implements IDataDa
 		super(DataJson.class);
 	}
 
+	
+	
+    private JdbcByPropertiesUtil jbpu = JdbcByPropertiesUtil.getInstance();  
+    
+    public JdbcByPropertiesUtil getJbpu() {  
+        return jbpu;  
+    }  
+      
+    public void setJbpu(JdbcByPropertiesUtil jbpu){  
+        this.jbpu = jbpu;  
+    }  
+      
+    public Properties getProperties(){  
+        Properties pros = JdbcByPropertiesUtil.readPropertiesFile();  
+        return pros;  
+    }  
+  
+    /** 
+     * 读取配置文件jdbc.properties中的数据库名称 
+     * @return 
+     * @throws Exception 
+     */  
+    public String getDataSourceName()throws Exception{  
+        Properties pros = this.getProperties();  
+        String dbName = pros.get("dbName").toString();  
+        return dbName;  
+    }  
+
+	
 	@Override
-	public List<DataJson> findByCondtinWithOperationTime(DataSearch condition,
+	public List<DataJson> findByCondtinWithOperationTime(String tableName,DataSearch condition,
 			IOrder order, Pagination<DataJson> page, JoinMode joinMode) {
 		DataJson dataJson=new DataJson();
-		String sql = "select * from 2014_sized order by time asc";
+		String sql=null;
+		if(tableName!=null)
+		sql = "select * from "+tableName+" order by time asc";	
+		else
+		sql = "select * from 2014_sized order by time asc";
+		
+		
 		List<Map<String, Object>> result0 =jdbcTemplate.queryForList(sql);
 		List<DataJson> result=new ArrayList();
 		for(int i=0;i<result0.size();i++){
@@ -70,6 +95,32 @@ public class DataDaoImpl extends AbstractGenericDao<DataJson> implements IDataDa
 		}
 
 	}
+	
+	@Override
+    public List<TableJson> findTable(){  
+        Connection conn = jbpu.getConnection();  
+        ResultSet rs = null;  
+        List<TableJson> list = new ArrayList();  
+        try {  
+            Properties pros = this.getProperties();  
+            String schema = pros.get("jdbc.username").toString();  
+            DatabaseMetaData metaData = conn.getMetaData();  
+            rs = metaData.getTables(null, schema, null, new String[]{"TABLE","VIEW"});  
+            while(rs.next()){  
+                String tableName = rs.getString("TABLE_NAME");  
+                if(tableName.substring(0,1).equals("1")||tableName.substring(0,1).equals("2")){
+                	TableJson tablejson=new TableJson();
+                	tablejson.setName(tableName);
+                	list.add(tablejson);  
+                }
+            }  
+        } catch (SQLException e) {  
+            e.printStackTrace();  
+        } finally{  
+            jbpu.close(rs, null, conn);  
+        }  
+        return list;  
+    }  
 
 }
  
