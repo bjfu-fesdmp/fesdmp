@@ -1,12 +1,3 @@
-Ext.define('tableChoose', {
-    extend: 'Ext.data.Store',
-    fields: ['table_name'],
-    data : [
-        {"table_name":"12333"}
-    ]
-});
-
-
 Ext.define('Bjfu.dataDisplay.view.DataDisplayView',{
 	extend : 'Ext.grid.Panel',
 	alias:'widget.DataDisplayView',
@@ -16,7 +7,6 @@ Ext.define('Bjfu.dataDisplay.view.DataDisplayView',{
 	layoutConfig : {
 		animate : true
 	},
-	 store : Ext.create('tableChoose'),
 	search_cache: null,	  //用于分页时缓存高级查询条件
 	split : true,
 	overflowY : 'scroll', //只显示上下滚动的滚动条
@@ -39,9 +29,6 @@ Ext.define('Bjfu.dataDisplay.view.DataDisplayView',{
 	                destroy: 'POST'
 				},
 				url : Global_Path+'dataDisplay/dataDisplayList',
- 	   			params:{
- 	   			tableName:"0"
-	   			},
 				reader : {
 					type : 'json',
 					root : 'result',

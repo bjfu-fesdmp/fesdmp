@@ -1,12 +1,10 @@
 package cn.bjfu.fesdmp.web.sys;
 
-import cn.bjfu.fesdmp.domain.sys.SystemLog;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.frame.dao.Order;
 import cn.bjfu.fesdmp.json.DataJson;
 import cn.bjfu.fesdmp.sys.service.IDataService;
-import cn.bjfu.fesdmp.sys.service.ISystemLogService;
 import cn.bjfu.fesdmp.utils.PageInfoBean;
 import cn.bjfu.fesdmp.utils.Pagination;
 import cn.bjfu.fesdmp.web.BaseController;
@@ -14,28 +12,26 @@ import cn.bjfu.fesdmp.web.jsonbean.DataSearch;
 import cn.bjfu.fesdmp.web.jsonbean.ExtJSFormResult;
 import cn.bjfu.fesdmp.web.jsonbean.FileUploadBean;
 
-import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -43,10 +39,6 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.ContextLoader;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-
 
 @Controller
 @RequestMapping(value = "/dataDisplay")
@@ -55,6 +47,7 @@ public class DataDisplayManagerController extends BaseController {
 	//这里暂时用的绝对路径
   private static final String FILE_PATH = "C:/Users/Admn/git/fesdmp/src/main/webapp/WEB-INF/Table";
 	private static final Logger logger = Logger.getLogger(DataDisplayManagerController.class);
+	public static String tableName=null;
 	private ObjectMapper mapper = new ObjectMapper();
 	@Autowired
 	private IDataService dataService;
@@ -70,7 +63,7 @@ public class DataDisplayManagerController extends BaseController {
 	public Map<String, Object> dataDisplayList(PageInfoBean pageInfo,String tableName) throws Exception {
 		
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-		
+		this.tableName=tableName;
 		logger.info("dataDisplayList method.");
 		logger.info(pageInfo);
 		DataSearch dataSearch = null;
@@ -114,10 +107,8 @@ public class DataDisplayManagerController extends BaseController {
 	
   @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
   @ResponseBody
-  public String create(FileUploadBean uploadItem, BindingResult result){  
-	   
-      ExtJSFormResult extjsFormResult = new ExtJSFormResult();  
- 
+  public String create(FileUploadBean uploadItem, BindingResult result)throws IOException{  
+      ExtJSFormResult extjsFormResult = new ExtJSFormResult();   
       if (result.hasErrors()){  
           for(ObjectError error : result.getAllErrors()){  
               System.err.println("Error: " + error.getCode() +  " - " + error.getDefaultMessage());  
@@ -125,7 +116,7 @@ public class DataDisplayManagerController extends BaseController {
           extjsFormResult.setSuccess(false);  
           return extjsFormResult.toString();  
       }  
-      if (!uploadItem.getFile().getOriginalFilename().substring(uploadItem.getFile().getOriginalFilename().length()-3,uploadItem.getFile().getOriginalFilename().length()).equals("xls")){  
+      if (!uploadItem.getFile().getOriginalFilename().substring(uploadItem.getFile().getOriginalFilename().length()-3,uploadItem.getFile().getOriginalFilename().length()).equals("xls")||this.tableName==null){  
           for(ObjectError error : result.getAllErrors()){  
               System.err.println("Error: " + error.getCode() +  " - " + error.getDefaultMessage());  
           }  
@@ -137,7 +128,7 @@ public class DataDisplayManagerController extends BaseController {
       System.err.println("Test upload: " + uploadItem.getFile().getOriginalFilename());  
       System.err.println("-------------------------------------------");  
  
-      //saving。。。
+      //将文件存到服务器
       String savePath = FILE_PATH;
       java.io.File folder = new java.io.File(savePath);
       if (!folder.exists()) {
@@ -152,10 +143,42 @@ public class DataDisplayManagerController extends BaseController {
       } catch (Exception e) {
         e.printStackTrace();
       }
+      //读取excel文件进入相应表中
+      InputStream is = new FileInputStream(savePath+"/"+rndFilename+uploadItem.getFile().getOriginalFilename()); 
+      HSSFWorkbook hssfWorkbook = new HSSFWorkbook(is); 
+      DataJson dataJson=null;
+      List<DataJson> list = new ArrayList<DataJson>();  
+      for (int numSheet = 0; numSheet < hssfWorkbook.getNumberOfSheets(); numSheet++) {  
+          HSSFSheet hssfSheet = hssfWorkbook.getSheetAt(numSheet);  
+          if (hssfSheet == null) {
+              continue;  
+          }  
+          // 循环行Row  
+          for (int rowNum = 1; rowNum <= hssfSheet.getLastRowNum(); rowNum++) {  
+              HSSFRow hssfRow = hssfSheet.getRow(rowNum);  
+              if (hssfRow == null) {  
+                  continue;  
+              }  
+              dataJson = new DataJson();
+              hssfRow.getCell(0).setCellType(Cell.CELL_TYPE_STRING);
+              hssfRow.getCell(1).setCellType(Cell.CELL_TYPE_STRING);
+              HSSFCell timeCell = hssfRow.getCell(0);  
+              if (timeCell == null) {  
+                  continue;  
+              }  
+              dataJson.setTime(timeCell.getStringCellValue());  
+              HSSFCell dataCell = hssfRow.getCell(1);  
+              if (dataCell == null) {  
+                  continue;  
+              }  
+              dataJson.setData(dataCell.getStringCellValue());
+              list.add(dataJson);
+          }  
+      }  
+      dataService.addData(this.tableName,list);
       
       
       
-      //set <a target="_blank" title="extjs" href="http://sencha.com/">extjs</a> return - sucsess  
       extjsFormResult.setSuccess(true);  
  
       return extjsFormResult.toString();

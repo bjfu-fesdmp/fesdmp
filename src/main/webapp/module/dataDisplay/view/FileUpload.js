@@ -8,7 +8,7 @@ Ext.define('Bjfu.dataDisplay.view.FileUpload',{
             fieldLabel: 'File',  
             labelWidth: 50,  
             msgTarget: 'side',  
-            allowBlank: false,  
+            allowBlank: false,
             anchor: '100%',  
             buttonText: 'Select a File...'  
         }],  
@@ -24,6 +24,7 @@ Ext.define('Bjfu.dataDisplay.view.FileUpload',{
                         success: function(fp, o) {  
                             Ext.Msg.alert('提示', '文件上传成功');  
                             window.close();
+                            Ext.getCmp('dataDisplayId').store.reload();
                         },  
                     	failure: function(form, action) {
                     		Ext.Msg.alert('提示','文件上传失败');

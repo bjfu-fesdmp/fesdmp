@@ -12,6 +12,7 @@ import java.util.Properties;
 
 
 
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -70,14 +71,12 @@ public class DataDaoImpl extends AbstractGenericDao<DataJson> implements IDataDa
 			IOrder order, Pagination<DataJson> page, JoinMode joinMode) {
 		DataJson dataJson=new DataJson();
 		String sql=null;
-		if(tableName!=null)
-		sql = "select * from "+tableName+" order by time asc";	
-		else
-		sql = "select * from 2014_sized order by time asc";
-		
-		
-		List<Map<String, Object>> result0 =jdbcTemplate.queryForList(sql);
 		List<DataJson> result=new ArrayList();
+		if(tableName!=null)
+		{
+		sql = "select * from "+tableName+" order by time asc";	
+		List<Map<String, Object>> result0 =jdbcTemplate.queryForList(sql);
+
 		for(int i=0;i<result0.size();i++){
 			DataJson datajson=new DataJson();
 			datajson.setId(Integer.valueOf(result0.get(i).get("id").toString()));
@@ -93,7 +92,10 @@ public class DataDaoImpl extends AbstractGenericDao<DataJson> implements IDataDa
 		}else{
 			return result;
 		}
-
+		}
+		else
+			return result;
+		
 	}
 	
 	@Override
@@ -121,6 +123,18 @@ public class DataDaoImpl extends AbstractGenericDao<DataJson> implements IDataDa
         }  
         return list;  
     }  
+	
+	@Override
+	public void dataInsert(String table,List<DataJson> list){
+		for(int i=0;i<list.size();i++){
+			String sql=null;
+			sql = "insert into "+table+" (time,data) values('"+list.get(i).getTime()+"','"+list.get(i).getData()+"')"	;
+			jdbcTemplate.update(sql);		
+		}
+
+	}
+	
+	
 
 }
  

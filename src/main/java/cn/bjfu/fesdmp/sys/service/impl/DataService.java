@@ -32,8 +32,8 @@ public class DataService implements IDataService {
 	private IDataDao dataDao;
 	
 	@Override
-	public void addData(DataJson data) {
-		this.dataDao.insert(data);
+	public void addData(String table,List<DataJson> list) {
+		this.dataDao.dataInsert(table,list);
 	}
 
 	@Override
