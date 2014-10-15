@@ -76,6 +76,10 @@ Ext.define('Bjfu.dataDisplay.view.DataDisplayView',{
 			        text : '数据值',
 			        dataIndex : 'data',
 			        width : '10%'
+			    },{
+			        text : '单位',
+			        dataIndex : 'unit',
+			        width : '10%'
 			    }
 			],
 			tbar : [{ 

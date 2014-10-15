@@ -66,5 +66,20 @@ public class IndexResourceDaoImpl extends AbstractGenericDao<IndexResource> impl
 		String sql = "CREATE TABLE "+year+"_"+resource+"(id INT AUTO_INCREMENT PRIMARY KEY,time VARCHAR(50),data VARCHAR(50))";
 		jdbcTemplate.execute(sql);
 	}
+	
+
+	public String findUnitByIndex(String index){
+		IndexResource indexResource=new IndexResource();
+		String jpal = " SELECT p FROM IndexResource p where p.indexEnName='"+index+"'";
+		logger.info(jpal);
+		Query query = super.getEntityManager().createQuery(jpal);
+		List list=query.getResultList();
+		String unit="";
+		if(!list.isEmpty())
+			indexResource=(IndexResource)list.get(0);
+		unit=indexResource.getIndexUnit();
+		return unit;
+	}
+	
 }
  

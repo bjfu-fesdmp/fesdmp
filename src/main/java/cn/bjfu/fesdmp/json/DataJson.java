@@ -8,6 +8,7 @@ public class DataJson {
 	private Integer id;
 	private String time;
 	private String data;
+	private String unit;
 	public DataJson() {}
 	
 	public Integer getId() {
@@ -34,4 +35,11 @@ public class DataJson {
 		this.data = data;
 	}
 	
+	public String getUnit() {
+		return unit;
+	}
+
+	public void setUnit(String unit) {
+		this.unit = unit;
+	}
 }

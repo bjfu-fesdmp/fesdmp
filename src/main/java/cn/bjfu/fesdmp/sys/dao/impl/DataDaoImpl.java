@@ -13,6 +13,8 @@ import java.util.Properties;
 
 
 
+
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -23,6 +25,8 @@ import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.json.DataJson;
 import cn.bjfu.fesdmp.json.TableJson;
 import cn.bjfu.fesdmp.sys.dao.IDataDao;
+import cn.bjfu.fesdmp.sys.dao.IIndexResourceDao;
+import cn.bjfu.fesdmp.sys.dao.IUserDao;
 import cn.bjfu.fesdmp.utils.JdbcByPropertiesUtil;
 import cn.bjfu.fesdmp.utils.Pagination;
 import cn.bjfu.fesdmp.web.jsonbean.DataSearch;
@@ -32,7 +36,8 @@ public class DataDaoImpl extends AbstractGenericDao<DataJson> implements IDataDa
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 	private static final Logger logger = Logger.getLogger(DataDaoImpl.class);
-	
+	@Autowired
+	private IIndexResourceDao indexResourceDao;
 	public DataDaoImpl() {
 		super(DataJson.class);
 	}
@@ -71,6 +76,7 @@ public class DataDaoImpl extends AbstractGenericDao<DataJson> implements IDataDa
 			IOrder order, Pagination<DataJson> page, JoinMode joinMode) {
 		DataJson dataJson=new DataJson();
 		String sql=null;
+		String unit=indexResourceDao.findUnitByIndex(tableName.substring(5));
 		List<DataJson> result=new ArrayList();
 		if(tableName!=null)
 		{
@@ -82,6 +88,7 @@ public class DataDaoImpl extends AbstractGenericDao<DataJson> implements IDataDa
 			datajson.setId(Integer.valueOf(result0.get(i).get("id").toString()));
 			datajson.setTime(result0.get(i).get("time").toString());
 			datajson.setData(result0.get(i).get("data").toString());
+			datajson.setUnit(unit);
 			result.add(datajson);
 		}	
 		logger.info(sql);

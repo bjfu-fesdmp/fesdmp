@@ -9,5 +9,8 @@ Ext.define('Bjfu.dataDisplay.model.DataDisplay',{
     },{
     	name : 'data',   					
     	type : 'string' //值
+    },{
+    	name : 'unit',   					
+    	type : 'string' //单位
     }]
 });
