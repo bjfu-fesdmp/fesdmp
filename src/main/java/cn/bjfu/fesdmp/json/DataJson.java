@@ -6,7 +6,7 @@ import java.util.Date;
 
 public class DataJson {
 	private Integer id;
-	private String time;
+	private Date time;
 	private String data;
 	private String unit;
 	public DataJson() {}
@@ -19,11 +19,11 @@ public class DataJson {
 		this.id = id;
 	}
 
-	public String getTime() {
+	public Date getTime() {
 		return time;
 	}
 
-	public void setTime(String time) {
+	public void setTime(Date time) {
 		this.time = time;
 	}
 

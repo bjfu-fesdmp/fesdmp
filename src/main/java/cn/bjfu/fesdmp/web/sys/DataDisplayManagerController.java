@@ -160,13 +160,13 @@ public class DataDisplayManagerController extends BaseController {
                   continue;  
               }  
               dataJson = new DataJson();
-              hssfRow.getCell(0).setCellType(Cell.CELL_TYPE_STRING);
+              hssfRow.getCell(0).setCellType(Cell.CELL_TYPE_NUMERIC);
               hssfRow.getCell(1).setCellType(Cell.CELL_TYPE_STRING);
               HSSFCell timeCell = hssfRow.getCell(0);  
               if (timeCell == null) {  
                   continue;  
               }  
-              dataJson.setTime(timeCell.getStringCellValue());  
+              dataJson.setTime(timeCell.getDateCellValue());  
               HSSFCell dataCell = hssfRow.getCell(1);  
               if (dataCell == null) {  
                   continue;  

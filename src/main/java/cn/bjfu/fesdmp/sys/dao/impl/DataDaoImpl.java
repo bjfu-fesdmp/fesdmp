@@ -4,11 +4,13 @@ package cn.bjfu.fesdmp.sys.dao.impl;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map; 
 import java.sql.DatabaseMetaData;  
 import java.sql.SQLException;  
 import java.util.Properties;  
+
 
 
 
@@ -86,7 +88,7 @@ public class DataDaoImpl extends AbstractGenericDao<DataJson> implements IDataDa
 		for(int i=0;i<result0.size();i++){
 			DataJson datajson=new DataJson();
 			datajson.setId(Integer.valueOf(result0.get(i).get("id").toString()));
-			datajson.setTime(result0.get(i).get("time").toString());
+			datajson.setTime((Date)result0.get(i).get("time"));
 			datajson.setData(result0.get(i).get("data").toString());
 			datajson.setUnit(unit);
 			result.add(datajson);
@@ -135,10 +137,16 @@ public class DataDaoImpl extends AbstractGenericDao<DataJson> implements IDataDa
 	public void dataInsert(String table,List<DataJson> list){
 		for(int i=0;i<list.size();i++){
 			String sql=null;
-			sql = "insert into "+table+" (time,data) values('"+list.get(i).getTime()+"','"+list.get(i).getData()+"')"	;
+			Date date=list.get(i).getTime();
+			sql = "insert into "+table+" (time,data) values('"+(1900+date.getYear())+
+					"-"+(1+date.getMonth())+
+					"-"+date.getDate()+
+					" "+date.getHours()+
+					":"+date.getMinutes()+
+					":"+date.getSeconds()+"','"+list.get(i).getData()+"')"	;
 			jdbcTemplate.update(sql);		
 		}
-
+							//    2014-10-08 15:19:07
 	}
 	
 	
