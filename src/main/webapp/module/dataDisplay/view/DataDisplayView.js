@@ -16,7 +16,6 @@ Ext.define('Bjfu.dataDisplay.view.DataDisplayView',{
 	
 	initComponent : function() {
 		var me = this;
-		var table_name=me.table_name;
 		var gridStore = Ext.create('Ext.data.Store', {
 			model : 'Bjfu.dataDisplay.model.DataDisplay',
 			pageSize : 25,
@@ -37,7 +36,9 @@ Ext.define('Bjfu.dataDisplay.view.DataDisplayView',{
 				}
 			},
 			listeners : {
+				
 				'beforeload': function(store,record, operation, eOpts) {
+					
 					if (me.search_cache != null) {
 						Ext.apply(store.proxy.extraParams, { 
 							searchJson : me.search_cache
@@ -52,8 +53,8 @@ Ext.define('Bjfu.dataDisplay.view.DataDisplayView',{
 				}
 			},
 			autoLoad : true
-		});
-		
+		}); 
+
 		Ext.apply(me, {
 			store : gridStore,
 			forceFit:true,
@@ -87,8 +88,12 @@ Ext.define('Bjfu.dataDisplay.view.DataDisplayView',{
 		          scope:this,
 		          icon:Global_Path+'/resources/extjs/images/up2.gif',
 		          handler : function(){
+		        	var tableName=gridStore.baseParams.tableName;
+		        	//Ext.Msg.alert('提示', tableName);
 		        	var upLoadForm = Ext.create('Bjfu.dataDisplay.view.FileUpload',{
+		        		tableName:tableName
 		        	});
+		        	  
 		        	Ext.create('Ext.window.Window',{
 		        		title:'文件上传',
 		        		closable:true,
@@ -108,7 +113,10 @@ Ext.define('Bjfu.dataDisplay.view.DataDisplayView',{
 		    	icon : Global_Path + '/resources/extjs/images/search.png',
 	    		handler : function(btn) {
 		       		var gridStore = btn.up('gridpanel').store;
-		      		var queryForm = Ext.create('Bjfu.log.view.QueryLog');
+		       		var tableName=gridStore.baseParams.tableName;
+		      		var queryForm = Ext.create('Bjfu.dataDisplay.view.QueryData',{
+		        		tableName:tableName
+		        	});
 		  			Ext.create('Ext.window.Window', {
 						title : '数据高级查询',
 			       		height : 250,

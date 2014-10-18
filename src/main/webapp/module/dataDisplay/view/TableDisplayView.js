@@ -66,6 +66,9 @@ Ext.define('Bjfu.dataDisplay.view.TableDisplayView',{
 			listeners:{
 	        	'itemclick' : function(view, record, item, index, e){
 	        		var name=record.get("name");
+	        		 Ext.getCmp("dataDisplayId").getStore().baseParams= {
+	               			tableName: name
+	           			};
 		            Ext.getCmp("dataDisplayId").getStore().loadPage(1, {
 	               		params: {
 	               			tableName: name

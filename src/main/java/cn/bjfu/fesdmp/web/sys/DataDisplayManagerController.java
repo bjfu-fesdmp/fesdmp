@@ -47,7 +47,6 @@ public class DataDisplayManagerController extends BaseController {
 	//这里暂时用的绝对路径
   private static final String FILE_PATH = "C:/Users/Admn/git/fesdmp/src/main/webapp/WEB-INF/Table";
 	private static final Logger logger = Logger.getLogger(DataDisplayManagerController.class);
-	public static String tableName=null;
 	private ObjectMapper mapper = new ObjectMapper();
 	@Autowired
 	private IDataService dataService;
@@ -63,7 +62,6 @@ public class DataDisplayManagerController extends BaseController {
 	public Map<String, Object> dataDisplayList(PageInfoBean pageInfo,String tableName) throws Exception {
 		
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-		this.tableName=tableName;
 		logger.info("dataDisplayList method.");
 		logger.info(pageInfo);
 		DataSearch dataSearch = null;
@@ -107,7 +105,7 @@ public class DataDisplayManagerController extends BaseController {
 	
   @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
   @ResponseBody
-  public String create(FileUploadBean uploadItem, BindingResult result)throws IOException{  
+  public String create(FileUploadBean uploadItem, BindingResult result,String tableName)throws IOException{  
       ExtJSFormResult extjsFormResult = new ExtJSFormResult();   
       if (result.hasErrors()){  
           for(ObjectError error : result.getAllErrors()){  
@@ -116,7 +114,7 @@ public class DataDisplayManagerController extends BaseController {
           extjsFormResult.setSuccess(false);  
           return extjsFormResult.toString();  
       }  
-      if (!uploadItem.getFile().getOriginalFilename().substring(uploadItem.getFile().getOriginalFilename().length()-3,uploadItem.getFile().getOriginalFilename().length()).equals("xls")||this.tableName==null){  
+      if (!uploadItem.getFile().getOriginalFilename().substring(uploadItem.getFile().getOriginalFilename().length()-3,uploadItem.getFile().getOriginalFilename().length()).equals("xls")||tableName==null){  
           for(ObjectError error : result.getAllErrors()){  
               System.err.println("Error: " + error.getCode() +  " - " + error.getDefaultMessage());  
           }  
@@ -175,7 +173,7 @@ public class DataDisplayManagerController extends BaseController {
               list.add(dataJson);
           }  
       }  
-      dataService.addData(this.tableName,list);
+      dataService.addData(tableName,list);
       
       
       

@@ -17,6 +17,7 @@ import java.util.Properties;
 
 
 
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -29,6 +30,7 @@ import cn.bjfu.fesdmp.json.TableJson;
 import cn.bjfu.fesdmp.sys.dao.IDataDao;
 import cn.bjfu.fesdmp.sys.dao.IIndexResourceDao;
 import cn.bjfu.fesdmp.sys.dao.IUserDao;
+import cn.bjfu.fesdmp.utils.DateFormat;
 import cn.bjfu.fesdmp.utils.JdbcByPropertiesUtil;
 import cn.bjfu.fesdmp.utils.Pagination;
 import cn.bjfu.fesdmp.web.jsonbean.DataSearch;
@@ -82,7 +84,21 @@ public class DataDaoImpl extends AbstractGenericDao<DataJson> implements IDataDa
 		List<DataJson> result=new ArrayList();
 		if(tableName!=null)
 		{
-		sql = "select * from "+tableName+" order by time asc";	
+		sql = "select * from "+tableName;	
+		if (condition != null) {
+		
+			if (condition.getStartTime() != null && condition.getEndTime() != null) {
+				sql += " where time >= '" + DateFormat.getShortDate(condition.getStartTime()) +
+						"' and  time <= '" + DateFormat.getShortDate(condition.getEndTime()) + "'";
+			}
+			if (condition.getStartTime() != null && condition.getEndTime() == null) {
+				sql += " where time >=  '" + DateFormat.getShortDate(condition.getStartTime()) + 
+						"' and time <= '" + DateFormat.getShortDate(new Date()) + "'";
+			}
+		
+		}
+		sql=sql+" order by time asc";
+		
 		List<Map<String, Object>> result0 =jdbcTemplate.queryForList(sql);
 
 		for(int i=0;i<result0.size();i++){
