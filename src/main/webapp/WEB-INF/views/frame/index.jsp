@@ -169,9 +169,7 @@
 			                }, {
 			                    text: '权限设置',
 								menu: {
-				        		    items: [{
-				                   		text: '组织部门管理'
-				                		}, {
+				        		    items: [ {
 				                    		text: '资源组管理',
 											handler: function () {
 					                        	Ext.getCmp('centerPanel').getLoader().load({
