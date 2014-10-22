@@ -1,9 +1,5 @@
 Ext.define('Bjfu.dataDisplay.view.TableDisplayView',{
 	extend : 'Ext.grid.Panel',
-	alias:'widget.TableDisplayView',
-    title:'数据表',
-    split:true,//显示分隔条  
-    collapsible:true,
 	forceFit : true,
 	layout : 'fit',
 	selType : 'rowmodel',	// 单选，复选框
@@ -11,8 +7,6 @@ Ext.define('Bjfu.dataDisplay.view.TableDisplayView',{
 	layoutConfig : {
 		animate : true
 	},
-	search_cache: null,	  //用于分页时缓存高级查询条件
-	split : true,
 	overflowY : 'scroll', //只显示上下滚动的滚动条
 	overflowX : 'hidden',
 	requires : ['Bjfu.dataDisplay.model.TableDisplay'],
@@ -35,19 +29,6 @@ Ext.define('Bjfu.dataDisplay.view.TableDisplayView',{
 					root : 'result'
 				}
 			},
-			listeners : {
-				'beforeload': function(store, operation, eOpts) {
-					if (me.search_cache != null) {
-						Ext.apply(store.proxy.extraParams, { 
-							searchJson : me.search_cache
-						});
-					} else {
-						Ext.apply(store.proxy.extraParams, {
-							searchJson : ""
-						});
-					}
-				}
-			},
 			autoLoad : true
 		});
 
@@ -58,14 +39,14 @@ Ext.define('Bjfu.dataDisplay.view.TableDisplayView',{
 			columns : [
 			    {
 			        text : '表',
-			        dataIndex : 'name'
+			        dataIndex : 'text'
 			        
 			    }
 			],
 			loadMask:true,
 			listeners:{
 	        	'itemclick' : function(view, record, item, index, e){
-	        		var name=record.get("name");
+	        		var name=record.get("text");
 	        		 Ext.getCmp("dataDisplayId").getStore().baseParams= {
 	               			tableName: name
 	           			};

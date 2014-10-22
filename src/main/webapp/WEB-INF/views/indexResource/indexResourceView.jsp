@@ -12,8 +12,10 @@
 	  	 	 Ext.Loader.setConfig({
 		    	enabled: true,
 		    	paths: {
-		    		'Bjfu.indexResource.view.IndexResourceListView': Global_Path + 'module/indexResource/view/IndexResourceListView.js'
-		    	//	'Bjfu.log.view.QueryLog' : Global_Path + 'module/log/view/QueryLog.js'
+		    		'Bjfu.indexResource.view.IndexResourceListView': Global_Path + 'module/indexResource/view/IndexResourceListView.js',
+		    		'Bjfu.indexResource.view.QueryIndexResource' : Global_Path + 'module/indexResource/view/QueryIndexResource.js',
+		    		'Bjfu.indexResource.view.AddIndexResource' : Global_Path + 'module/indexResource/view/AddIndexResource.js',
+		    		'Bjfu.indexResource.view.ModifyIndexResource' : Global_Path + 'module/indexResource/view/ModifyIndexResource.js'
 		    	}
 			 });
 		  	 	

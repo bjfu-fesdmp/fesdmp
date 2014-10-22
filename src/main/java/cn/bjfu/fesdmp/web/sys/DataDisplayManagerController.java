@@ -4,6 +4,8 @@ import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.frame.dao.Order;
 import cn.bjfu.fesdmp.json.DataJson;
+import cn.bjfu.fesdmp.json.TableJson;
+import cn.bjfu.fesdmp.json.TreeJson;
 import cn.bjfu.fesdmp.sys.service.IDataService;
 import cn.bjfu.fesdmp.utils.PageInfoBean;
 import cn.bjfu.fesdmp.utils.Pagination;
@@ -65,7 +67,7 @@ public class DataDisplayManagerController extends BaseController {
 		logger.info("dataDisplayList method.");
 		logger.info(pageInfo);
 		DataSearch dataSearch = null;
-		
+		String newTableName=tableName.substring(0, 4)+"_"+tableName.substring(5);
 		Pagination<DataJson> page = new Pagination<DataJson>();
 		page.setPageSize(pageInfo.getLimit());
 		page.setCurrentPage(pageInfo.getPage());
@@ -79,7 +81,7 @@ public class DataDisplayManagerController extends BaseController {
 		}
 		
 		logger.info(dataSearch);
-		this.dataService.queryByCondtinWithOperationTime(tableName,dataSearch, order, page, JoinMode.AND);
+		this.dataService.queryByCondtinWithOperationTime(newTableName,dataSearch, order, page, JoinMode.AND);
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put(PAGE_COUNT, page.getTotalRecord());
 		result.put(RESULT, page.getDatas());
@@ -95,9 +97,30 @@ public class DataDisplayManagerController extends BaseController {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		
 		logger.info("tableList method.");
+		List<TableJson> tableList=this.dataService.findTable();
+		List<TreeJson> treeList=new ArrayList();
+		for(int i=0;i<tableList.size();i++){
+			TreeJson tempTree=new TreeJson();
+			Long temp=Long.parseLong(tableList.get(i).getName().substring(0,4));
+			Long temp0=temp*100000+i;
+			tempTree.setId(temp0);
+			tempTree.setText(String.valueOf(temp)+"年"+tableList.get(i).getName().substring(5));
+			for(int j=0;j<12;j++){
+				TreeJson tempTreeMonth=new TreeJson();
+				tempTreeMonth.setId(temp0*100+j+1);
+				tempTreeMonth.setLeaf(true);
+				tempTreeMonth.setText(String.valueOf(temp)+"年"+(j+1)+"月"+tableList.get(i).getName().substring(5));
+				tempTree.setChildren(tempTreeMonth);
+			}		
+			treeList.add(tempTree);
+
+		}
+		
+		
+		
 
 		Map<String, Object> result = new HashMap<String, Object>();
-		result.put(RESULT, this.dataService.findTable());
+		result.put(RESULT, treeList);
 		result.put(SUCCESS, Boolean.TRUE);
 		return result;
 	}
@@ -107,6 +130,7 @@ public class DataDisplayManagerController extends BaseController {
   @ResponseBody
   public String create(FileUploadBean uploadItem, BindingResult result,String tableName)throws IOException{  
       ExtJSFormResult extjsFormResult = new ExtJSFormResult();   
+      String newTableName=tableName.substring(0,4)+"_"+tableName.substring(7);
       if (result.hasErrors()){  
           for(ObjectError error : result.getAllErrors()){  
               System.err.println("Error: " + error.getCode() +  " - " + error.getDefaultMessage());  
@@ -173,7 +197,7 @@ public class DataDisplayManagerController extends BaseController {
               list.add(dataJson);
           }  
       }  
-      dataService.addData(tableName,list);
+      dataService.addData(newTableName,list);
       
       
       

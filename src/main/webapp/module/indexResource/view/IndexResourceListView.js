@@ -7,16 +7,16 @@ Ext.define('Bjfu.indexResource.view.IndexResourceListView',{
 	layoutConfig : {
 		animate : true
 	},
-    setlType : 'rowmodel',/////////////////可以单行编辑
-    plugins: [
-              Ext.create('Ext.grid.plugin.RowEditing', {
-            	  pluginId:'rowEditing', 
-        	      saveBtnText: '保存', 
-        	      cancelBtnText: "取消", 
-        	      autoCancel: false, 
-        	      clicksToEdit: 2
-              })
-          ],
+//    setlType : 'rowmodel',/////////////////可以单行编辑
+//    plugins: [
+//              Ext.create('Ext.grid.plugin.RowEditing', {
+//            	  pluginId:'rowEditing', 
+//        	      saveBtnText: '保存', 
+//        	      cancelBtnText: "取消", 
+//        	      autoCancel: false, 
+//        	      clicksToEdit: 2
+//              })
+//          ],
 	search_cache: null,	  //用于分页时缓存高级查询条件
 	split : true,
 	overflowY : 'scroll', //只显示上下滚动的滚动条
@@ -113,13 +113,13 @@ Ext.define('Bjfu.indexResource.view.IndexResourceListView',{
 			        text : '描述',
 			        sortable : false,
 			        dataIndex : 'indexMemo',
-			        width : '30%',
+			        width : '15%',
 			        editor : 'textfield'
 			    },{
 			        text : '单位',
 			        sortable : false,
 			        dataIndex : 'indexUnit',
-			        width : '30%',
+			        width : '15%',
 			        editor : 'textfield'
 			    },{
 			        text : '添加人',
@@ -128,7 +128,7 @@ Ext.define('Bjfu.indexResource.view.IndexResourceListView',{
 			    },{
 			        text : '添加时间',
 			        dataIndex : 'createTime',
-			        width : '10%'
+			        width : '15%'
 			    },{
 			        text : '修改人',
 			        dataIndex : 'modifier_id',
@@ -136,7 +136,7 @@ Ext.define('Bjfu.indexResource.view.IndexResourceListView',{
 			    },{
 			    	text : '修改时间',
 			    	dataIndex : 'modifyTime',
-			    	width : '10%'
+			    	width : '15%'
 			    }],
 			tbar : [{
 		            text: '新增',

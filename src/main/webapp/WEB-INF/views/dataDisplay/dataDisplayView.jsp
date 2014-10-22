@@ -30,7 +30,7 @@
 				id :'tableDisplayId',
 				title:'数据表',
 				region:"west",
-			    collapsible:true,
+			   // collapsible:true,
 			    split:true,//显示分隔条  
 				width:'20%',
 				autoShow : true,
