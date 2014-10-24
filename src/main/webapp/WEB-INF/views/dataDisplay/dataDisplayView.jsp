@@ -15,7 +15,8 @@
 		    		'Bjfu.dataDisplay.view.DataDisplayView': Global_Path + 'module/dataDisplay/view/DataDisplayView.js',
 		    		'Bjfu.dataDisplay.view.TableDisplayView': Global_Path + 'module/dataDisplay/view/TableDisplayView.js',
 		    		'Bjfu.dataDisplay.view.FileUpload': Global_Path + 'module/dataDisplay/view/FileUpload.js',
-		    		'Bjfu.dataDisplay.view.QueryData': Global_Path + 'module/dataDisplay/view/QueryData.js'
+		    		'Bjfu.dataDisplay.view.QueryData': Global_Path + 'module/dataDisplay/view/QueryData.js',
+		    		'Bjfu.dataDisplay.view.ModifyData': Global_Path + 'module/dataDisplay/view/ModifyData.js'
 		    	}
 			 });
 		  	 	

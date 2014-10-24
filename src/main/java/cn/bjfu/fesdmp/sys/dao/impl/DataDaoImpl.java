@@ -18,6 +18,7 @@ import java.util.Properties;
 
 
 
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -162,10 +163,15 @@ public class DataDaoImpl extends AbstractGenericDao<DataJson> implements IDataDa
 					":"+date.getSeconds()+"','"+list.get(i).getData()+"')"	;
 			jdbcTemplate.update(sql);		
 		}
-							//    2014-10-08 15:19:07
 	}
 	
-	
+	public void modifyData(DataJson data,String tableName){
+		String sql=null;
+		sql="update "+tableName+" set data='"+data.getData()+"' where id="+data.getId();
+		jdbcTemplate.update(sql);
+		
+		
+	}
 
 }
  

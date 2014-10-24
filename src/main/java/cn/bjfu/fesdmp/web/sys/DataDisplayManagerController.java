@@ -1,5 +1,6 @@
 package cn.bjfu.fesdmp.web.sys;
 
+import cn.bjfu.fesdmp.domain.sys.UserGroup;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.frame.dao.Order;
@@ -229,4 +230,16 @@ public class DataDisplayManagerController extends BaseController {
       return extjsFormResult.toString();
   }
 
+  @RequestMapping(value = "/modifyData", method = RequestMethod.POST)
+  @ResponseBody
+  public Map<String, Object> modifyData(String formData,String tableName) throws Exception {
+  	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+  	logger.info("modifyUserGroup method.");
+  	String newTableName=tableName.substring(0, 4)+"_"+tableName.substring(5);
+  	DataJson data = mapper.readValue(formData,DataJson.class);
+  	this.dataService.modifyData(data,newTableName);
+  	Map<String, Object> result = new HashMap<String, Object>();
+  	result.put(SUCCESS, Boolean.TRUE);
+  	return result;
+  }
 }

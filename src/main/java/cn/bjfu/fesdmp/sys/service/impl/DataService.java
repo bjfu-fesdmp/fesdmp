@@ -41,6 +41,11 @@ public class DataService implements IDataService {
 		this.dataDao.delete(data);
 	}
 
+	@Override
+	public void modifyData(DataJson data,String tableName) {
+		this.dataDao.modifyData(data,tableName);
+	}
+	
 	@Transactional(readOnly = true)
 	@Override
 	public List<DataJson> queryAll(IOrder order) {

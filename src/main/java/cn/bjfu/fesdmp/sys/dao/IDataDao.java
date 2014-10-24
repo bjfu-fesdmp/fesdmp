@@ -28,6 +28,6 @@ public interface IDataDao extends IGenericDao<DataJson> {
 			IOrder order, Pagination<DataJson> page, JoinMode joinMode);
 	public abstract List<TableJson> findTable();
 	public abstract void dataInsert(String table,List<DataJson> list);
-	
+	public abstract void modifyData(DataJson data,String tableName);
 }
  

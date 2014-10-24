@@ -14,6 +14,7 @@ import cn.bjfu.fesdmp.web.jsonbean.DataSearch;
 public interface IDataService {
 
 	public abstract void addData(String table,List<DataJson> list);
+	public abstract void modifyData(DataJson data,String tableName);
 	public abstract void deleteData(DataJson data);
 	public abstract List<DataJson> queryAll(IOrder order);
 	public abstract void queryByCondition(final Object condition, IOrder order, Pagination<DataJson> page);

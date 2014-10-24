@@ -107,7 +107,39 @@ Ext.define('Bjfu.dataDisplay.view.DataDisplayView',{
 		        		items:[upLoadForm]
 		        	}).show();
 		        	} 
-		        },"->", {
+		        },{
+				       text: '修改',
+				       scope:this, 
+				        icon:Global_Path+'/resources/extjs/images/update.png',
+				          handler : function(o){
+					        	var tableName=gridStore.baseParams.tableName;
+				        	 var gird = o.ownerCt.ownerCt;
+						     var record = gird.getSelectionModel().getSelection();
+						     	if(record.length>1||record.length==0)
+						     		{
+						     			Ext.Msg.alert('提示','请选择一条记录！');
+						     			return;
+						     		}else{
+				        	var modifyForm = Ext.create('Bjfu.dataDisplay.view.ModifyData',{
+				        		tableName:tableName
+											});
+				        	modifyForm.loadRecord(record[0]);
+				        	Ext.create('Ext.window.Window',{
+				        		title:'修改数据界面',
+				        		closable:true,
+				        		closeAction:'destroy',
+				        		modal:true,
+				        		border:false,
+				        		resizable:false,
+				        		width:250,
+				        		height:150,
+				        		layout:'fit',
+				        		items:[modifyForm]
+				        	}).show();
+				        	
+				        	}
+				        	}
+				        },"->", {
 		    	text:'高级查询',
 		    	scope:this,
 		    	icon : Global_Path + '/resources/extjs/images/search.png',
