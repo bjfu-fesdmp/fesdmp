@@ -1,20 +1,14 @@
 Ext.define('Bjfu.dataDisplay.view.TableDisplayView',{
-	extend : 'Ext.grid.Panel',
-	forceFit : true,
-	layout : 'fit',
-	selType : 'rowmodel',	// 单选，复选框
-    autoScroll: true,
-	layoutConfig : {
-		animate : true
-	},
-	overflowY : 'scroll', //只显示上下滚动的滚动条
-	overflowX : 'hidden',
+	extend:'Ext.tree.Panel',
+	rootVisible: false,
+	displayField:'text',
 	requires : ['Bjfu.dataDisplay.model.TableDisplay'],
 	initComponent : function() {
 		var me = this;
-		var gridStore = Ext.create('Ext.data.Store', {
+		var gridStore = Ext.create('Ext.data.TreeStore', {
+			id : 'table.tree',
 			model : 'Bjfu.dataDisplay.model.TableDisplay',
-			pageSize : 25,
+			nodeParam : 'parentId',
 			proxy : {
 				type : 'ajax',
 				actionMethods: {
@@ -29,22 +23,48 @@ Ext.define('Bjfu.dataDisplay.view.TableDisplayView',{
 					root : 'result'
 				}
 			},
+			root: {
+				   nodeType: 'async',
+				   id : '0',
+				   expanded: true
+		    },
 			autoLoad : true
 		});
 
 
 		Ext.apply(me, {
 			store : gridStore,
-			forceFit:true,
 			columns : [
 			    {
-			        text : '表',
+			    	xtype : 'treecolumn',
+			    	flex : 1,
+					sortable : true,
+			        //text : '数据表',
 			        dataIndex : 'text'
 			        
-			    }
+			    }, {
+					text : '编号',
+					hidden:true,
+					sortable : true,
+					dataIndex : 'id'
+				},{
+					text : '父级导航',
+					hidden:true,
+					dataIndex : 'parentId'
+				}
 			],
-			loadMask:true,
+			
 			listeners:{
+				scope : this,
+				checkchange :function(node, checked) {
+					node.checked = checked;
+					var records = me.getView().getChecked();
+					for (var i = 0; i < records.length; i++) {
+						if (records[i].get('id') != node.get('id')) {
+							records[i].set("checked" , false);
+						}
+					}
+				},
 	        	'itemclick' : function(view, record, item, index, e){
 	        		var name=record.get("text");
 	        		 Ext.getCmp("dataDisplayId").getStore().baseParams= {
@@ -56,8 +76,8 @@ Ext.define('Bjfu.dataDisplay.view.TableDisplayView',{
 	           			}
 	            });
 	        	}
-			}
-
+			},
+		loadMask:true
 		});
 
 		me.callParent(arguments);

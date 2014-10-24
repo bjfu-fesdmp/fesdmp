@@ -92,35 +92,58 @@ public class DataDisplayManagerController extends BaseController {
 	
 	@RequestMapping(value = "/tableList", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> tableList() throws Exception {
+	public Map<String, Object> tableList(String parentId) throws Exception {
 		
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		
 		logger.info("tableList method.");
 		List<TableJson> tableList=this.dataService.findTable();
+		//所有的节点列表
 		List<TreeJson> treeList=new ArrayList();
+		TreeJson firstYearTree=new TreeJson();
+		firstYearTree.setId(Integer.parseInt(tableList.get(0).getName().substring(0,4)));
+		firstYearTree.setParentId(0);
+		firstYearTree.setLeaf(false);
+		firstYearTree.setText(tableList.get(0).getName().substring(0,4));
+		treeList.add(firstYearTree);
+		for(int i=1;i<tableList.size();i++){
+			Integer temp=Integer.parseInt(tableList.get(i).getName().substring(0,4));
+			boolean exist=false;
+			for(int j=0;j<treeList.size();j++){
+				if (treeList.get(j).getId().equals(temp)){
+					exist=true;
+					continue;
+				}	
+			}
+			if(exist==false){
+				TreeJson yearTree=new TreeJson();
+				yearTree.setText(tableList.get(i).getName().substring(0,4));
+				yearTree.setParentId(0);
+				yearTree.setLeaf(false);
+				yearTree.setId(temp);
+				treeList.add(yearTree);
+			}
+		}
 		for(int i=0;i<tableList.size();i++){
 			TreeJson tempTree=new TreeJson();
-			Long temp=Long.parseLong(tableList.get(i).getName().substring(0,4));
-			Long temp0=temp*100000+i;
+			Integer temp=Integer.parseInt(tableList.get(i).getName().substring(0,4));
+			Integer temp0=temp*100000+i;
 			tempTree.setId(temp0);
+			tempTree.setParentId(temp);
 			tempTree.setText(String.valueOf(temp)+"年"+tableList.get(i).getName().substring(5));
-			for(int j=0;j<12;j++){
-				TreeJson tempTreeMonth=new TreeJson();
-				tempTreeMonth.setId(temp0*100+j+1);
-				tempTreeMonth.setLeaf(true);
-				tempTreeMonth.setText(String.valueOf(temp)+"年"+(j+1)+"月"+tableList.get(i).getName().substring(5));
-				tempTree.setChildren(tempTreeMonth);
-			}		
+			tempTree.setLeaf(true);
 			treeList.add(tempTree);
 
 		}
-		
-		
+		List<TreeJson> newtreeList=new ArrayList();
+		for(int i=0;i<treeList.size();i++){
+			if (treeList.get(i).getParentId().equals(Integer.parseInt(parentId)))
+					newtreeList.add(treeList.get(i));
+		}
 		
 
 		Map<String, Object> result = new HashMap<String, Object>();
-		result.put(RESULT, treeList);
+		result.put(RESULT, newtreeList);
 		result.put(SUCCESS, Boolean.TRUE);
 		return result;
 	}

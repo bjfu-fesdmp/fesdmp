@@ -125,13 +125,6 @@
     								});
 								}
                 
-			                }, {
-			                    text: '选项2'
-			                }, {
-			                    text: '选项3',
-			                    handler: function () {
-			                        Ext.Msg.alert("提示", "来自菜单的消息");
-			                    }
 			                }
 			            ]
 			        }
