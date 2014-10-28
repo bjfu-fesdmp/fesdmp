@@ -18,9 +18,14 @@ import cn.bjfu.fesdmp.web.jsonbean.FileUploadBean;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,8 +52,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping(value = "/dataDisplay")
 public class DataDisplayManagerController extends BaseController {
 
-	//这里暂时用的绝对路径
-  private static final String FILE_PATH = "C:/Users/Admn/git/fesdmp/src/main/webapp/WEB-INF/Table";
+  private static final String FILE_PATH = "/upload";
+  private static final String TEMP_PATH = "D:/eclipse-jee-kepler-SR2-win32/workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp1/wtpwebapps/fesdmp/resources/temp";
 	private static final Logger logger = Logger.getLogger(DataDisplayManagerController.class);
 	private ObjectMapper mapper = new ObjectMapper();
 	@Autowired
@@ -162,7 +167,7 @@ public class DataDisplayManagerController extends BaseController {
           extjsFormResult.setSuccess(false);  
           return extjsFormResult.toString();  
       }  
-      if (!uploadItem.getFile().getOriginalFilename().substring(uploadItem.getFile().getOriginalFilename().length()-3,uploadItem.getFile().getOriginalFilename().length()).equals("xls")||tableName==null){  
+      if ((!uploadItem.getFile().getOriginalFilename().substring(uploadItem.getFile().getOriginalFilename().length()-3,uploadItem.getFile().getOriginalFilename().length()).equals("xls")&&!uploadItem.getFile().getOriginalFilename().substring(uploadItem.getFile().getOriginalFilename().length()-3,uploadItem.getFile().getOriginalFilename().length()).equals("txt"))||tableName==null){  
           for(ObjectError error : result.getAllErrors()){  
               System.err.println("Error: " + error.getCode() +  " - " + error.getDefaultMessage());  
           }  
@@ -190,6 +195,7 @@ public class DataDisplayManagerController extends BaseController {
         e.printStackTrace();
       }
       //读取excel文件进入相应表中
+      if (uploadItem.getFile().getOriginalFilename().substring(uploadItem.getFile().getOriginalFilename().length()-3,uploadItem.getFile().getOriginalFilename().length()).equals("xls")){
       InputStream is = new FileInputStream(savePath+"/"+rndFilename+uploadItem.getFile().getOriginalFilename()); 
       HSSFWorkbook hssfWorkbook = new HSSFWorkbook(is); 
       DataJson dataJson=null;
@@ -222,11 +228,28 @@ public class DataDisplayManagerController extends BaseController {
           }  
       }  
       dataService.addData(newTableName,list);
-      
-      
-      
+      }
+      else {
+    	  BufferedReader input = new BufferedReader(new FileReader(savePath+"/"+rndFilename+uploadItem.getFile().getOriginalFilename()));
+  		String s = input.readLine();
+        DataJson dataJson=null;
+        List<DataJson> list = new ArrayList<DataJson>(); 
+		while((s = input.readLine())!=null){ 
+			try {	
+				String info[] = s.split("	");
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+				Date date = sdf.parse(info[0]);
+				dataJson = new DataJson();
+				dataJson.setData(info[1]);
+				dataJson.setTime(date);
+				list.add(dataJson);
+   			} catch (ParseException e) {
+				e.printStackTrace();
+			} 	  
+		}
+	     dataService.addData(newTableName,list);
+      }
       extjsFormResult.setSuccess(true);  
- 
       return extjsFormResult.toString();
   }
 
@@ -234,12 +257,79 @@ public class DataDisplayManagerController extends BaseController {
   @ResponseBody
   public Map<String, Object> modifyData(String formData,String tableName) throws Exception {
   	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-  	logger.info("modifyUserGroup method.");
+  	logger.info("modifyData method.");
   	String newTableName=tableName.substring(0, 4)+"_"+tableName.substring(5);
   	DataJson data = mapper.readValue(formData,DataJson.class);
   	this.dataService.modifyData(data,newTableName);
   	Map<String, Object> result = new HashMap<String, Object>();
   	result.put(SUCCESS, Boolean.TRUE);
   	return result;
+  }
+  
+  @RequestMapping(value = "/downloadData", method = RequestMethod.POST)
+  @ResponseBody
+  public String downloadData(String ids,String tableName) throws Exception {
+  	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+  	logger.info("downloadData method.");
+  	String newTableName=tableName.substring(0, 4)+"_"+tableName.substring(5);
+  	 List<DataJson> list = new ArrayList<DataJson>(); 
+  	 
+  	String id[] = ids.split(",");
+  	for(int i=0;i<id.length;i++){
+  		DataJson dataJson=new DataJson();
+  		dataJson=this.dataService.findDataById(id[i], newTableName);
+  		list.add(dataJson);
+  	}
+  	String fileName="outPutData.xls";
+    String savePath = TEMP_PATH;
+    java.io.File folder = new java.io.File(savePath);
+    if (!folder.exists()) {
+      folder.mkdirs();
+    }
+    String rndFilename = (new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-"))
+  	        .format(new Date());
+  	java.io.File excelFile=new java.io.File(savePath+"/"+rndFilename+fileName); 
+  	
+    FileOutputStream fos=new FileOutputStream(excelFile);  
+    HSSFWorkbook wb=new HSSFWorkbook();//创建工作薄  
+    HSSFSheet sheet=wb.createSheet();//创建工作表  
+    wb.setSheetName(0, "sheet0");//设置工作表名  
+      
+    HSSFRow row=null;  
+    HSSFCell cell=null;  
+    row=sheet.createRow(0);
+    cell=row.createCell(0);
+    cell.setCellValue("time");
+    cell=row.createCell(1);
+    cell.setCellValue("data");
+    for (int i = 1; i < list.size()+1; i++) {  
+        row=sheet.createRow(i);//新增一行  
+        cell=row.createCell(0);//新增一列  
+        cell.setCellType(Cell.CELL_TYPE_STRING);
+        Date tempDate=list.get(i-1).getTime();
+        String stringDate=(1900+tempDate.getYear())+
+				"-"+(1+tempDate.getMonth())+
+				"-"+tempDate.getDate()+
+				" "+tempDate.getHours()+
+				":"+tempDate.getMinutes()+
+				":"+tempDate.getSeconds();
+        cell.setCellValue(stringDate);//向单元格中写入数据  
+        cell.setCellType(Cell.CELL_TYPE_STRING);
+        cell=row.createCell(1);//新增一列   
+        cell.setCellValue(list.get(i-1).getData());  
+    }  
+    wb.write(fos);  
+    fos.close();
+    String FinalPath="resources/temp"+"/"+excelFile.getName();
+  	return FinalPath;
+  }
+  
+  @RequestMapping(value = "/downloadTemplate", method = RequestMethod.POST)
+  @ResponseBody
+  public String downloadTemplate() throws Exception {
+  	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+  	logger.info("downloadData method.");
+  	String Path ="resources/extjs/Template/Template.xls";
+  	return Path;
   }
 }

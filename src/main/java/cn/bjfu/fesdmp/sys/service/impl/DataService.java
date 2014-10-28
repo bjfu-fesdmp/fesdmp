@@ -46,6 +46,11 @@ public class DataService implements IDataService {
 		this.dataDao.modifyData(data,tableName);
 	}
 	
+	@Override
+	public DataJson findDataById(String id,String tableName) {
+		return this.dataDao.findDataById(id,tableName);
+	}
+	
 	@Transactional(readOnly = true)
 	@Override
 	public List<DataJson> queryAll(IOrder order) {

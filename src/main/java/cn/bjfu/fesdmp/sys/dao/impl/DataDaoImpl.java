@@ -19,6 +19,7 @@ import java.util.Properties;
 
 
 
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -169,9 +170,22 @@ public class DataDaoImpl extends AbstractGenericDao<DataJson> implements IDataDa
 		String sql=null;
 		sql="update "+tableName+" set data='"+data.getData()+"' where id="+data.getId();
 		jdbcTemplate.update(sql);
-		
-		
 	}
 
+	public DataJson findDataById(String id,String tableName){
+		String sql=null;
+		sql="select * from "+tableName+" where id="+id+" order by time asc";
+		List<Map<String, Object>> result0 =jdbcTemplate.queryForList(sql);
+
+			DataJson datajson=new DataJson();
+			datajson.setId(Integer.valueOf(result0.get(0).get("id").toString()));
+			datajson.setTime((Date)result0.get(0).get("time"));
+			datajson.setData(result0.get(0).get("data").toString());
+			return datajson;
+	
+		
+	}
+	
+	
 }
  

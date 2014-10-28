@@ -89,7 +89,6 @@ Ext.define('Bjfu.dataDisplay.view.DataDisplayView',{
 		          icon:Global_Path+'/resources/extjs/images/up2.gif',
 		          handler : function(){
 		        	var tableName=gridStore.baseParams.tableName;
-		        	//Ext.Msg.alert('提示', tableName);
 		        	var upLoadForm = Ext.create('Bjfu.dataDisplay.view.FileUpload',{
 		        		tableName:tableName
 		        	});
@@ -139,6 +138,85 @@ Ext.define('Bjfu.dataDisplay.view.DataDisplayView',{
 				        	
 				        	}
 				        	}
+				        },{ 
+				        	text: '数据导出' ,
+				        	icon:Global_Path+'/resources/extjs/images/bottom2.gif',
+				        	scope:this,
+		                    handler: function(btn) {
+		                    	var tableName=gridStore.baseParams.tableName;
+		                    	var grid = btn.up('gridpanel').store;
+		                    	var ids = [];
+		                    	grid.each(function (record) {  
+		                    		ids.push(record.get('id')); 
+		                    	}); 
+		                    	 Ext.Msg.show({
+		                    		  title:'确认导出',
+		                    		     msg: '您确定导出数据?',
+		                    		     buttons: Ext.Msg.YESNO,
+		                    		     width : 250,
+		                    		     fn: function(btn){
+		                    		   if(btn=='yes'){ 
+		                    		             Ext.Ajax.request({
+		                    		             url : Global_Path+'dataDisplay/downloadData',
+		                    		             params:{ids:ids.join(","),tableName:tableName},
+		                    		             success:function(res){
+		                    		             var obj =res.responseText.replace(/\"/g, "");
+		                    		             window.location=obj;
+		                    		            },
+		                    		             failure : function() {
+		                    		             Ext.MessageBox.updateProgress(1);   
+		                    		             Ext.MessageBox.hide();   
+		                    		             Ext.Msg.show({
+		                    		             title : '错误提示',
+		                    		             msg : '下载时发生错误!',
+		                    		             width : 200,
+		                    		             buttons : Ext.Msg.OK,
+		                    		             icon : Ext.Msg.ERROR
+		                    		         });
+		                    		     }
+		                    		    });
+		                    		   }
+		                    		     },
+		                    		            icon: Ext.MessageBox.QUESTION
+		                    		 });
+		                    		 }
+				        },{ 
+				        	text: '模板下载' ,
+				        	icon:Global_Path+'/resources/extjs/images/bottom2.gif',
+				        	scope:this,
+		                    handler: function(btn) {
+		                    	var ids = [];
+		                    	 Ext.Msg.show({
+		                    		  title:'确认导出',
+		                    		     msg: '您确定导出模板?',
+		                    		     buttons: Ext.Msg.YESNO,
+		                    		     width : 250,
+		                    		     fn: function(btn){
+		                    		   if(btn=='yes'){ 
+		                    		             Ext.Ajax.request({
+		                    		             url : Global_Path+'dataDisplay/downloadTemplate',
+		                    		             params:{ids:ids.join(",")},
+		                    		             success:function(res){
+		                    		             var obj =res.responseText.replace(/\"/g, "");
+		                    		             window.location=obj;
+		                    		            },
+		                    		             failure : function() {
+		                    		             Ext.MessageBox.updateProgress(1);   
+		                    		             Ext.MessageBox.hide();   
+		                    		             Ext.Msg.show({
+		                    		             title : '错误提示',
+		                    		             msg : '下载时发生错误!',
+		                    		             width : 200,
+		                    		             buttons : Ext.Msg.OK,
+		                    		             icon : Ext.Msg.ERROR
+		                    		         });
+		                    		     }
+		                    		    });
+		                    		   }
+		                    		     },
+		                    		            icon: Ext.MessageBox.QUESTION
+		                    		 });
+		                    		 }
 				        },"->", {
 		    	text:'高级查询',
 		    	scope:this,

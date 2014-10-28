@@ -7,7 +7,7 @@ Ext.define('Bjfu.dataDisplay.view.FileUpload',{
         	var me = this;
         	
         	Ext.apply(me, {
-        		items: [{  
+        		items: [{
                     xtype: 'filefield',  
                     name: 'file',  
                     fieldLabel: 'File',  
@@ -17,6 +17,32 @@ Ext.define('Bjfu.dataDisplay.view.FileUpload',{
                     anchor: '100%',  
                     buttonText: 'Select a File...'  
                 }],  
+                supportMultFn: function($this){
+                    //2.1 为input添加支持多文件选择属性
+                    var typeArray = ["application/x-shockwave-flash","audio/MP3","image/*","flv-application/octet-stream"];
+                    var fileDom = $this.getEl().down('input[type=file]');
+                    fileDom.dom.setAttribute("multiple","multiple");
+                    fileDom.dom.setAttribute("accept",typeArray.join(","));
+                },
+                listeners: {
+                	afterrender: function(){
+                    //2.2 渲染后重写
+                    this.supportMultFn(this);
+                },
+                	change: function(){
+                   //2.3 获取文件列表
+                    var fileDom = this.getEl().down('input[type=file]');
+                    var files = fileDom.dom.files;
+                    var fileArr = [];
+                    for(var i = 0; i<files.length; i++){
+                          fileArr.push((i+1)+"、文件名："+files[i].name+",类型:"+files[i].type+",大小:"+files[i].size/1024+"KB");
+                    }
+                     //files[0].name / files[0].type / files[0].size 
+                    //2.4 选择完后input会还原美迪网，所以还需要再次重写
+                    this.supportMultFn(this);
+                	}
+                }
+                ,
                 buttons: [{  
                     text: '上传',  
                     handler: function() { 
@@ -39,13 +65,11 @@ Ext.define('Bjfu.dataDisplay.view.FileUpload',{
                             });  
                         }  
                     }  
-                }]  
+                }]
         	})
     		
     		
-        	//Ext.Msg.alert('提示000',this.tableName); 
         	me.callParent(arguments);
     	},
         
-    });  
-//http://www.open-open.com/home/space-1-do-blog-id-4438.html
+    });
