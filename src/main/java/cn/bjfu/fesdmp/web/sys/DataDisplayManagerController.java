@@ -33,6 +33,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -52,284 +54,326 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping(value = "/dataDisplay")
 public class DataDisplayManagerController extends BaseController {
 
-  private static final String FILE_PATH = "/upload";
-  private static final String TEMP_PATH = "D:/eclipse-jee-kepler-SR2-win32/workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp1/wtpwebapps/fesdmp/resources/temp";
-	private static final Logger logger = Logger.getLogger(DataDisplayManagerController.class);
+	private static final String FILE_PATH = "/upload";
+	private static final String TEMP_PATH = "resources/temp";
+	private static final Logger logger = Logger
+			.getLogger(DataDisplayManagerController.class);
 	private ObjectMapper mapper = new ObjectMapper();
 	@Autowired
 	private IDataService dataService;
-	
+
 	@RequestMapping(value = "/listView", method = RequestMethod.GET)
 	public String fileUploadPage() {
 		logger.info("fileUploadPage method.");
 		return "dataDisplay/dataDisplayView";
 	}
-	
+
 	@RequestMapping(value = "/dataDisplayList", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> dataDisplayList(PageInfoBean pageInfo,String tableName) throws Exception {
-		
+	public Map<String, Object> dataDisplayList(PageInfoBean pageInfo,
+			String tableName) throws Exception {
+
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		logger.info("dataDisplayList method.");
 		logger.info(pageInfo);
 		DataSearch dataSearch = null;
-		String newTableName=tableName.substring(0, 4)+"_"+tableName.substring(5);
+		String newTableName = tableName.substring(0, 4) + "_"
+				+ tableName.substring(5);
 		Pagination<DataJson> page = new Pagination<DataJson>();
 		page.setPageSize(pageInfo.getLimit());
 		page.setCurrentPage(pageInfo.getPage());
-		
+
 		IOrder order = new Order();
 		order.addOrderBy("time", "DESC");
 		order.addOrderBy("id", "DESC");
-		
+
 		if (!StringUtils.isEmpty(pageInfo.getSearchJson())) {
-			dataSearch = mapper.readValue(pageInfo.getSearchJson(), DataSearch.class);
+			dataSearch = mapper.readValue(pageInfo.getSearchJson(),
+					DataSearch.class);
 		}
-		
+
 		logger.info(dataSearch);
-		this.dataService.queryByCondtinWithOperationTime(newTableName,dataSearch, order, page, JoinMode.AND);
+		this.dataService.queryByCondtinWithOperationTime(newTableName,
+				dataSearch, order, page, JoinMode.AND);
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put(PAGE_COUNT, page.getTotalRecord());
 		result.put(RESULT, page.getDatas());
 		result.put(SUCCESS, Boolean.TRUE);
 		return result;
 	}
-	
-	
+
 	@RequestMapping(value = "/tableList", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> tableList(String parentId) throws Exception {
-		
+
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-		
+
 		logger.info("tableList method.");
-		List<TableJson> tableList=this.dataService.findTable();
-		//所有的节点列表
-		List<TreeJson> treeList=new ArrayList();
-		TreeJson firstYearTree=new TreeJson();
-		firstYearTree.setId(Integer.parseInt(tableList.get(0).getName().substring(0,4)));
+		List<TableJson> tableList = this.dataService.findTable();
+		// 所有的节点列表
+		List<TreeJson> treeList = new ArrayList();
+		TreeJson firstYearTree = new TreeJson();
+		firstYearTree.setId(Integer.parseInt(tableList.get(0).getName()
+				.substring(0, 4)));
 		firstYearTree.setParentId(0);
 		firstYearTree.setLeaf(false);
-		firstYearTree.setText(tableList.get(0).getName().substring(0,4));
+		firstYearTree.setText(tableList.get(0).getName().substring(0, 4));
 		treeList.add(firstYearTree);
-		for(int i=1;i<tableList.size();i++){
-			Integer temp=Integer.parseInt(tableList.get(i).getName().substring(0,4));
-			boolean exist=false;
-			for(int j=0;j<treeList.size();j++){
-				if (treeList.get(j).getId().equals(temp)){
-					exist=true;
+		for (int i = 1; i < tableList.size(); i++) {
+			Integer temp = Integer.parseInt(tableList.get(i).getName()
+					.substring(0, 4));
+			boolean exist = false;
+			for (int j = 0; j < treeList.size(); j++) {
+				if (treeList.get(j).getId().equals(temp)) {
+					exist = true;
 					continue;
-				}	
+				}
 			}
-			if(exist==false){
-				TreeJson yearTree=new TreeJson();
-				yearTree.setText(tableList.get(i).getName().substring(0,4));
+			if (exist == false) {
+				TreeJson yearTree = new TreeJson();
+				yearTree.setText(tableList.get(i).getName().substring(0, 4));
 				yearTree.setParentId(0);
 				yearTree.setLeaf(false);
 				yearTree.setId(temp);
 				treeList.add(yearTree);
 			}
 		}
-		for(int i=0;i<tableList.size();i++){
-			TreeJson tempTree=new TreeJson();
-			Integer temp=Integer.parseInt(tableList.get(i).getName().substring(0,4));
-			Integer temp0=temp*100000+i;
+		for (int i = 0; i < tableList.size(); i++) {
+			TreeJson tempTree = new TreeJson();
+			Integer temp = Integer.parseInt(tableList.get(i).getName()
+					.substring(0, 4));
+			Integer temp0 = temp * 100000 + i;
 			tempTree.setId(temp0);
 			tempTree.setParentId(temp);
-			tempTree.setText(String.valueOf(temp)+"年"+tableList.get(i).getName().substring(5));
+			tempTree.setText(String.valueOf(temp) + "年"
+					+ tableList.get(i).getName().substring(5));
 			tempTree.setLeaf(true);
 			treeList.add(tempTree);
 
 		}
-		List<TreeJson> newtreeList=new ArrayList();
-		for(int i=0;i<treeList.size();i++){
-			if (treeList.get(i).getParentId().equals(Integer.parseInt(parentId)))
-					newtreeList.add(treeList.get(i));
+		List<TreeJson> newtreeList = new ArrayList();
+		for (int i = 0; i < treeList.size(); i++) {
+			if (treeList.get(i).getParentId()
+					.equals(Integer.parseInt(parentId)))
+				newtreeList.add(treeList.get(i));
 		}
-		
 
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put(RESULT, newtreeList);
 		result.put(SUCCESS, Boolean.TRUE);
 		return result;
 	}
-	
-	
-  @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
-  @ResponseBody
-  public String create(FileUploadBean uploadItem, BindingResult result,String tableName)throws IOException{  
-      ExtJSFormResult extjsFormResult = new ExtJSFormResult();   
-      String newTableName=tableName.substring(0,4)+"_"+tableName.substring(7);
-      if (result.hasErrors()){  
-          for(ObjectError error : result.getAllErrors()){  
-              System.err.println("Error: " + error.getCode() +  " - " + error.getDefaultMessage());  
-          }  
-          extjsFormResult.setSuccess(false);  
-          return extjsFormResult.toString();  
-      }  
-      if ((!uploadItem.getFile().getOriginalFilename().substring(uploadItem.getFile().getOriginalFilename().length()-3,uploadItem.getFile().getOriginalFilename().length()).equals("xls")&&!uploadItem.getFile().getOriginalFilename().substring(uploadItem.getFile().getOriginalFilename().length()-3,uploadItem.getFile().getOriginalFilename().length()).equals("txt"))||tableName==null){  
-          for(ObjectError error : result.getAllErrors()){  
-              System.err.println("Error: " + error.getCode() +  " - " + error.getDefaultMessage());  
-          }  
-          extjsFormResult.setSuccess(false);  
-          return extjsFormResult.toString();  
-      }  
-      // Some type of file processing...  
-      System.err.println("-------------------------------------------");  
-      System.err.println("Test upload: " + uploadItem.getFile().getOriginalFilename());  
-      System.err.println("-------------------------------------------");  
- 
-      //将文件存到服务器
-      String savePath = FILE_PATH;
-      java.io.File folder = new java.io.File(savePath);
-      if (!folder.exists()) {
-        folder.mkdirs();
-      }
-      System.out.println("文件保存路径：" + savePath);
-      String rndFilename = (new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-"))
-    	        .format(new Date());
-      java.io.File file = new java.io.File(savePath+"/"+rndFilename+uploadItem.getFile().getOriginalFilename());
-      try {
-    	  uploadItem.getFile().transferTo(file); 
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-      //读取excel文件进入相应表中
-      if (uploadItem.getFile().getOriginalFilename().substring(uploadItem.getFile().getOriginalFilename().length()-3,uploadItem.getFile().getOriginalFilename().length()).equals("xls")){
-      InputStream is = new FileInputStream(savePath+"/"+rndFilename+uploadItem.getFile().getOriginalFilename()); 
-      HSSFWorkbook hssfWorkbook = new HSSFWorkbook(is); 
-      DataJson dataJson=null;
-      List<DataJson> list = new ArrayList<DataJson>();  
-      for (int numSheet = 0; numSheet < hssfWorkbook.getNumberOfSheets(); numSheet++) {  
-          HSSFSheet hssfSheet = hssfWorkbook.getSheetAt(numSheet);  
-          if (hssfSheet == null) {
-              continue;  
-          }  
-          // 循环行Row  
-          for (int rowNum = 1; rowNum <= hssfSheet.getLastRowNum(); rowNum++) {  
-              HSSFRow hssfRow = hssfSheet.getRow(rowNum);  
-              if (hssfRow == null) {  
-                  continue;  
-              }  
-              dataJson = new DataJson();
-              hssfRow.getCell(0).setCellType(Cell.CELL_TYPE_NUMERIC);
-              hssfRow.getCell(1).setCellType(Cell.CELL_TYPE_STRING);
-              HSSFCell timeCell = hssfRow.getCell(0);  
-              if (timeCell == null) {  
-                  continue;  
-              }  
-              dataJson.setTime(timeCell.getDateCellValue());  
-              HSSFCell dataCell = hssfRow.getCell(1);  
-              if (dataCell == null) {  
-                  continue;  
-              }  
-              dataJson.setData(dataCell.getStringCellValue());
-              list.add(dataJson);
-          }  
-      }  
-      dataService.addData(newTableName,list);
-      }
-      else {
-    	  BufferedReader input = new BufferedReader(new FileReader(savePath+"/"+rndFilename+uploadItem.getFile().getOriginalFilename()));
-  		String s = input.readLine();
-        DataJson dataJson=null;
-        List<DataJson> list = new ArrayList<DataJson>(); 
-		while((s = input.readLine())!=null){ 
-			try {	
-				String info[] = s.split("	");
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-				Date date = sdf.parse(info[0]);
-				dataJson = new DataJson();
-				dataJson.setData(info[1]);
-				dataJson.setTime(date);
-				list.add(dataJson);
-   			} catch (ParseException e) {
-				e.printStackTrace();
-			} 	  
-		}
-	     dataService.addData(newTableName,list);
-      }
-      extjsFormResult.setSuccess(true);  
-      return extjsFormResult.toString();
-  }
 
-  @RequestMapping(value = "/modifyData", method = RequestMethod.POST)
-  @ResponseBody
-  public Map<String, Object> modifyData(String formData,String tableName) throws Exception {
-  	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-  	logger.info("modifyData method.");
-  	String newTableName=tableName.substring(0, 4)+"_"+tableName.substring(5);
-  	DataJson data = mapper.readValue(formData,DataJson.class);
-  	this.dataService.modifyData(data,newTableName);
-  	Map<String, Object> result = new HashMap<String, Object>();
-  	result.put(SUCCESS, Boolean.TRUE);
-  	return result;
-  }
-  
-  @RequestMapping(value = "/downloadData", method = RequestMethod.POST)
-  @ResponseBody
-  public String downloadData(String ids,String tableName) throws Exception {
-  	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-  	logger.info("downloadData method.");
-  	String newTableName=tableName.substring(0, 4)+"_"+tableName.substring(5);
-  	 List<DataJson> list = new ArrayList<DataJson>(); 
-  	 
-  	String id[] = ids.split(",");
-  	for(int i=0;i<id.length;i++){
-  		DataJson dataJson=new DataJson();
-  		dataJson=this.dataService.findDataById(id[i], newTableName);
-  		list.add(dataJson);
-  	}
-  	String fileName="outPutData.xls";
-    String savePath = TEMP_PATH;
-    java.io.File folder = new java.io.File(savePath);
-    if (!folder.exists()) {
-      folder.mkdirs();
-    }
-    String rndFilename = (new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-"))
-  	        .format(new Date());
-  	java.io.File excelFile=new java.io.File(savePath+"/"+rndFilename+fileName); 
-  	
-    FileOutputStream fos=new FileOutputStream(excelFile);  
-    HSSFWorkbook wb=new HSSFWorkbook();//创建工作薄  
-    HSSFSheet sheet=wb.createSheet();//创建工作表  
-    wb.setSheetName(0, "sheet0");//设置工作表名  
-      
-    HSSFRow row=null;  
-    HSSFCell cell=null;  
-    row=sheet.createRow(0);
-    cell=row.createCell(0);
-    cell.setCellValue("time");
-    cell=row.createCell(1);
-    cell.setCellValue("data");
-    for (int i = 1; i < list.size()+1; i++) {  
-        row=sheet.createRow(i);//新增一行  
-        cell=row.createCell(0);//新增一列  
-        cell.setCellType(Cell.CELL_TYPE_STRING);
-        Date tempDate=list.get(i-1).getTime();
-        String stringDate=(1900+tempDate.getYear())+
-				"-"+(1+tempDate.getMonth())+
-				"-"+tempDate.getDate()+
-				" "+tempDate.getHours()+
-				":"+tempDate.getMinutes()+
-				":"+tempDate.getSeconds();
-        cell.setCellValue(stringDate);//向单元格中写入数据  
-        cell.setCellType(Cell.CELL_TYPE_STRING);
-        cell=row.createCell(1);//新增一列   
-        cell.setCellValue(list.get(i-1).getData());  
-    }  
-    wb.write(fos);  
-    fos.close();
-    String FinalPath="resources/temp"+"/"+excelFile.getName();
-  	return FinalPath;
-  }
-  
-  @RequestMapping(value = "/downloadTemplate", method = RequestMethod.POST)
-  @ResponseBody
-  public String downloadTemplate() throws Exception {
-  	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-  	logger.info("downloadData method.");
-  	String Path ="resources/extjs/Template/Template.xls";
-  	return Path;
-  }
+	@RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
+	@ResponseBody
+	public String create(HttpServletRequest request, FileUploadBean uploadItem,
+			BindingResult result, String tableName) throws IOException {
+		ExtJSFormResult extjsFormResult = new ExtJSFormResult();
+		String newTableName = tableName.substring(0, 4) + "_"
+				+ tableName.substring(7);
+		if (result.hasErrors()) {
+			for (ObjectError error : result.getAllErrors()) {
+				System.err.println("Error: " + error.getCode() + " - "
+						+ error.getDefaultMessage());
+			}
+			extjsFormResult.setSuccess(false);
+			return extjsFormResult.toString();
+		}
+		if ((!uploadItem
+				.getFile()
+				.getOriginalFilename()
+				.substring(
+						uploadItem.getFile().getOriginalFilename().length() - 3,
+						uploadItem.getFile().getOriginalFilename().length())
+				.equals("xls") && !uploadItem
+				.getFile()
+				.getOriginalFilename()
+				.substring(
+						uploadItem.getFile().getOriginalFilename().length() - 3,
+						uploadItem.getFile().getOriginalFilename().length())
+				.equals("txt"))
+				|| tableName == null) {
+			for (ObjectError error : result.getAllErrors()) {
+				System.err.println("Error: " + error.getCode() + " - "
+						+ error.getDefaultMessage());
+			}
+			extjsFormResult.setSuccess(false);
+			return extjsFormResult.toString();
+		}
+		// Some type of file processing...
+		System.err.println("-------------------------------------------");
+		System.err.println("Test upload: "
+				+ uploadItem.getFile().getOriginalFilename());
+		System.err.println("-------------------------------------------");
+
+		// 将文件存到服务器
+		String savePath = request.getSession().getServletContext()
+				.getRealPath(FILE_PATH);
+		System.out.println(request.getSession().getServletContext()
+				.getRealPath(FILE_PATH));
+		java.io.File folder = new java.io.File(request.getSession()
+				.getServletContext().getRealPath(FILE_PATH));
+		if (!folder.exists()) {
+			folder.mkdirs();
+		}
+		System.out.println("文件保存路径：" + savePath);
+		String rndFilename = (new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-"))
+				.format(new Date());
+		java.io.File file = new java.io.File(savePath + "/" + rndFilename
+				+ uploadItem.getFile().getOriginalFilename());
+		try {
+			uploadItem.getFile().transferTo(file);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		// 读取excel文件进入相应表中
+		if (uploadItem
+				.getFile()
+				.getOriginalFilename()
+				.substring(
+						uploadItem.getFile().getOriginalFilename().length() - 3,
+						uploadItem.getFile().getOriginalFilename().length())
+				.equals("xls")) {
+			InputStream is = new FileInputStream(savePath + "/" + rndFilename
+					+ uploadItem.getFile().getOriginalFilename());
+			HSSFWorkbook hssfWorkbook = new HSSFWorkbook(is);
+			DataJson dataJson = null;
+			List<DataJson> list = new ArrayList<DataJson>();
+			for (int numSheet = 0; numSheet < hssfWorkbook.getNumberOfSheets(); numSheet++) {
+				HSSFSheet hssfSheet = hssfWorkbook.getSheetAt(numSheet);
+				if (hssfSheet == null) {
+					continue;
+				}
+				// 循环行Row
+				for (int rowNum = 1; rowNum <= hssfSheet.getLastRowNum(); rowNum++) {
+					HSSFRow hssfRow = hssfSheet.getRow(rowNum);
+					if (hssfRow == null) {
+						continue;
+					}
+					dataJson = new DataJson();
+					hssfRow.getCell(0).setCellType(Cell.CELL_TYPE_NUMERIC);
+					hssfRow.getCell(1).setCellType(Cell.CELL_TYPE_STRING);
+					HSSFCell timeCell = hssfRow.getCell(0);
+					if (timeCell == null) {
+						continue;
+					}
+					dataJson.setTime(timeCell.getDateCellValue());
+					HSSFCell dataCell = hssfRow.getCell(1);
+					if (dataCell == null) {
+						continue;
+					}
+					dataJson.setData(dataCell.getStringCellValue());
+					list.add(dataJson);
+				}
+			}
+			dataService.addData(newTableName, list);
+		} else {
+			BufferedReader input = new BufferedReader(new FileReader(savePath
+					+ "/" + rndFilename
+					+ uploadItem.getFile().getOriginalFilename()));
+			String s = input.readLine();
+			DataJson dataJson = null;
+			List<DataJson> list = new ArrayList<DataJson>();
+			while ((s = input.readLine()) != null) {
+				try {
+					String info[] = s.split("	");
+					SimpleDateFormat sdf = new SimpleDateFormat(
+							"yyyy/MM/dd HH:mm:ss");
+					Date date = sdf.parse(info[0]);
+					dataJson = new DataJson();
+					dataJson.setData(info[1]);
+					dataJson.setTime(date);
+					list.add(dataJson);
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+			}
+			dataService.addData(newTableName, list);
+		}
+		extjsFormResult.setSuccess(true);
+		return extjsFormResult.toString();
+	}
+
+	@RequestMapping(value = "/modifyData", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> modifyData(String formData, String tableName)
+			throws Exception {
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		logger.info("modifyData method.");
+		String newTableName = tableName.substring(0, 4) + "_"
+				+ tableName.substring(5);
+		DataJson data = mapper.readValue(formData, DataJson.class);
+		this.dataService.modifyData(data, newTableName);
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put(SUCCESS, Boolean.TRUE);
+		return result;
+	}
+
+	@RequestMapping(value = "/downloadData", method = RequestMethod.POST)
+	@ResponseBody
+	public String downloadData(HttpServletRequest request,String ids, String tableName) throws Exception {
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		logger.info("downloadData method.");
+		String newTableName = tableName.substring(0, 4) + "_"
+				+ tableName.substring(5);
+		List<DataJson> list = new ArrayList<DataJson>();
+
+		String id[] = ids.split(",");
+		for (int i = 0; i < id.length; i++) {
+			DataJson dataJson = new DataJson();
+			dataJson = this.dataService.findDataById(id[i], newTableName);
+			list.add(dataJson);
+		}
+		String fileName = "outPutData.xls";
+		String savePath = request.getSession().getServletContext()
+				.getRealPath(TEMP_PATH);
+		java.io.File folder = new java.io.File(savePath);
+		if (!folder.exists()) {
+			folder.mkdirs();
+		}
+		String rndFilename = (new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-"))
+				.format(new Date());
+		java.io.File excelFile = new java.io.File(savePath + "/" + rndFilename
+				+ fileName);
+
+		FileOutputStream fos = new FileOutputStream(excelFile);
+		HSSFWorkbook wb = new HSSFWorkbook();// 创建工作薄
+		HSSFSheet sheet = wb.createSheet();// 创建工作表
+		wb.setSheetName(0, "sheet0");// 设置工作表名
+
+		HSSFRow row = null;
+		HSSFCell cell = null;
+		row = sheet.createRow(0);
+		cell = row.createCell(0);
+		cell.setCellValue("time");
+		cell = row.createCell(1);
+		cell.setCellValue("data");
+		for (int i = 1; i < list.size() + 1; i++) {
+			row = sheet.createRow(i);// 新增一行
+			cell = row.createCell(0);// 新增一列
+			cell.setCellType(Cell.CELL_TYPE_STRING);
+			Date tempDate = list.get(i - 1).getTime();
+			String stringDate = (1900 + tempDate.getYear()) + "-"
+					+ (1 + tempDate.getMonth()) + "-" + tempDate.getDate()
+					+ " " + tempDate.getHours() + ":" + tempDate.getMinutes()
+					+ ":" + tempDate.getSeconds();
+			cell.setCellValue(stringDate);// 向单元格中写入数据
+			cell.setCellType(Cell.CELL_TYPE_STRING);
+			cell = row.createCell(1);// 新增一列
+			cell.setCellValue(list.get(i - 1).getData());
+		}
+		wb.write(fos);
+		fos.close();
+		String FinalPath = TEMP_PATH + "/" + excelFile.getName();
+		return FinalPath;
+	}
+
+	@RequestMapping(value = "/downloadTemplate", method = RequestMethod.POST)
+	@ResponseBody
+	public String downloadTemplate() throws Exception {
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		logger.info("downloadData method.");
+		String Path = "resources/extjs/Template/Template.xls";
+		return Path;
+	}
 }
