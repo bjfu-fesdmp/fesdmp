@@ -1,3 +1,25 @@
+Ext.define('resourceGroupList', {
+    extend: 'Ext.data.Store',
+    fields: ['id', 'groupName'],
+	proxy : {
+		type : 'ajax',
+		actionMethods: {
+            create : 'POST',
+            read   : 'POST', // by default GET
+            update : 'POST',
+            destroy: 'POST'
+		},
+		url : Global_Path+'resourceGroup/getAllResourceGroupList',
+		reader : {
+			type : 'json',
+			root : 'result'
+		}
+	}
+});
+
+
+
+
 Ext.define('Bjfu.resourceGroup.view.AddResourceGroup',{
 	extend:'Ext.form.Panel',
 	bodyPadding: 5,
@@ -19,14 +41,29 @@ Ext.define('Bjfu.resourceGroup.view.AddResourceGroup',{
 		    defaultType: 'textfield',
     	    items: [{
     	        fieldLabel: '资源组名称<font color="red">*</font>',//验重
-    	        name: 'resourceGroupName',
+    	        name: 'groupName',
     	        allowBlank : false,
     	        maxLength : 50,
-				maxLengthText : '长度不能超过50个字符',    	        
+				maxLengthText : '长度不能超过50个字符'	        
     	    },{
-    	    	fieldLabel:'用户编号',
+    	    	fieldLabel:'资源组编号',
     	    	name:'id',
     	    	xtype:'hiddenfield'
+    	    },{
+    	    	id : 'userGroup',
+    	    	xtype : 'combo',
+    	        fieldLabel : '父资源组',
+    	        name : 'groupParentId',
+    	        store : Ext.create('resourceGroupList'),
+    	        editable : false,
+    	        displayField : 'groupName',
+    	        valueField : 'id',
+    	        emptyText : '请选择...'	
+    	    },{
+    	    	fieldLabel:'注释',
+    	    	name:'memo',
+       	        maxLength : 50,
+				maxLengthText : '长度不能超过50个字符', 
     	    }]
     	});
     	me.callParent(arguments);

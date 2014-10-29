@@ -62,28 +62,24 @@ public class IndexManagerController extends BaseController {
 	
 	@RequestMapping(value = "/indexResourceList", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> indexResourceList(PageInfoBean pageInfo) throws Exception {
+	public Map<String, Object> indexResourceList(PageInfoBean pageInfo,String resourcrGroupId) throws Exception {
 		
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		
 		logger.info("indexResourceList method.");
 		logger.info(pageInfo);
 		IndexResourceSearch indResourceSearch = null;
-		
 		Pagination<IndexResource> page = new Pagination<IndexResource>();
 		page.setPageSize(pageInfo.getLimit());
 		page.setCurrentPage(pageInfo.getPage());
-		
 		IOrder order = new Order();
 		order.addOrderBy("id", "DESC");
-
 		if (!StringUtils.isEmpty(pageInfo.getSearchJson())) {
 			indResourceSearch = mapper.readValue(pageInfo.getSearchJson(), IndexResourceSearch.class);
-		}
-		
+		}		
 		logger.info(indResourceSearch);
 		
-		this.indexService.queryByCondition(indResourceSearch, order, page, JoinMode.AND );
+		List<IndexResource> indexResourceList =this.indexService.queryByCondition(indResourceSearch, order, page, JoinMode.AND);
 		
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put(PAGE_COUNT, page.getTotalRecord());

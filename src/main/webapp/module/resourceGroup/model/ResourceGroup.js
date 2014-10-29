@@ -10,8 +10,11 @@ Ext.define('Bjfu.resourceGroup.model.ResourceGroup',{
     	name : 'groupName',   					
     	type : 'string' //资源组名称
     },{
-		name : 'cmemo', 
+		name : 'memo', 
     	type : 'string' //备注
-	}
+	},{
+    	name : 'leaf',   					
+    	type : 'boolean' //叶子
+    }
 	]
 });

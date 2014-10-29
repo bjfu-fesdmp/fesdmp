@@ -47,6 +47,7 @@ public class IndexResourceService implements IIndexResourceService {
 		this.indexResourceDao.findByCondition(condition, order, page);
 	}
 	
+	
 	@Transactional(readOnly = true)
 	@Override
 	public List<IndexResource> queryByCondition(Object condition, IOrder order,
@@ -54,11 +55,6 @@ public class IndexResourceService implements IIndexResourceService {
 		return this.indexResourceDao.findByCondition(condition, order, page, joinMode);
 	}
 
-/*	@Override
-	public List<IndexResource> queryByCondtinWithOperationTime(LogSearch condition,
-			IOrder order, Pagination<IndexResource> page, JoinMode joinMode) {
-		return this.indexResourceDao.findByCondtinWithOperationTime(condition, order, page, joinMode);
-	}*/
 	public  IndexResource findByKey(int id){
 		return this.indexResourceDao.findByKey(id);
 	}

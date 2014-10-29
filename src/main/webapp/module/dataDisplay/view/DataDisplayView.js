@@ -217,7 +217,12 @@ Ext.define('Bjfu.dataDisplay.view.DataDisplayView',{
 		                    		            icon: Ext.MessageBox.QUESTION
 		                    		 });
 		                    		 }
-				        },"->", {
+				        }, {
+					    	text:'批量上传',
+					    	scope:this,
+					    	icon : Global_Path + '/resources/extjs/images/up2.gif',
+				    		handler : function(btn) {}
+						},"->", {
 		    	text:'高级查询',
 		    	scope:this,
 		    	icon : Global_Path + '/resources/extjs/images/search.png',

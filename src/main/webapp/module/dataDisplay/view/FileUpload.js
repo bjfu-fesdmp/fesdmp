@@ -19,7 +19,7 @@ Ext.define('Bjfu.dataDisplay.view.FileUpload',{
                 }],  
                 supportMultFn: function($this){
                     //2.1 为input添加支持多文件选择属性
-                    var typeArray = ["application/x-shockwave-flash","audio/MP3","image/*","flv-application/octet-stream"];
+                    var typeArray = ["txt/xml"];
                     var fileDom = $this.getEl().down('input[type=file]');
                     fileDom.dom.setAttribute("multiple","multiple");
                     fileDom.dom.setAttribute("accept",typeArray.join(","));
@@ -38,14 +38,13 @@ Ext.define('Bjfu.dataDisplay.view.FileUpload',{
                           fileArr.push((i+1)+"、文件名："+files[i].name+",类型:"+files[i].type+",大小:"+files[i].size/1024+"KB");
                     }
                      //files[0].name / files[0].type / files[0].size 
-                    //2.4 选择完后input会还原美迪网，所以还需要再次重写
                     this.supportMultFn(this);
                 	}
-                }
-                ,
+                },
                 buttons: [{  
                     text: '上传',  
                     handler: function() { 
+                    	
                         var form = this.up('form').getForm();  
         	            var window = this.up('window');
                         if(form.isValid()){  

@@ -2,7 +2,7 @@ package cn.bjfu.fesdmp.json;
 
 public class ResourceGroupJson {
 	private Integer id;
-	private Integer groupParentId;
+	private String groupParentId;
 	private String groupName;
 	private String memo;
 	
@@ -16,11 +16,11 @@ public class ResourceGroupJson {
 		this.id = id;
 	}
 
-	public Integer getGroupParentId() {
+	public String getGroupParentId() {
 		return groupParentId;
 	}
 
-	public void setGroupParentId(Integer groupParentId) {
+	public void setGroupParentId(String groupParentId) {
 		this.groupParentId = groupParentId;
 	}
 

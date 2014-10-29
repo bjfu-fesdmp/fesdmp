@@ -20,7 +20,5 @@ public interface IIndexResourceService{
 	public abstract List<IndexResource> queryByCondition(final Object condition, IOrder order,
 			Pagination<IndexResource> page, JoinMode joinMode);
 	public abstract IndexResource findByKey(int id);
-/*	public List<IndexResource> queryByCondtinWithOperationTime(LogSearch condition,
-			IOrder order, Pagination<IndexResource> page, JoinMode joinMode);*/
 }
  

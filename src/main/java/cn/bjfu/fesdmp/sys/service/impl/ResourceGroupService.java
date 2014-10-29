@@ -60,4 +60,13 @@ public class ResourceGroupService implements IResourceGroupService {
 		resourceGroupNew.setGroupName(resourceGroup.getGroupName());
 		this.resourceGroupDao.update(resourceGroupNew);
 	}
+	
+	
+	public List<ResourceGroup> findResourceGroupById(int parentId){
+		return this.resourceGroupDao.findResourceGroupById(parentId);	
+	}
+	public boolean ifHaveChild(int id){
+		return this.resourceGroupDao.ifHaveChild(id);	
+	}
+	
 }

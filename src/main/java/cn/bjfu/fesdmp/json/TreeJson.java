@@ -9,8 +9,6 @@ public class TreeJson {
 	private Integer parentId;
 	private String text;
 	private boolean leaf;
-//	private	Boolean disabled;
-//	private Boolean checked = false;
 	public TreeJson() {}
 
 	public String getText() {

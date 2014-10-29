@@ -22,11 +22,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 
+
+
+
+
 import cn.bjfu.fesdmp.domain.sys.ResourceGroup;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.frame.dao.Order;
 import cn.bjfu.fesdmp.json.ResourceGroupJson;
+import cn.bjfu.fesdmp.json.ResourceGroupTreeJson;
 import cn.bjfu.fesdmp.sys.service.IResourceGroupService;
 import cn.bjfu.fesdmp.utils.PageInfoBean;
 import cn.bjfu.fesdmp.utils.Pagination;
@@ -38,8 +43,6 @@ import cn.bjfu.fesdmp.web.jsonbean.ResourceGroupSearch;
 public class ResourceGroupManagerController extends BaseController {
 	private static final Logger logger = Logger
 			.getLogger(ResourceGroupManagerController.class);
-	// private Gson gson = new
-	// GsonBuilder().serializeNulls().setDateFormat("yyyy-MM-dd").create();
 	private ObjectMapper mapper = new ObjectMapper();
 	@Autowired
 	private IResourceGroupService resourceGroupService;
@@ -52,48 +55,32 @@ public class ResourceGroupManagerController extends BaseController {
 
 	@RequestMapping(value = "/resourceGroupList", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> resourceGroupList(PageInfoBean pageInfo)
+	public Map<String, Object> resourceGroupList(String groupParentId)
 			throws Exception {
 
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-
 		logger.info("resourceGroupList method.");
-		logger.info(pageInfo);
-		ResourceGroupSearch resourceGroupSearch = null;
-
-		Pagination<ResourceGroup> page = new Pagination<ResourceGroup>();
-		page.setPageSize(pageInfo.getLimit());
-		page.setCurrentPage(pageInfo.getPage());
-
 		IOrder order = new Order();
-		// order.addOrderBy("operateTime", "DESC");
 		order.addOrderBy("id", "DESC");
-
-		if (!StringUtils.isEmpty(pageInfo.getSearchJson())) {
-			resourceGroupSearch = mapper.readValue(pageInfo.getSearchJson(),
-					ResourceGroupSearch.class);
+		List<ResourceGroup> resourceGroupList = this.resourceGroupService.findResourceGroupById(Integer.parseInt(groupParentId));
+		List<ResourceGroupTreeJson> resourceGroupJsonList = new ArrayList<ResourceGroupTreeJson>();
+		for(int i=0;i<resourceGroupList.size();i++){
+			ResourceGroupTreeJson resourceGroupTreeJson=new ResourceGroupTreeJson();
+			resourceGroupTreeJson.setGroupName(resourceGroupList.get(i).getGroupName());
+			resourceGroupTreeJson.setGroupParentId(resourceGroupList.get(i).getGroupParentId());
+			resourceGroupTreeJson.setId(resourceGroupList.get(i).getId());
+			resourceGroupTreeJson.setMemo(resourceGroupList.get(i).getMemo());
+			if(this.resourceGroupService.ifHaveChild(resourceGroupTreeJson.getId()))
+				resourceGroupTreeJson.setLeaf(false);
+			else
+				resourceGroupTreeJson.setLeaf(true);
+			resourceGroupJsonList.add(resourceGroupTreeJson);
+			
 		}
-
-		logger.info(resourceGroupSearch);
-
-		this.resourceGroupService.queryByCondition(resourceGroupSearch, order, page,
-				JoinMode.AND);
-
-
+		
+		
 		Map<String, Object> result = new HashMap<String, Object>();
-		result.put(PAGE_COUNT, page.getTotalRecord());
-		List<ResourceGroupJson> resourceGroupJsonList = new ArrayList<ResourceGroupJson>();
-		for (int i = 0; i < page.getDatas().size(); i++) {
-			ResourceGroup resourceGroup = page.getDatas().get(i);
-			ResourceGroupJson resourceGroupJson = new ResourceGroupJson();
-			resourceGroupJson.setId(resourceGroup.getId());
-			resourceGroupJson.setGroupParentId(resourceGroup.getGroupParentId());
-			resourceGroupJson.setGroupName(resourceGroup.getGroupName());
-			resourceGroupJson.setMemo(resourceGroup.getMemo());
-			resourceGroupJsonList.add(resourceGroupJson);
-		}
 		result.put(RESULT, resourceGroupJsonList);
-		// result.put(RESULT, page.getDatas());
 		result.put(SUCCESS, Boolean.TRUE);
 		return result;
 	}
@@ -103,14 +90,16 @@ public class ResourceGroupManagerController extends BaseController {
 	public Map<String, Object> addResourceGroup(String formData) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		logger.info("userGroupList method.");
-		ResourceGroup resourceGroup = null;
+		ResourceGroup resourceGroup = new ResourceGroup();
 		if (!StringUtils.isEmpty(formData)) {
 			resourceGroup = mapper.readValue(formData,ResourceGroup.class);
 		}
+		
+		if(resourceGroup.getGroupParentId()==null)
+			resourceGroup.setGroupParentId(0);
+		
 		logger.info(resourceGroup);
-//		Date dt=new Date();
-//		resourceGroup.setCreateTime(dt);
-		this.resourceGroupService.addResourceGroup(resourceGroup);
+	 	this.resourceGroupService.addResourceGroup(resourceGroup);
 
 		Map<String, Object> result = new HashMap<String, Object>();
 
@@ -152,6 +141,22 @@ public Map<String, Object> deleteResourceGroup(String ids) throws Exception {
 	System.out.println(ids);
 	this.resourceGroupService.deleteResourceGroup(Integer.parseInt(ids));
 	Map<String, Object> result = new HashMap<String, Object>();
+	result.put(SUCCESS, Boolean.TRUE);
+	return result;
+}
+
+@RequestMapping(value = "/getAllResourceGroupList", method = RequestMethod.POST)
+@ResponseBody
+public Map<String, Object> getAllResourceGroupList()
+		throws Exception {
+
+	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+	logger.info("resourceGroupList method.");
+	IOrder order = new Order();
+	order.addOrderBy("id", "DESC");
+	List<ResourceGroup> resourceGroupList = this.resourceGroupService.queryAll(order);
+	Map<String, Object> result = new HashMap<String, Object>();
+	result.put(RESULT, resourceGroupList);
 	result.put(SUCCESS, Boolean.TRUE);
 	return result;
 }

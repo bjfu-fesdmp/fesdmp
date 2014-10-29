@@ -7,40 +7,15 @@ Ext.define('Bjfu.indexResource.view.IndexResourceListView',{
 	layoutConfig : {
 		animate : true
 	},
-//    setlType : 'rowmodel',/////////////////可以单行编辑
-//    plugins: [
-//              Ext.create('Ext.grid.plugin.RowEditing', {
-//            	  pluginId:'rowEditing', 
-//        	      saveBtnText: '保存', 
-//        	      cancelBtnText: "取消", 
-//        	      autoCancel: false, 
-//        	      clicksToEdit: 2
-//              })
-//          ],
 	search_cache: null,	  //用于分页时缓存高级查询条件
 	split : true,
 	overflowY : 'scroll', //只显示上下滚动的滚动条
 	overflowX : 'hidden',
 	selType : 'checkboxmodel',	// 单选，复选框
-	requires : [
-	            'Bjfu.indexResource.model.IndexResource'
-	           
-/*	             ,'Ext.selection.CellModel',
-	            'Ext.grid.*',
-	            'Ext.data.*',
-	            'Ext.util.*',
-	            'Ext.form.*'*/
-	            ],
+	requires : ['Bjfu.indexResource.model.IndexResource'],
 	
 	initComponent : function() {
 		var me = this;
-		var rowEditing = Ext.create('Ext.grid.plugin.RowEditing',{
-			pluginId:'rowEditing', 
-	        saveBtnText: '保存', 
-	        cancelBtnText: "取消", 
-	        autoCancel: false, 
-	        clicksToEdit:2
-		});
 		var gridStore = Ext.create('Ext.data.Store', {
 			model : 'Bjfu.indexResource.model.IndexResource',
 			pageSize : 25,
@@ -52,10 +27,7 @@ Ext.define('Bjfu.indexResource.view.IndexResourceListView',{
 	                update : 'POST',
 	                destroy: 'POST'
 				},
-				/*extraParams: {  
-	                searchJson : '{ismpewStatus : 1}'
-	            },*/  
-				url : Global_Path+'indexresource/indexResourceList',//////////////////////待改
+				url : Global_Path+'indexresource/indexResourceList',
 				reader : {
 					type : 'json',
 					root : 'result',

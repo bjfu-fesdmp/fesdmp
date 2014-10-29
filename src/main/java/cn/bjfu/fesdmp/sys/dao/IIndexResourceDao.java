@@ -3,11 +3,8 @@
 import java.util.List;
 
 import cn.bjfu.fesdmp.domain.sys.IndexResource;
-import cn.bjfu.fesdmp.domain.sys.UserUserGroupRelation;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
-import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.utils.Pagination;
-import cn.bjfu.fesdmp.web.jsonbean.LogSearch;
 
 public interface IIndexResourceDao extends IGenericDao<IndexResource> {
 /*

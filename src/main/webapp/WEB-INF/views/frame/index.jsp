@@ -129,22 +129,6 @@
 			            ]
 			        }
 			},' ',{
-//				text : '指标管理',
-//				menu: {
-//			            items: [
-//			                {
-//			                    text: '选项1'
-//			                }, {
-//			                    text: '选项2'
-//			                }, {
-//			                    text: '选项3',
-//			                    handler: function () {
-//			                        Ext.Msg.alert("提示", "来自菜单的消息");
-//			                    }
-//			                }
-//			            ]
-//			        }
-//			},' ',{
 				text : '系统管理',
 				menu: {
 			            items: [
@@ -163,17 +147,6 @@
 			                    text: '权限设置',
 								menu: {
 				        		    items: [ {
-				                    		text: '资源组管理',
-											handler: function () {
-					                        	Ext.getCmp('centerPanel').getLoader().load({
-												autoLoad : true,
-												url: Global_Path + "resourceGroup/listView",
-	 											scripts : true,
-	 											loadMask : true,
-	 											noCache : true	
-											});
-					                   		}
-				                		}, {
 					                    	text: '角色管理',
 					                    	handler: function () {
 					                        	Ext.getCmp('centerPanel').getLoader().load({
@@ -210,7 +183,7 @@
 				            ]
 				        	}
 			               }, {
-				                text: '指标管理',
+				                text: '指标资源管理',
  								handler:  function () {
 									Ext.getCmp('centerPanel').getLoader().load({
 									autoLoad : true,	

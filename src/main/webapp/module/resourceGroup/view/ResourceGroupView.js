@@ -1,24 +1,14 @@
 Ext.define('Bjfu.resourceGroup.view.ResourceGroupView',{
-	extend : 'Ext.grid.Panel',
-	alias:'widget.ResourceGroupView',
-	forceFit : true,
-	layout : 'fit',
-    autoScroll: true,
-	layoutConfig : {
-		animate : true
-	},
-	search_cache: null,	  //用于分页时缓存高级查询条件
-	split : true,
-	overflowY : 'scroll', //只显示上下滚动的滚动条
-	overflowX : 'hidden',
-	selType : 'checkboxmodel',	// 单选，复选框
+	extend : 'Ext.tree.Panel',
+	rootVisible: false,
+	displayField:'groupName',
 	requires : ['Bjfu.resourceGroup.model.ResourceGroup'],
-	
 	initComponent : function() {
 		var me = this;
-		var gridStore = Ext.create('Ext.data.Store', {
+		var gridStore = Ext.create('Ext.data.TreeStore', {
+			id : 'resourceGroup.tree',
 			model : 'Bjfu.resourceGroup.model.ResourceGroup',
-			pageSize : 25,
+			nodeParam : 'groupParentId',
 			proxy : {
 				type : 'ajax',
 				actionMethods: {
@@ -31,23 +21,13 @@ Ext.define('Bjfu.resourceGroup.view.ResourceGroupView',{
 				reader : {
 					type : 'json',
 					root : 'result',
-					idProperty : 'id',
-					totalProperty : 'pageCount'
 				}
 			},
-			listeners : {
-				'beforeload': function(store, operation, eOpts) {
-					if (me.search_cache != null) {
-						Ext.apply(store.proxy.extraParams, { 
-							searchJson : me.search_cache
-						});
-					} else {
-						Ext.apply(store.proxy.extraParams, {
-							searchJson : ""
-						});
-					}
-				}
-			},
+			root: {
+				   nodeType: 'async',
+				   id : '0',
+				   expanded: true
+		    },
 			autoLoad : true
 		});
 		
@@ -57,22 +37,22 @@ Ext.define('Bjfu.resourceGroup.view.ResourceGroupView',{
 			columns : [
 				{
 					text : '资源组id',
+					sortable : true,
 			        dataIndex : 'id',
 			        hidden : true
-				},
-				Ext.create('Ext.grid.RowNumberer',{
-			          		header : '序号',
-			          		align: 'left',
-			          		width : 60
-			    }),{
+				},{
+			        text : '父Id',
+			        dataIndex : 'groupParentId',
+			        hidden : true
+			    },{
+			    	xtype : 'treecolumn',
+			    	flex : 1,
+					sortable : true,
 			        text : '资源组名',
-			        dataIndex : 'resourceGroupName',
-			        width : 120
+			        dataIndex : 'groupName'
 			    },{
 			        text : '资源组描述',
-			        dataIndex : 'memo',
-			        width : 360
-//			        width : '10%'
+			        dataIndex : 'memo'
 			    }
 			],
 			tbar : [{ 
@@ -131,41 +111,32 @@ Ext.define('Bjfu.resourceGroup.view.ResourceGroupView',{
 			        		});
 			        	}    
 		    		}
-		        }, "->", {
-		    	text:'高级查询',
-		    	scope:this,
-		    	icon : Global_Path + '/resources/extjs/images/search.png',
-	    		handler : function(btn) {
-		       		var gridStore = btn.up('gridpanel').store;
-		      		var queryForm = Ext.create('Bjfu.resourceGroup.view.QueryUserGroup');
-		  			Ext.create('Ext.window.Window', {
-						title : '资源组信息高级查询',
-			       		height : 250,
-			       		width:600,
-			       		closable : true,
-			       		closeAction : 'destroy',
-			       		border : false,
-			       		modal : true,
-			       		resizable : false,
-			       		layout : 'fit',
-			       		items : [queryForm],
-			       		listeners : {
-							'close' : function(){
-								me.search_cache = JSON.stringify(queryForm.getForm().getValues());
-								this.destroy();
+		        }
+		        ],
+				listeners:{
+					scope : this,
+					checkchange :function(node, checked) {
+						node.checked = checked;
+						var records = me.getView().getChecked();
+						for (var i = 0; i < records.length; i++) {
+							if (records[i].get('id') != node.get('id')) {
+								records[i].set("checked" , false);
 							}
 						}
-			       	}).show();
-		       }
-			}],
+					},
+		        	'itemclick' : function(view, record, item, index, e){
+		        		var resourcrGroupId=record.get("id");
+		        		 Ext.getCmp("indexResourceListViewId").getStore().baseParams= {
+		        			 resourcrGroupId: resourcrGroupId
+		           			};
+			            Ext.getCmp("indexResourceListViewId").getStore().loadPage(1, {
+		               		params: {
+		               			resourcrGroupId: resourcrGroupId
+		           			}
+		            });
+		        	}
+				},
 			loadMask:true,
-			bbar : Ext.create('Ext.toolbar.Paging', {
-					width : '100%',
-					store : gridStore,
-					displayInfo : true,
-					displayMsg : '显示 {0} - {1} 条，共计 {2} 条',
-					emptyMsg : "没有数据"
-			})
 		});
 		
 		me.callParent(arguments);

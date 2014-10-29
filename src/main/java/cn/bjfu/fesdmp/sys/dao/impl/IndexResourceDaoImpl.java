@@ -30,38 +30,6 @@ public class IndexResourceDaoImpl extends AbstractGenericDao<IndexResource> impl
 	public IndexResourceDaoImpl() {
 		super(IndexResource.class);
 	}
-
-/*	@Override
-	public List<IndexResource> findByCondtinWithOperationTime(LogSearch condition,
-			IOrder order, Pagination<IndexResource> page, JoinMode joinMode) {
-		String jpal = " SELECT p FROM IndexResource p ";
-		if (condition != null) {
-			jpal += convertBeanToJPAL(condition, joinMode);
-			if (condition.getStartTime() != null && condition.getEndTime() != null) {
-				jpal += " AND ( p.operateTime >= '" + DateFormat.getShortDate(condition.getStartTime()) +
-						"' AND  p.operateTime <= '" + DateFormat.getShortDate(condition.getEndTime()) + "' ) ";
-			}
-			if (condition.getStartTime() != null && condition.getEndTime() == null) {
-				jpal += " AND ( p.operateTime >=  '" + DateFormat.getShortDate(condition.getStartTime()) + 
-						"' AND p.operateTime <= '" + DateFormat.getShortDate(new Date()) + "' ) ";
-			}
-		} 
-		if (order != null) {
-			jpal += convertToSQL(order);
-		}
-		
-		logger.info(jpal);
-		Query query = super.getEntityManager().createQuery(jpal);
-		if (page != null) {
-			page.setTotalRecord(query.getResultList().size());
-			List<IndexResource> result =  query.setFirstResult(page.getOffset()).setMaxResults(page.getPageSize()).getResultList();
-			page.setDatas(result);
-			return result;
-		}else{
-			return query.getResultList();
-		}
-		
-	}*/
 	public void createResourceListByTime(String resource,String year){
 		String sql = "CREATE TABLE "+year+"_"+resource+"(id INT AUTO_INCREMENT PRIMARY KEY,time datetime,data VARCHAR(50))";
 		jdbcTemplate.execute(sql);
@@ -80,6 +48,9 @@ public class IndexResourceDaoImpl extends AbstractGenericDao<IndexResource> impl
 		unit=indexResource.getIndexUnit();
 		return unit;
 	}
+	
+	
+
 	
 }
  
