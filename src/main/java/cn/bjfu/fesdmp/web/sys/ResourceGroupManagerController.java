@@ -26,7 +26,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 
+
 import cn.bjfu.fesdmp.domain.sys.ResourceGroup;
+import cn.bjfu.fesdmp.domain.sys.UserGroup;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.frame.dao.Order;
@@ -46,13 +48,12 @@ public class ResourceGroupManagerController extends BaseController {
 	private ObjectMapper mapper = new ObjectMapper();
 	@Autowired
 	private IResourceGroupService resourceGroupService;
-
 	@RequestMapping(value = "/listView", method = RequestMethod.GET)
 	public String resourceGroupPage() {
 		logger.info("resourceGroupPage method.");
 		return "resourceGroup/resourceGroupView";
 	}
-
+//资源组树形结构
 	@RequestMapping(value = "/resourceGroupList", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> resourceGroupList(String groupParentId)
@@ -144,7 +145,17 @@ public Map<String, Object> deleteResourceGroup(String ids) throws Exception {
 	result.put(SUCCESS, Boolean.TRUE);
 	return result;
 }
-
+@RequestMapping(value = "/modifyResourceGroup", method = RequestMethod.POST)
+@ResponseBody
+public Map<String, Object> modifyResourceGroup(String formData) throws Exception {
+	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+	logger.info("modifyUserGroup method.");
+	ResourceGroup resourceGroup = mapper.readValue(formData,ResourceGroup.class);
+	this.resourceGroupService.modifyResourceGroup(resourceGroup);
+	Map<String, Object> result = new HashMap<String, Object>();
+	result.put(SUCCESS, Boolean.TRUE);
+	return result;
+}
 @RequestMapping(value = "/getAllResourceGroupList", method = RequestMethod.POST)
 @ResponseBody
 public Map<String, Object> getAllResourceGroupList()

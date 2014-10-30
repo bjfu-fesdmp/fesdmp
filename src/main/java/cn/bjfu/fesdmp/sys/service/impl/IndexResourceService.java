@@ -9,9 +9,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.bjfu.fesdmp.domain.sys.IndexResource;
+import cn.bjfu.fesdmp.domain.sys.ResourceGroup;
+import cn.bjfu.fesdmp.domain.sys.ResourceRelation;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.sys.dao.IIndexResourceDao;
+import cn.bjfu.fesdmp.sys.dao.IResourceGroupDao;
+import cn.bjfu.fesdmp.sys.dao.IResourceRelationDao;
 import cn.bjfu.fesdmp.sys.service.IIndexResourceService;
 import cn.bjfu.fesdmp.utils.Pagination;
 //import cn.bjfu.fesdmp.web.jsonbean.LogSearch;
@@ -22,11 +26,19 @@ public class IndexResourceService implements IIndexResourceService {
 
 	@Autowired
 	private IIndexResourceDao indexResourceDao;
-	
+	@Autowired
+	private IResourceGroupDao resourceGroupDao;
+	@Autowired
+	private IResourceRelationDao resourceRelationDao;
 	@Override
-	public void addIndResource(IndexResource indexResource) {
+	public void addIndResource(IndexResource indexResource,int resourceGroupId) {
+		ResourceGroup resourceGroup=this.resourceGroupDao.findByKey(resourceGroupId);
+		ResourceRelation resourceRelation=new ResourceRelation();
 		this.indexResourceDao.insert(indexResource);
 		this.indexResourceDao.createResourceListByTime(indexResource.getIndexEnName(), "2014");
+		resourceRelation.setIndexResourceId(indexResource);
+		resourceRelation.setResourceGroupId(resourceGroup);
+		this.resourceRelationDao.insert(resourceRelation);
 	}
 
 	@Override
@@ -71,6 +83,10 @@ public class IndexResourceService implements IIndexResourceService {
 		this.indexResourceDao.update(indexResourceNew);
 		
 	}
-
+	@Override
+	public List<IndexResource> queryByConditionAndResourceGroupId(Object condition, IOrder order,
+			Pagination<IndexResource> page, JoinMode joinMode,String resourceGroupId) {
+		return this.indexResourceDao.queryByConditionAndResourceGroupId(condition, order, page, joinMode,resourceGroupId);
+	}
 }
  

@@ -12,13 +12,15 @@ import cn.bjfu.fesdmp.utils.Pagination;
 
 public interface IIndexResourceService{
 
-	public abstract void addIndResource(IndexResource indexResource);
+	public abstract void addIndResource(IndexResource indexResource,int resourceGroupId);
 	public abstract void modifyIndResource(IndexResource indexResource);
 	public abstract void deleteIndResource(int id);
 	public abstract List<IndexResource> queryAll(IOrder order);
 	public abstract void queryByCondition(final Object condition, IOrder order, Pagination<IndexResource> page);
 	public abstract List<IndexResource> queryByCondition(final Object condition, IOrder order,
 			Pagination<IndexResource> page, JoinMode joinMode);
+	public abstract List<IndexResource> queryByConditionAndResourceGroupId(final Object condition, IOrder order,
+			Pagination<IndexResource> page, JoinMode joinMode,String resourceGroupId);
 	public abstract IndexResource findByKey(int id);
 }
  

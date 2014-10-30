@@ -197,33 +197,35 @@ Ext.define('Bjfu.indexResource.view.IndexResourceListView',{
 			        		});
 			        	}    
 		    		}
-		        }, "->" ,{
-			       	text : '高级查询' ,
-			       	scope: this,
-			    	icon : Global_Path + '/resources/extjs/images/search.png',
-		    		handler : function(btn) {
-			       		var gridStore = btn.up('gridpanel').store;
-			      		var queryForm = Ext.create('Bjfu.indexResource.view.QueryIndexResource');
-			  			Ext.create('Ext.window.Window', {
-							title : '指标高级查询',
-				       		height : 250,
-				       		width : 400,
-				       		closable : true,
-				       		closeAction : 'destroy',
-				       		border : false,
-				       		modal : true,
-				       		resizable : false,
-				       		layout : 'fit',
-				       		items : [queryForm],
-				       		listeners : {
-								'close' : function(){
-									me.search_cache = JSON.stringify(queryForm.getForm().getValues());
-									this.destroy();
-								}
-							}
-				       	}).show();
-			       }
-			    }],
+		        }
+//				    , "->" ,{
+//			       	text : '高级查询' ,
+//			       	scope: this,
+//			    	icon : Global_Path + '/resources/extjs/images/search.png',
+//		    		handler : function(btn) {
+//			       		var gridStore = btn.up('gridpanel').store;
+//			      		var queryForm = Ext.create('Bjfu.indexResource.view.QueryIndexResource');
+//			  			Ext.create('Ext.window.Window', {
+//							title : '指标高级查询',
+//				       		height : 250,
+//				       		width : 400,
+//				       		closable : true,
+//				       		closeAction : 'destroy',
+//				       		border : false,
+//				       		modal : true,
+//				       		resizable : false,
+//				       		layout : 'fit',
+//				       		items : [queryForm],
+//				       		listeners : {
+//								'close' : function(){
+//									me.search_cache = JSON.stringify(queryForm.getForm().getValues());
+//									this.destroy();
+//								}
+//							}
+//				       	}).show();
+//			       }
+//			    }
+		        ],
 			loadMask:true,
 			bbar : Ext.create('Ext.toolbar.Paging', {
 					width : '100%',

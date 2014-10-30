@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class IndexResourceJson {
 	private Integer id;
+	private Integer resourceGroupId;
 	private String indexName;
 	private String indexEnName;
 	private String indexUnit;
@@ -21,7 +22,15 @@ public class IndexResourceJson {
 	public void setId(Integer id) {
 		this.id = id;
 	}
+	
+	public Integer getResourceGroupId() {
+		return resourceGroupId;
+	}
 
+	public void setResourceGroupId(Integer resourceGroupId) {
+		this.resourceGroupId = resourceGroupId;
+	}
+	
 	public String getIndexName() {
 		return indexName;
 	}

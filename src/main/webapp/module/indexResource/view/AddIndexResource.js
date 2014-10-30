@@ -1,3 +1,23 @@
+Ext.define('resourceGroupList', {
+    extend: 'Ext.data.Store',
+    fields: ['id', 'groupName'],
+	proxy : {
+		type : 'ajax',
+		actionMethods: {
+            create : 'POST',
+            read   : 'POST', // by default GET
+            update : 'POST',
+            destroy: 'POST'
+		},
+		url : Global_Path+'resourceGroup/getAllResourceGroupList',
+		reader : {
+			type : 'json',
+			root : 'result'
+		}
+	}
+});
+
+
 Ext.define('Bjfu.indexResource.view.AddIndexResource',{
 	extend:'Ext.form.Panel',
 	bodyPadding: 5,
@@ -35,6 +55,17 @@ Ext.define('Bjfu.indexResource.view.AddIndexResource',{
     	    	allowBlank : false,
     	    	maxLength : 50,
  				maxLengthText : '长度不能超过50个字符' 
+    	    },{
+    	    	id : 'userGroup',
+    	    	xtype : 'combo',
+    	        fieldLabel : '所属资源组<font color="red">*</font>',
+    	        name : 'resourceGroupId',
+    	        store : Ext.create('resourceGroupList'),
+    	        allowBlank : false,
+    	        editable : false,
+    	        displayField : 'groupName',
+    	        valueField : 'id',
+    	        emptyText : '请选择...'	
     	    },{
     	    	fieldLabel : '描述',
     	    	name: 'indexMemo',

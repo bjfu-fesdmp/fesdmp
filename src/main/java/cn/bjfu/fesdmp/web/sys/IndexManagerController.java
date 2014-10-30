@@ -23,12 +23,14 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import cn.bjfu.fesdmp.domain.sys.IndexResource;
+import cn.bjfu.fesdmp.domain.sys.ResourceRelation;
 import cn.bjfu.fesdmp.domain.sys.UserGroup;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.frame.dao.Order;
 import cn.bjfu.fesdmp.json.IndexResourceJson;
 import cn.bjfu.fesdmp.sys.service.IIndexResourceService;
+import cn.bjfu.fesdmp.sys.service.IResourceRelationService;
 import cn.bjfu.fesdmp.utils.PageInfoBean;
 import cn.bjfu.fesdmp.utils.Pagination;
 import cn.bjfu.fesdmp.web.BaseController;
@@ -49,11 +51,11 @@ public class IndexManagerController extends BaseController {
 	}
 	
 	private static final Logger logger = Logger.getLogger(IndexManagerController.class);
-//	private Gson gson = new GsonBuilder().serializeNulls().setDateFormat("yyyy-MM-dd").create();
 	private ObjectMapper mapper = new ObjectMapper();
 	@Autowired
 	private IIndexResourceService indexService;
-	
+	@Autowired
+	private IResourceRelationService resourceRelationService; 
 	@RequestMapping(value = "/listView", method = RequestMethod.GET)
 	public String indexResourcePage() {
 		logger.info("indexResourcePage method.");
@@ -62,7 +64,7 @@ public class IndexManagerController extends BaseController {
 	
 	@RequestMapping(value = "/indexResourceList", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> indexResourceList(PageInfoBean pageInfo,String resourcrGroupId) throws Exception {
+	public Map<String, Object> indexResourceList(PageInfoBean pageInfo,String resourceGroupId) throws Exception {
 		
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		
@@ -79,12 +81,12 @@ public class IndexManagerController extends BaseController {
 		}		
 		logger.info(indResourceSearch);
 		
-		List<IndexResource> indexResourceList =this.indexService.queryByCondition(indResourceSearch, order, page, JoinMode.AND);
+		List<IndexResource> indexResourceList =this.indexService.queryByConditionAndResourceGroupId(indResourceSearch, order, page, JoinMode.AND,resourceGroupId);		
 		
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put(PAGE_COUNT, page.getTotalRecord());
 		List<IndexResourceJson> indexResourceJsonList = new ArrayList<IndexResourceJson>();
-		for (int i=0; i<page.getDatas().size(); i++) {
+		for (int i=0; i<indexResourceList.size(); i++) {
 			IndexResource indexResource = page.getDatas().get(i);
 			IndexResourceJson indexResourceJson = new IndexResourceJson();
 			indexResourceJson.setId(indexResource.getId());
@@ -111,16 +113,25 @@ public class IndexManagerController extends BaseController {
 	public Map<String, Object> addIndexResource(String formData) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		logger.info("addIndexResource method.");
-		IndexResource indexResource = null;
+		IndexResourceJson indexResourceJson=new IndexResourceJson();
+		IndexResource indexResource = new IndexResource();
+		int resourceGroupId = 0;
 		if (!StringUtils.isEmpty(formData)) {
-			indexResource = mapper.readValue(formData,IndexResource.class);
+			indexResourceJson = mapper.readValue(formData,IndexResourceJson.class);
+			indexResource.setIndexName(indexResourceJson.getIndexName());
+			indexResource.setIndexEnName(indexResourceJson.getIndexEnName());
+			indexResource.setIndexMemo(indexResourceJson.getIndexMemo());
+			indexResource.setIndexUnit(indexResourceJson.getIndexUnit());
+			resourceGroupId=indexResourceJson.getResourceGroupId();
 		}
 		logger.info(indexResource);
+		
+		
 		Date dt=new Date();
 		indexResource.setCreateTime(dt);
 		Date dtm = new Date(70,0,1,0,0,0);
 		indexResource.setModifyTime(dtm);
-		this.indexService.addIndResource(indexResource);
+		this.indexService.addIndResource(indexResource,resourceGroupId);
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put(SUCCESS, Boolean.TRUE);
 		return result;

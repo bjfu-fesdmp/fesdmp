@@ -48,7 +48,30 @@ public class IndexResourceDaoImpl extends AbstractGenericDao<IndexResource> impl
 		unit=indexResource.getIndexUnit();
 		return unit;
 	}
-	
+	public List<IndexResource> queryByConditionAndResourceGroupId(Object condition, IOrder order,
+			Pagination<IndexResource> page, JoinMode joinMode,String resourceGroupId){
+		String jpal = " SELECT p FROM ResourceRelation m,IndexResource p ";
+		if (condition != null) {
+			jpal +=convertBeanToJPAL(condition, joinMode);
+			jpal +=" and m.resourceGroup.id="+resourceGroupId+" and m.indexResource.id=p.id ";
+		} 
+		else
+			jpal +="where m.resourceGroup.id="+resourceGroupId+" and m.indexResource.id=p.id ";
+		if (order != null) {
+			jpal += convertToSQL(order);
+		}
+		
+		logger.info(jpal);
+		Query query = super.getEntityManager().createQuery(jpal);
+		if (page != null) {
+			page.setTotalRecord(query.getResultList().size());
+			List<IndexResource> result =  query.setFirstResult(page.getOffset()).setMaxResults(page.getPageSize()).getResultList();
+			page.setDatas(result);
+			return result;
+		}else{
+			return query.getResultList();
+		}
+	}
 	
 
 	

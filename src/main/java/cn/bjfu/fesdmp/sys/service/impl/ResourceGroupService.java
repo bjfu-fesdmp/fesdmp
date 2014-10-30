@@ -58,6 +58,7 @@ public class ResourceGroupService implements IResourceGroupService {
 	public void modifyResourceGroup(ResourceGroup resourceGroup) {
 		ResourceGroup resourceGroupNew = this.resourceGroupDao.findByKey(resourceGroup.getId());
 		resourceGroupNew.setGroupName(resourceGroup.getGroupName());
+		resourceGroupNew.setMemo(resourceGroup.getMemo());
 		this.resourceGroupDao.update(resourceGroupNew);
 	}
 	

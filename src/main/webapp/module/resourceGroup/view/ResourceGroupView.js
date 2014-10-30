@@ -75,7 +75,38 @@ Ext.define('Bjfu.resourceGroup.view.ResourceGroupView',{
 		        		items:[addForm]
 		        	}).show();
 		        	} 
-		        },{ 
+		        },{
+				       text: '修改',
+				       scope:this, 
+				        icon:Global_Path+'/resources/extjs/images/update.png',
+				          handler : function(o){
+				        	 var gird = o.ownerCt.ownerCt;
+						     var record = gird.getSelectionModel().getSelection();
+						     	if(record.length>1||record.length==0)
+						     		{
+						     			Ext.Msg.alert('提示','请选择一条记录！');
+						     			return;
+						     		}else{
+				        	
+				        	var modifyForm = Ext.create('Bjfu.resourceGroup.view.ModifyResourceGroup',{
+											});
+				        	modifyForm.loadRecord(record[0]);
+				        	Ext.create('Ext.window.Window',{
+				        		title:'修改资源组界面',
+				        		closable:true,
+				        		closeAction:'destroy',
+				        		modal:true,
+				        		border:false,
+				        		resizable:false,
+				        		width:400,
+				        		height:250,
+				        		layout:'fit',
+				        		items:[modifyForm]
+				        	}).show();
+				        	
+				        	}
+				        	}
+				        },{ 
 		        	text: '删除' ,
 		        	icon:Global_Path+'/resources/extjs/images/delete.png',
 		        	scope:this,
@@ -125,13 +156,13 @@ Ext.define('Bjfu.resourceGroup.view.ResourceGroupView',{
 						}
 					},
 		        	'itemclick' : function(view, record, item, index, e){
-		        		var resourcrGroupId=record.get("id");
+		        		var resourceGroupId=record.get("id");
 		        		 Ext.getCmp("indexResourceListViewId").getStore().baseParams= {
-		        			 resourcrGroupId: resourcrGroupId
+		        			 resourceGroupId: resourceGroupId
 		           			};
 			            Ext.getCmp("indexResourceListViewId").getStore().loadPage(1, {
 		               		params: {
-		               			resourcrGroupId: resourcrGroupId
+		               			resourceGroupId: resourceGroupId
 		           			}
 		            });
 		        	}

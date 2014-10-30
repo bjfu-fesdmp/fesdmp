@@ -47,6 +47,7 @@ Ext.define('Bjfu.indexResource.view.QueryIndexResource',{
        				searchJson: searchJson
        			}
 			});
+
 			this.up('window').close();
 		}
 	}]
