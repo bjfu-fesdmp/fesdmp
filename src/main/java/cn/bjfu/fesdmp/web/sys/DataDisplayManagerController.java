@@ -1,5 +1,7 @@
 package cn.bjfu.fesdmp.web.sys;
 
+import cn.bjfu.fesdmp.domain.sys.IndexResource;
+import cn.bjfu.fesdmp.domain.sys.ResourceGroup;
 import cn.bjfu.fesdmp.domain.sys.UserGroup;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
@@ -8,6 +10,8 @@ import cn.bjfu.fesdmp.json.DataJson;
 import cn.bjfu.fesdmp.json.TableJson;
 import cn.bjfu.fesdmp.json.TreeJson;
 import cn.bjfu.fesdmp.sys.service.IDataService;
+import cn.bjfu.fesdmp.sys.service.IIndexResourceService;
+import cn.bjfu.fesdmp.sys.service.IResourceGroupService;
 import cn.bjfu.fesdmp.utils.PageInfoBean;
 import cn.bjfu.fesdmp.utils.Pagination;
 import cn.bjfu.fesdmp.web.BaseController;
@@ -61,7 +65,10 @@ public class DataDisplayManagerController extends BaseController {
 	private ObjectMapper mapper = new ObjectMapper();
 	@Autowired
 	private IDataService dataService;
-
+	@Autowired
+	private IResourceGroupService resourceGroupService;
+	@Autowired
+	private IIndexResourceService indexResourceService;
 	@RequestMapping(value = "/listView", method = RequestMethod.GET)
 	public String fileUploadPage() {
 		logger.info("fileUploadPage method.");
@@ -77,27 +84,33 @@ public class DataDisplayManagerController extends BaseController {
 		logger.info("dataDisplayList method.");
 		logger.info(pageInfo);
 		DataSearch dataSearch = null;
-		String newTableName = tableName.substring(0, 4) + "_"
-				+ tableName.substring(5);
-		Pagination<DataJson> page = new Pagination<DataJson>();
-		page.setPageSize(pageInfo.getLimit());
-		page.setCurrentPage(pageInfo.getPage());
-
-		IOrder order = new Order();
-		order.addOrderBy("time", "DESC");
-		order.addOrderBy("id", "DESC");
-
-		if (!StringUtils.isEmpty(pageInfo.getSearchJson())) {
-			dataSearch = mapper.readValue(pageInfo.getSearchJson(),
-					DataSearch.class);
-		}
-
-		logger.info(dataSearch);
-		this.dataService.queryByCondtinWithOperationTime(newTableName,
-				dataSearch, order, page, JoinMode.AND);
 		Map<String, Object> result = new HashMap<String, Object>();
-		result.put(PAGE_COUNT, page.getTotalRecord());
-		result.put(RESULT, page.getDatas());
+		if(tableName.length()>4){
+			System.out.println(tableName.charAt(4));
+			if(tableName.charAt(4)=='_'){
+				String newTableName = tableName.substring(0, 4) + "_"
+				+ tableName.substring(5);
+				Pagination<DataJson> page = new Pagination<DataJson>();
+				page.setPageSize(pageInfo.getLimit());
+				page.setCurrentPage(pageInfo.getPage());
+
+				IOrder order = new Order();
+				order.addOrderBy("time", "DESC");
+				order.addOrderBy("id", "DESC");
+
+				if (!StringUtils.isEmpty(pageInfo.getSearchJson())) {
+					dataSearch = mapper.readValue(pageInfo.getSearchJson(),
+							DataSearch.class);
+				}
+
+				logger.info(dataSearch);
+				this.dataService.queryByCondtinWithOperationTime(newTableName,
+						dataSearch, order, page, JoinMode.AND);
+				result.put(PAGE_COUNT, page.getTotalRecord());
+				result.put(RESULT, page.getDatas());
+		
+			}
+		}
 		result.put(SUCCESS, Boolean.TRUE);
 		return result;
 	}
@@ -109,9 +122,11 @@ public class DataDisplayManagerController extends BaseController {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 
 		logger.info("tableList method.");
+		//所有表
 		List<TableJson> tableList = this.dataService.findTable();
 		// 所有的节点列表
 		List<TreeJson> treeList = new ArrayList();
+		//所有年份节点
 		TreeJson firstYearTree = new TreeJson();
 		firstYearTree.setId(Integer.parseInt(tableList.get(0).getName()
 				.substring(0, 4)));
@@ -138,19 +153,54 @@ public class DataDisplayManagerController extends BaseController {
 				treeList.add(yearTree);
 			}
 		}
-		for (int i = 0; i < tableList.size(); i++) {
-			TreeJson tempTree = new TreeJson();
-			Integer temp = Integer.parseInt(tableList.get(i).getName()
-					.substring(0, 4));
-			Integer temp0 = temp * 100000 + i;
-			tempTree.setId(temp0);
-			tempTree.setParentId(temp);
-			tempTree.setText(String.valueOf(temp) + "年"
-					+ tableList.get(i).getName().substring(5));
-			tempTree.setLeaf(true);
-			treeList.add(tempTree);
-
+			//所有资源组节点
+		IOrder order = new Order();
+		order.addOrderBy("id", "DESC");
+		List<ResourceGroup> resourceGroupList=this.resourceGroupService.queryAll(order);
+		for (int i = 0; i < treeList.size(); i++) {
+			if(treeList.get(i).getText().getBytes().length==4){
+				for (int j = 0; j < resourceGroupList.size(); j++){
+					TreeJson tempTree = new TreeJson();
+					List<IndexResource> indexResourceList=this.indexResourceService.queryByResourceGroupId(resourceGroupList.get(j).getId());
+					Integer temp = treeList.get(i).getId();
+					Integer temp0 = temp * 100000 + j;
+					tempTree.setId(temp0);
+					tempTree.setParentId(temp);
+					tempTree.setText(resourceGroupList.get(j).getGroupName());
+					treeList.add(tempTree);
+					for(int m=0;m<tableList.size();m++){
+						for(int n=0;n<indexResourceList.size();n++){
+							if(tableList.get(m).getName().substring(5).equalsIgnoreCase(indexResourceList.get(n).getIndexEnName())&&tableList.get(m).getName().substring(0,4).equals(String.valueOf(temp))){
+								TreeJson newtempTree = new TreeJson();
+								Integer temp00 = temp0 * 100000 + n;
+								newtempTree.setId(temp00);
+								newtempTree.setParentId(temp0);
+								newtempTree.setText(tableList.get(m).getName());
+								newtempTree.setLeaf(true);
+								treeList.add(newtempTree);
+							}
+						}
+					}
+				}
+			}
 		}
+//		for (int i = 0; i < tableList.size(); i++) {
+//			TreeJson tempTree = new TreeJson();
+//			Integer temp = Integer.parseInt(tableList.get(i).getName()
+//					.substring(0, 4));
+//			Integer temp0 = temp * 100000 + i;
+//			tempTree.setId(temp0);
+//			tempTree.setParentId(temp);
+//			tempTree.setText(String.valueOf(temp) + "年"
+//					+ tableList.get(i).getName().substring(5));
+//			tempTree.setLeaf(true);
+//			treeList.add(tempTree);
+//
+//		}
+		
+		
+		
+		
 		List<TreeJson> newtreeList = new ArrayList();
 		for (int i = 0; i < treeList.size(); i++) {
 			if (treeList.get(i).getParentId()
@@ -170,7 +220,7 @@ public class DataDisplayManagerController extends BaseController {
 			BindingResult result, String tableName) throws IOException {
 		ExtJSFormResult extjsFormResult = new ExtJSFormResult();
 		String newTableName = tableName.substring(0, 4) + "_"
-				+ tableName.substring(7);
+				+ tableName.substring(5);
 		if (result.hasErrors()) {
 			for (ObjectError error : result.getAllErrors()) {
 				System.err.println("Error: " + error.getCode() + " - "

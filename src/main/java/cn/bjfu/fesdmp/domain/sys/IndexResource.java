@@ -19,9 +19,9 @@ public class IndexResource implements Serializable{
 	private static final long serialVersionUID = 4563893285739204858L;
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	@Column (nullable = false)
+	@Column(unique = true, nullable = false)
 	private String indexName;
-	@Column (nullable = false)
+	@Column(unique = true, nullable = false)
 	private String indexEnName;
 	@Column (nullable = false)
 	private String indexUnit;

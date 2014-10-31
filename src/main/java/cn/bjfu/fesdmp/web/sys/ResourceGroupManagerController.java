@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 
+
 import cn.bjfu.fesdmp.domain.sys.ResourceGroup;
 import cn.bjfu.fesdmp.domain.sys.UserGroup;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
@@ -136,11 +137,11 @@ public String getResourceGroupList(PageInfoBean pageInfo)
 
 @RequestMapping(value = "/deleteResourceGroup", method = RequestMethod.POST)
 @ResponseBody
-public Map<String, Object> deleteResourceGroup(String ids) throws Exception {
+public Map<String, Object> deleteResourceGroup(String id) throws Exception {
 	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 	logger.info("deleteResourceGroup method.");
-	System.out.println(ids);
-	this.resourceGroupService.deleteResourceGroup(Integer.parseInt(ids));
+	System.out.println(id);
+	this.resourceGroupService.deleteResourceGroup(Integer.parseInt(id));
 	Map<String, Object> result = new HashMap<String, Object>();
 	result.put(SUCCESS, Boolean.TRUE);
 	return result;
@@ -169,6 +170,21 @@ public Map<String, Object> getAllResourceGroupList()
 	Map<String, Object> result = new HashMap<String, Object>();
 	result.put(RESULT, resourceGroupList);
 	result.put(SUCCESS, Boolean.TRUE);
+	return result;
+}
+
+@RequestMapping(value = "/checkIfHaveIndexResource", method = RequestMethod.POST)
+@ResponseBody
+public Map<String, Object> checkIfHaveIndexResource(String id)
+		throws Exception {
+	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+	logger.info("checkIfHaveIndexResource method.");
+	boolean checkResult = this.resourceGroupService.checkIfHaveIndexResource(Integer.parseInt(id));
+	Map<String, Object> result = new HashMap<String, Object>();
+	if(checkResult==true)
+		result.put(SUCCESS, Boolean.TRUE);
+	else
+		result.put(SUCCESS, Boolean.FALSE);
 	return result;
 }
 }

@@ -12,6 +12,7 @@ import cn.bjfu.fesdmp.utils.Pagination;
 public interface IResourceGroupService {
 
 	public abstract void addResourceGroup(ResourceGroup resourceGroup);
+	public abstract boolean checkIfHaveIndexResource(int id);
 	public abstract void deleteResourceGroup(int id);
 	public abstract boolean ifHaveChild(int id);
 	public abstract void modifyResourceGroup(ResourceGroup resourceGroup);

@@ -53,9 +53,13 @@ Ext.define('Bjfu.resourceGroup.view.ResourceGroupView',{
 			    },{
 			        text : '资源组描述',
 			        dataIndex : 'memo'
+			    },{
+			        text : '叶子',
+			        dataIndex : 'leaf',
+			        hidden : true
 			    }
 			],
-			tbar : [{ 
+			tbar : [{
 		          text: '新增',
 		          scope:this,
 		          icon:Global_Path+'/resources/extjs/images/add.png',
@@ -106,7 +110,7 @@ Ext.define('Bjfu.resourceGroup.view.ResourceGroupView',{
 				        	
 				        	}
 				        	}
-				        },{ 
+				        },{
 		        	text: '删除' ,
 		        	icon:Global_Path+'/resources/extjs/images/delete.png',
 		        	scope:this,
@@ -118,27 +122,49 @@ Ext.define('Bjfu.resourceGroup.view.ResourceGroupView',{
 			        		Ext.Msg.alert('提示','请选择删除的记录！');
 			        		return;
 			        	}else{
-			        		//1.先得到ID的数据(domtId)
+			        		//1.先得到ID的数据(Id)
 			        		var st = gird.getStore();
-			        		var ids = [];
+			        		var id = null;
 			        		Ext.Array.each(record,function(data){
-			        			ids.push(data.get('id'));
-			        			Ext.Msg.confirm("提示","确定删除所选记录吗？",function(btn){
-			        				if(btn=='yes'){
-			        						Ext.Ajax.request({
-			        							url:Global_Path+'resourceGroup/deleteResourceGroup',
-												params:{ids:ids.join(",")},
-												method:'POST',
-												timeout:2000,
-												success:function(response,opts){
-													Ext.Array.each(record,function(data){
-														st.remove(data);
-													});
-													Ext.getCmp('resourceGroupViewId').store.reload();
-			        							}
-			        						})
+			        			id=data.get('id');
+			        			if(data.get('leaf')!=true)
+			        				{
+			        				Ext.Msg.alert('提示','该资源组有子资源组不能删除');
 			        				}
-			        			})
+			        			else
+			        			{
+				        			Ext.Ajax.request({
+										url : Global_Path+'resourceGroup/checkIfHaveIndexResource',
+										params :{id:id},
+										success:function(response) {
+											var	result =  Ext.decode(response.responseText);
+					                    	if(result.success){
+											Ext.Msg.alert('提示','该资源组下有指标资源不能删除');
+					                    	}
+					                    	else{
+											Ext.Msg.confirm("提示","要删除该资源组吗？",function(btn){
+												if(btn=='yes'){
+													Ext.Ajax.request({
+														url:Global_Path+'resourceGroup/deleteResourceGroup',
+														params:{id:id},
+														method:'POST',
+														timeout:2000,
+														success:function(response,opts){
+															Ext.Array.each(record,function(data){
+																st.remove(data);
+															});
+													Ext.getCmp('resourceGroupViewId').store.reload();
+														}
+													});
+											}
+										});
+					                   }
+									}
+			        				
+				        			});
+			        				
+			        				
+			        			}
 			        		});
 			        	}    
 		    		}

@@ -70,4 +70,8 @@ public class ResourceGroupService implements IResourceGroupService {
 		return this.resourceGroupDao.ifHaveChild(id);	
 	}
 	
+	public  boolean checkIfHaveIndexResource(int id){
+		return this.resourceGroupDao.checkIfHaveIndexResource(id);
+	}
+	
 }

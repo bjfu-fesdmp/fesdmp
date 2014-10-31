@@ -73,7 +73,15 @@ public class IndexResourceDaoImpl extends AbstractGenericDao<IndexResource> impl
 		}
 	}
 	
+	public List<IndexResource> queryByResourceGroupId(int resourceGroupId){
+		String jpal = " SELECT p FROM ResourceRelation m,IndexResource p where m.resourceGroup.id="+resourceGroupId+" and m.indexResource.id=p.id ";
 
+		logger.info(jpal);
+		Query query = super.getEntityManager().createQuery(jpal);
+
+		return query.getResultList();
+
+	}
 	
 }
  

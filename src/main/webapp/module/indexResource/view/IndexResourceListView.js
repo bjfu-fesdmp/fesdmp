@@ -197,6 +197,36 @@ Ext.define('Bjfu.indexResource.view.IndexResourceListView',{
 			        		});
 			        	}    
 		    		}
+		        },{
+		            text: '新增数据表',
+			          scope:this,
+			          icon:Global_Path+'/resources/extjs/images/add.png',
+			          handler : function(o){
+				        	 var gird = o.ownerCt.ownerCt;
+						     var record = gird.getSelectionModel().getSelection();
+						     	if(record.length>1||record.length==0)
+						     		{
+						     			Ext.Msg.alert('提示','请选择一条记录！');
+						     			return;
+						     		}else{
+				        	
+				        	var addForm = Ext.create('Bjfu.indexResource.view.AddTable',{
+											});
+				        	addForm.loadRecord(record[0]);
+			        	Ext.create('Ext.window.Window',{
+			        		title:'添加数据表',
+			        		closable:true,
+			        		closeAction:'destroy',
+			        		modal:true,
+			        		resizable:false,
+			        	    border:false,
+			        		width:300,
+			        		height:230,
+			        		layout:'fit',
+			        		items:[addForm]
+			        	}).show();
+			          } 
+			    }
 		        }
 //				    , "->" ,{
 //			       	text : '高级查询' ,

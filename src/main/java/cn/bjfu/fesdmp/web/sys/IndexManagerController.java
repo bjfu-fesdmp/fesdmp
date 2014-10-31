@@ -28,6 +28,7 @@ import cn.bjfu.fesdmp.domain.sys.UserGroup;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.frame.dao.Order;
+import cn.bjfu.fesdmp.json.CreateTableJson;
 import cn.bjfu.fesdmp.json.IndexResourceJson;
 import cn.bjfu.fesdmp.sys.service.IIndexResourceService;
 import cn.bjfu.fesdmp.sys.service.IResourceRelationService;
@@ -131,7 +132,7 @@ public class IndexManagerController extends BaseController {
 		indexResource.setCreateTime(dt);
 		Date dtm = new Date(70,0,1,0,0,0);
 		indexResource.setModifyTime(dtm);
-		this.indexService.addIndResource(indexResource,resourceGroupId);
+		this.indexService.addIndexResource(indexResource,resourceGroupId);
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put(SUCCESS, Boolean.TRUE);
 		return result;
@@ -143,7 +144,7 @@ public class IndexManagerController extends BaseController {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		logger.info("deleteIndexResource method.");
 		System.out.println(ids);
-		this.indexService.deleteIndResource(Integer.parseInt(ids));
+		this.indexService.deleteIndexResource(Integer.parseInt(ids));
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put(SUCCESS, Boolean.TRUE);
 		return result;
@@ -155,7 +156,18 @@ public class IndexManagerController extends BaseController {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		logger.info("modifyIndexResource method.");
 		IndexResource indexResource = mapper.readValue(formData,IndexResource.class);
-		this.indexService.modifyIndResource(indexResource);;
+		this.indexService.modifyIndexResource(indexResource);;
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put(SUCCESS, Boolean.TRUE);
+		return result;
+	}
+	@RequestMapping(value = "/addTable", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> addTable(String formData) throws Exception {
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		logger.info("modifyIndexResource method.");
+		CreateTableJson createTableJson = mapper.readValue(formData,CreateTableJson.class);
+		this.indexService.addTableByYear(createTableJson);
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put(SUCCESS, Boolean.TRUE);
 		return result;

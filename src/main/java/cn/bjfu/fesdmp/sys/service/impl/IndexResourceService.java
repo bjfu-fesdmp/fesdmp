@@ -13,6 +13,7 @@ import cn.bjfu.fesdmp.domain.sys.ResourceGroup;
 import cn.bjfu.fesdmp.domain.sys.ResourceRelation;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
+import cn.bjfu.fesdmp.json.CreateTableJson;
 import cn.bjfu.fesdmp.sys.dao.IIndexResourceDao;
 import cn.bjfu.fesdmp.sys.dao.IResourceGroupDao;
 import cn.bjfu.fesdmp.sys.dao.IResourceRelationDao;
@@ -31,18 +32,24 @@ public class IndexResourceService implements IIndexResourceService {
 	@Autowired
 	private IResourceRelationDao resourceRelationDao;
 	@Override
-	public void addIndResource(IndexResource indexResource,int resourceGroupId) {
+	public void addIndexResource(IndexResource indexResource,int resourceGroupId) {
 		ResourceGroup resourceGroup=this.resourceGroupDao.findByKey(resourceGroupId);
 		ResourceRelation resourceRelation=new ResourceRelation();
 		this.indexResourceDao.insert(indexResource);
-		this.indexResourceDao.createResourceListByTime(indexResource.getIndexEnName(), "2014");
 		resourceRelation.setIndexResourceId(indexResource);
 		resourceRelation.setResourceGroupId(resourceGroup);
 		this.resourceRelationDao.insert(resourceRelation);
 	}
+	@Override
+	public void addTableByYear(CreateTableJson createTableJson){
+		this.indexResourceDao.createResourceListByTime(createTableJson.getIndexEnName(), createTableJson.getYear());
+	}
 
 	@Override
-	public void deleteIndResource(int id) {
+	public void deleteIndexResource(int id) {
+		ResourceRelation resourceRelation=new ResourceRelation();
+		resourceRelation=this.resourceRelationDao.findByIndexResourceId(id);
+		this.resourceRelationDao.delete(resourceRelation);
 		this.indexResourceDao.delete(this.indexResourceDao.findByKey(id));
 	}
 
@@ -72,7 +79,7 @@ public class IndexResourceService implements IIndexResourceService {
 	}
 
 	@Override
-	public void modifyIndResource(IndexResource indexResource) {
+	public void modifyIndexResource(IndexResource indexResource) {
 		IndexResource indexResourceNew = this.indexResourceDao.findByKey(indexResource.getId());
 		indexResourceNew.setIndexName(indexResource.getIndexName());
 		indexResourceNew.setIndexEnName(indexResource.getIndexEnName());
@@ -87,6 +94,10 @@ public class IndexResourceService implements IIndexResourceService {
 	public List<IndexResource> queryByConditionAndResourceGroupId(Object condition, IOrder order,
 			Pagination<IndexResource> page, JoinMode joinMode,String resourceGroupId) {
 		return this.indexResourceDao.queryByConditionAndResourceGroupId(condition, order, page, joinMode,resourceGroupId);
+	}
+	@Override
+	public List<IndexResource> queryByResourceGroupId(int resourceGroupId) {
+		return this.indexResourceDao.queryByResourceGroupId(resourceGroupId);
 	}
 }
  

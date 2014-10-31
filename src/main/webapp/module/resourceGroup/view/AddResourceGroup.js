@@ -49,17 +49,19 @@ Ext.define('Bjfu.resourceGroup.view.AddResourceGroup',{
     	    	fieldLabel:'资源组编号',
     	    	name:'id',
     	    	xtype:'hiddenfield'
-    	    },{
-    	    	id : 'userGroup',
-    	    	xtype : 'combo',
-    	        fieldLabel : '父资源组',
-    	        name : 'groupParentId',
-    	        store : Ext.create('resourceGroupList'),
-    	        editable : false,
-    	        displayField : 'groupName',
-    	        valueField : 'id',
-    	        emptyText : '请选择...'	
-    	    },{
+    	    }
+//    	    ,{
+//    	    	id : 'userGroup',
+//    	    	xtype : 'combo',
+//    	        fieldLabel : '父资源组',
+//    	        name : 'groupParentId',
+//    	        store : Ext.create('resourceGroupList'),
+//    	        editable : false,
+//    	        displayField : 'groupName',
+//    	        valueField : 'id',
+//    	        emptyText : '请选择...'	
+//    	    }
+    	    ,{
     	    	fieldLabel:'注释',
     	    	name:'memo',
        	        maxLength : 50,

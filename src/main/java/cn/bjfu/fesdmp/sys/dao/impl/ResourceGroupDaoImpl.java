@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
 import cn.bjfu.fesdmp.domain.sys.ResourceGroup;
+import cn.bjfu.fesdmp.domain.sys.ResourceRelation;
 import cn.bjfu.fesdmp.domain.sys.UserUserGroupRelation;
 import cn.bjfu.fesdmp.sys.dao.IResourceGroupDao;
 
@@ -43,5 +44,17 @@ public class ResourceGroupDaoImpl extends AbstractGenericDao<ResourceGroup> impl
 		else
 			return true;
 	}
+	@Override
+	public boolean checkIfHaveIndexResource(int id){
+		String jpal = " SELECT p FROM ResourceRelation p where p.resourceGroup.id="+id;
+		logger.info(jpal);
+		Query query = super.getEntityManager().createQuery(jpal);
+		List<ResourceRelation> resourceRelationList=query.getResultList();
+		if(resourceRelationList.isEmpty())
+			return false;
+		else
+			return true;
+	}
+	
 }
 

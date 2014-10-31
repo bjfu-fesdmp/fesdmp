@@ -40,8 +40,19 @@ public class ResourceRelationDaoImpl extends AbstractGenericDao<ResourceRelation
 		logger.info(jpal);
 		Query query = super.getEntityManager().createQuery(jpal);
 		List<ResourceRelation> list=query.getResultList();
-		ResourceRelation resourceRelation=new ResourceRelation();
 		return list;
 	}
+	@Override
+	public ResourceRelation findByIndexResourceId(int indexResourceId){
+		String jpal = " SELECT p FROM ResourceRelation p where p.indexResource.id="+indexResourceId;
+		logger.info(jpal);
+		Query query = super.getEntityManager().createQuery(jpal);
+		List<ResourceRelation> list=query.getResultList();
+		ResourceRelation resourceRelation=new ResourceRelation();
+		resourceRelation=list.get(0);
+		return resourceRelation;
+		
+	}
+	
 }
  

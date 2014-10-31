@@ -20,7 +20,8 @@
 		    		'Bjfu.resourceGroup.view.ResourceGroupView': Global_Path + 'module/resourceGroup/view/ResourceGroupView.js',
 		    		'Bjfu.resourceGroup.view.QueryResourceGroup' : Global_Path + 'module/resourceGroup/view/QueryResourceGroup.js',
 		    		'Bjfu.resourceGroup.view.AddResourceGroup' : Global_Path + 'module/resourceGroup/view/AddResourceGroup.js',
-		    		'Bjfu.resourceGroup.view.ModifyResourceGroup' : Global_Path + 'module/resourceGroup/view/ModifyResourceGroup.js'
+		    		'Bjfu.resourceGroup.view.ModifyResourceGroup' : Global_Path + 'module/resourceGroup/view/ModifyResourceGroup.js',
+		    		'Bjfu.indexResource.view.AddTable':Global_Path + 'module/indexResource/view/AddTable.js'
 		    	}
 			 });
 		  	 	

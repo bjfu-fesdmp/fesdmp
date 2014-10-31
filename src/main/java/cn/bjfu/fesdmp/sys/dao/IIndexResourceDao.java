@@ -15,5 +15,6 @@ public interface IIndexResourceDao extends IGenericDao<IndexResource> {
 	public abstract String findUnitByIndex(String index);
 	public abstract List<IndexResource> queryByConditionAndResourceGroupId(Object condition, IOrder order,
 			Pagination<IndexResource> page, JoinMode joinMode,String resourceGroupId);
+	public abstract List<IndexResource> queryByResourceGroupId(int resourceGroupId);
 }
  
