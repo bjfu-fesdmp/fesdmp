@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 
+
 import cn.bjfu.fesdmp.domain.sys.User;
 import cn.bjfu.fesdmp.domain.sys.UserGroup;
 import cn.bjfu.fesdmp.domain.sys.UserUserGroupRelation;
@@ -34,6 +35,7 @@ import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.frame.dao.Order;
 import cn.bjfu.fesdmp.json.AddUserJson;
 import cn.bjfu.fesdmp.json.UserGroupJson;
+import cn.bjfu.fesdmp.sys.service.IUserGroupRoleRelationService;
 import cn.bjfu.fesdmp.sys.service.IUserGroupService;
 import cn.bjfu.fesdmp.sys.service.IUserUserGroupRelationService;
 import cn.bjfu.fesdmp.utils.PageInfoBean;
@@ -54,6 +56,8 @@ public class UserGroupManagerController extends BaseController {
 	private IUserGroupService userGroupService;
 	@Autowired
 	private IUserUserGroupRelationService userUserGroupRelationService;
+	@Autowired
+	private IUserGroupRoleRelationService userGroupRoleRelationService;
 	@RequestMapping(value = "/listView", method = RequestMethod.GET)
 	public String userGroupPage() {
 		logger.info("sysuserGeoupPage method.");
@@ -100,6 +104,8 @@ public class UserGroupManagerController extends BaseController {
 			userGroupJson.setUserGroupName(userGroup.getUserGroupName());
 			if(userGroup.getCreater()!=null)
 			userGroupJson.setCreaterId(userGroup.getCreater().getId());
+			userGroupJson.setRoleName(this.userGroupRoleRelationService.findUserGroupRoleRelationByUserGroupId(Integer.toString(userGroup.getId())).getRole().getRoleName());
+			userGroupJson.setRole(this.userGroupRoleRelationService.findUserGroupRoleRelationByUserGroupId(Integer.toString(userGroup.getId())).getRole().getId());
 			userGroupJsonList.add(userGroupJson);
 		}
 		result.put(RESULT, userGroupJsonList);
@@ -113,14 +119,14 @@ public class UserGroupManagerController extends BaseController {
 	public Map<String, Object> addUserGroup(String formData) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		logger.info("userGroupList method.");
-		UserGroup userGroup = null;
+		UserGroupJson userGroupJson = null;
 		if (!StringUtils.isEmpty(formData)) {
-			userGroup = mapper.readValue(formData,UserGroup.class);
+			userGroupJson = mapper.readValue(formData,UserGroupJson.class);
 		}
-		logger.info(userGroup);
+		logger.info(userGroupJson);
 		Date dt=new Date();
-		userGroup.setCreateTime(dt);
-		this.userGroupService.addUserGroup(userGroup);
+		userGroupJson.setCreateTime(dt);
+		this.userGroupService.addUserGroup(userGroupJson);
 
 		Map<String, Object> result = new HashMap<String, Object>();
 
@@ -153,6 +159,7 @@ public Map<String, Object> getUserGroupList()
 		UserGroup userGroup = page.getDatas().get(i);
 		UserGroupJson userGroupJson = new UserGroupJson();
 		userGroupJson.setId(userGroup.getId());
+		userGroupJson.setUserGroupId(userGroup.getId());;
 		userGroupJson.setCreateTime(userGroup.getCreateTime());
 		userGroupJson.setUserGroupName(userGroup.getUserGroupName());
 		if(userGroup.getCreater()!=null)

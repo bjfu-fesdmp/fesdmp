@@ -18,9 +18,10 @@ public interface IResourceGroupService {
 	public abstract void modifyResourceGroup(ResourceGroup resourceGroup);
 	public abstract List<ResourceGroup> queryAll(IOrder order);
 	public abstract List<ResourceGroup> findResourceGroupById(int parentId);
+	public abstract List<ResourceGroup> findResourceGroupByroleId(String roleId);
 	public abstract void queryByCondition(final Object condition, IOrder order, Pagination<ResourceGroup> page);
 	public abstract List<ResourceGroup> queryByCondition(final Object condition, IOrder order,
 			Pagination<ResourceGroup> page, JoinMode joinMode);
-
+	public abstract List<ResourceGroup> findResourceGroupNotInThisRole(String roleId);
 }
  

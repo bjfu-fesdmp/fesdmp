@@ -1,4 +1,4 @@
-Ext.define('Bjfu.indexResource.model.Role',{
+Ext.define('Bjfu.role.model.Role',{
 	extend : 'Ext.data.Model',
 	fields : [{
     	name : 'id',   					

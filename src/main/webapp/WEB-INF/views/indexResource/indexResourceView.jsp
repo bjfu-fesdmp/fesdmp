@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>指标管理</title>
+	<title>资源组与指标管理</title>
 </head>
 <body>
 <div id ="indexResourcePanel"></div>
@@ -27,6 +27,7 @@
 		  	 	
 			var indexResourceListView = Ext.create('Bjfu.indexResource.view.IndexResourceListView',{
 									id :'indexResourceListViewId',
+									title:'指标管理',
 									region:"center",
 									width:'70%',
 									autoShow : true,
@@ -44,7 +45,6 @@
 			});				
 			Ext.create('Ext.panel.Panel',{
 				autoRender : true,
-				title:'指标管理',
 				width:'100%',
 				height:'100%',
 				layout:'border',

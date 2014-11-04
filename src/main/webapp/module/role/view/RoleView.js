@@ -27,7 +27,7 @@ Ext.define('Bjfu.role.view.RoleView',{
 	                update : 'POST',
 	                destroy: 'POST'
 				},
-				url : Global_Path+'role/roleList',////////////////////////////////////
+				url : Global_Path+'role/roleList',//
 				reader : {
 					type : 'json',
 					root : 'result',
@@ -72,7 +72,7 @@ Ext.define('Bjfu.role.view.RoleView',{
 			    	dataIndex : 'roleDiscription'
 			    },{
 			        text : '创建者id',
-			        dataIndex : 'createrId',
+			        dataIndex : 'creater_id',
 			        width : '10%'
 			    },{
 			        text : '创建时间',
@@ -163,6 +163,33 @@ Ext.define('Bjfu.role.view.RoleView',{
 			       	}).show();
 		       }
 			}],
+			listeners:{
+				scope : this,
+				checkchange :function(node, checked) {
+					node.checked = checked;
+					var records = me.getView().getChecked();
+					for (var i = 0; i < records.length; i++) {
+						if (records[i].get('id') != node.get('id')) {
+							records[i].set("checked" , false);
+						}
+					}
+				},
+	        	'itemclick' : function(view, record, item, index, e){
+	        		
+	        		var roleId=record.get("id");
+	        		
+	        		 Ext.getCmp("resourceGroupViewId").getStore().baseParams= {
+	        			 roleId: roleId
+	           			};
+	        		
+		            Ext.getCmp("resourceGroupViewId").getStore().load({
+	               			params: {
+	               				roleId: roleId
+	               			}
+		            	});
+		            
+	        	}
+			},
 			loadMask:true,
 			bbar : Ext.create('Ext.toolbar.Paging', {
 					width : '100%',

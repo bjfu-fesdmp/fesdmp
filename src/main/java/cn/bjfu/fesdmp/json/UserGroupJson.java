@@ -6,9 +6,12 @@ import java.util.Date;
 
 public class UserGroupJson {
 	private Integer id;
+	private Integer userGroupId;
 	private String userGroupName;
 	private int creater_id;
 	private Date createTime;
+	private int role;
+	private String roleName;
 	public UserGroupJson() {}
 	
 	public Integer getId() {
@@ -18,7 +21,13 @@ public class UserGroupJson {
 	public void setId(Integer id) {
 		this.id = id;
 	}
+	public Integer getUserGroupId() {
+		return userGroupId;
+	}
 
+	public void setUserGroupId(Integer userGroupId) {
+		this.userGroupId = userGroupId;
+	}
 	public String getUserGroupName() {
 		return userGroupName;
 	}
@@ -27,7 +36,13 @@ public class UserGroupJson {
 		this.userGroupName = userGroupName;
 	}
 
+	public String getRoleName() {
+		return roleName;
+	}
 
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
+	}
 	public int getCreaterId() {
 		return creater_id;
 	}
@@ -43,6 +58,12 @@ public class UserGroupJson {
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
+	public Integer getRole() {
+		return role;
+	}
 
+	public void setRole(Integer role) {
+		this.role = role;
+	}
 	
 }

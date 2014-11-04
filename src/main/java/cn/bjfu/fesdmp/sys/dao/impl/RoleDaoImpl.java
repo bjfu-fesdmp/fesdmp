@@ -1,5 +1,9 @@
 package cn.bjfu.fesdmp.sys.dao.impl;
 
+import java.util.List;
+
+import javax.persistence.Query;
+
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +18,7 @@ public class RoleDaoImpl extends AbstractGenericDao<Role> implements IRoleDao {
 	public RoleDaoImpl() {
 		super(Role.class);
 	}
+	
 
 }
  

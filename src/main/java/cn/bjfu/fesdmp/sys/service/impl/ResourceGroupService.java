@@ -66,6 +66,9 @@ public class ResourceGroupService implements IResourceGroupService {
 	public List<ResourceGroup> findResourceGroupById(int parentId){
 		return this.resourceGroupDao.findResourceGroupById(parentId);	
 	}
+	public List<ResourceGroup> findResourceGroupByroleId(String roleId){
+		return this.resourceGroupDao.findResourceGroupByroleId(roleId);	
+	}
 	public boolean ifHaveChild(int id){
 		return this.resourceGroupDao.ifHaveChild(id);	
 	}
@@ -73,5 +76,9 @@ public class ResourceGroupService implements IResourceGroupService {
 	public  boolean checkIfHaveIndexResource(int id){
 		return this.resourceGroupDao.checkIfHaveIndexResource(id);
 	}
-	
+	@Transactional(readOnly = true)
+	@Override
+	public List<ResourceGroup> findResourceGroupNotInThisRole(String roleId) {
+		return this.resourceGroupDao.findResourceGroupNotInThisRole(roleId);
+	}
 }

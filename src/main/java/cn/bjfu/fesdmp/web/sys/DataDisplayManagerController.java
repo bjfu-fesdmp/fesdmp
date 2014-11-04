@@ -85,6 +85,7 @@ public class DataDisplayManagerController extends BaseController {
 		logger.info(pageInfo);
 		DataSearch dataSearch = null;
 		Map<String, Object> result = new HashMap<String, Object>();
+		if(tableName!=null){
 		if(tableName.length()>4){
 			System.out.println(tableName.charAt(4));
 			if(tableName.charAt(4)=='_'){
@@ -111,6 +112,7 @@ public class DataDisplayManagerController extends BaseController {
 		
 			}
 		}
+	}	
 		result.put(SUCCESS, Boolean.TRUE);
 		return result;
 	}
@@ -153,7 +155,7 @@ public class DataDisplayManagerController extends BaseController {
 				treeList.add(yearTree);
 			}
 		}
-			//所有资源组节点
+			//所有其他节点
 		IOrder order = new Order();
 		order.addOrderBy("id", "DESC");
 		List<ResourceGroup> resourceGroupList=this.resourceGroupService.queryAll(order);
@@ -167,7 +169,7 @@ public class DataDisplayManagerController extends BaseController {
 					tempTree.setId(temp0);
 					tempTree.setParentId(temp);
 					tempTree.setText(resourceGroupList.get(j).getGroupName());
-					treeList.add(tempTree);
+					tempTree.setLeaf(true);
 					for(int m=0;m<tableList.size();m++){
 						for(int n=0;n<indexResourceList.size();n++){
 							if(tableList.get(m).getName().substring(5).equalsIgnoreCase(indexResourceList.get(n).getIndexEnName())&&tableList.get(m).getName().substring(0,4).equals(String.valueOf(temp))){
@@ -178,9 +180,12 @@ public class DataDisplayManagerController extends BaseController {
 								newtempTree.setText(tableList.get(m).getName());
 								newtempTree.setLeaf(true);
 								treeList.add(newtempTree);
+								if(tempTree.getLeaf()==true)
+									tempTree.setLeaf(false);
 							}
 						}
 					}
+					treeList.add(tempTree);
 				}
 			}
 		}

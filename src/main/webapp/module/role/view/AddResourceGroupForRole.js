@@ -1,5 +1,4 @@
-Ext.define('resourceGroupList', {
-    extend: 'Ext.data.Store',
+var resourceGroupListStore=new Ext.data.Store({
     fields: ['id', 'groupName'],
 	proxy : {
 		type : 'ajax',
@@ -9,16 +8,34 @@ Ext.define('resourceGroupList', {
             update : 'POST',
             destroy: 'POST'
 		},
-		url : Global_Path+'resourceGroup/getAllResourceGroupList',
+		url : Global_Path+'resourceGroup/getResourceGroupListNotInThisRole',
+		reader : {
+			type : 'json',
+			root : 'result'
+		}
+	},
+	autoLoad:false
+});
+
+Ext.define('roleList', {
+    extend: 'Ext.data.Store',
+    fields: ['id', 'roleName'],
+	proxy : {
+		type : 'ajax',
+		actionMethods: {
+            create : 'POST',
+            read   : 'POST', // by default GET
+            update : 'POST',
+            destroy: 'POST'
+		},
+		url : Global_Path+'role/roleList',
 		reader : {
 			type : 'json',
 			root : 'result'
 		}
 	}
 });
-
-
-Ext.define('Bjfu.indexResource.view.AddIndexResource',{
+Ext.define('Bjfu.role.view.AddResourceGroupForRole',{
 	extend:'Ext.form.Panel',
 	bodyPadding: 5,
 	border:false,
@@ -38,42 +55,40 @@ Ext.define('Bjfu.indexResource.view.AddIndexResource',{
     	    },
 		    defaultType: 'textfield',
     	    items: [{
-    	        fieldLabel : '中文名称<font color="red">*</font>',//验重
-    	        name: 'indexName',
+    	    	id : 'role',
+    	    	xtype : 'combo',
+    	        fieldLabel : '角色<font color="red">*</font>',
+    	        name : 'roleId',
+    	        store : Ext.create('roleList'),
     	        allowBlank : false,
-    	        maxLength : 50,
-				maxLengthText : '长度不能超过50个字符'    	        
-    	    },{
-    	    	fieldLabel : '英文名称<font color="red">*</font>',
-    	    	name :'indexEnName',
-    	    	allowBlank : false,
-    	    	maxLength : 50,
- 				maxLengthText : '长度不能超过50个字符' 
-    	    },{
-    	    	fieldLabel : '指标单位<font color="red">*</font>',
-    	    	name : 'indexUnit',
-    	    	allowBlank : false,
-    	    	maxLength : 50,
- 				maxLengthText : '长度不能超过50个字符' 
+    	        editable : false,
+    	        displayField : 'roleName',
+    	        valueField : 'id',
+    	        emptyText : '请选择...'	,
+    	        listeners : { //监听该下拉列表的选择事件
+    	            select : function(combo, record, index) {
+    	            	Ext.getCmp('resourceGroup').clearValue();
+    	            	var roleId=combo.getValue();
+    	                resourceGroupListStore.load({
+    	               		params: {
+    	               			roleId: roleId
+    	           			}
+    	            });
+    	            }
+    	    
+    	        }
     	    },{
     	    	id : 'resourceGroup',
     	    	xtype : 'combo',
-    	        fieldLabel : '所属资源组<font color="red">*</font>',
+    	        fieldLabel : '资源组<font color="red">*</font>',
     	        name : 'resourceGroupId',
-    	        store : Ext.create('resourceGroupList'),
+    	        store : resourceGroupListStore,
     	        allowBlank : false,
     	        editable : false,
     	        displayField : 'groupName',
     	        valueField : 'id',
-    	        emptyText : '请选择...'	
-    	    },{
-    	    	fieldLabel : '描述',
-    	    	name: 'indexMemo',
-    	    	allowBlank : true
-    	    },{
-    	    	fieldLabel:'指标编号',
-    	    	name:'id',
-    	    	xtype:'hiddenfield'
+    	        emptyText : '请选择...'	,
+    	        queryMode:'local'
     	    }]
     	});
     	me.callParent(arguments);
@@ -92,21 +107,22 @@ Ext.define('Bjfu.indexResource.view.AddIndexResource',{
 		            var form = this.up('form').getForm();
 		            var window = this.up('window');
 		            if (form.isValid()) {
-		            	var userGroupValues = form.getValues();
+		            	var roleValues = form.getValues();
 		            		Ext.Ajax.request({
-		    	 	   			url:Global_Path+'indexresource/addIndexResource',
+		    	 	   			url:Global_Path+'role/addResourceGroupForRole',
 		    	 	   			method:'post',
 		    	 	   			params:{
-		    	 	   					formData:Ext.encode(userGroupValues)
+		    	 	   					formData:Ext.encode(roleValues)
 		    	 	   			},
 		    	 	   		success: function(response) {
 		                    	var	result =  Ext.decode(response.responseText);
 		                    	if(result.success){
-		                    		Ext.Msg.alert('提示','添加指标成功');
+		                    		Ext.Msg.alert('提示','为角色添加资源组成功');
 		    						window.close();
-		    	 	   			Ext.getCmp('indexResourceListViewId').store.reload();
+		    	 	   			Ext.getCmp('roleViewId').store.reload();
+		    	 	   			Ext.getCmp('resourceGroup').store.reload();
 		                    	}else{
-		                    		Ext.Msg.alert('提示','添加指标失败');
+		                    		Ext.Msg.alert('提示','为角色添加资源组失败');
 		                    		window.close();
 		                    	}
 		                    },

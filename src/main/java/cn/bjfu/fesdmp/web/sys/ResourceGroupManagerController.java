@@ -57,14 +57,19 @@ public class ResourceGroupManagerController extends BaseController {
 //资源组树形结构
 	@RequestMapping(value = "/resourceGroupList", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> resourceGroupList(String groupParentId)
+	public Map<String, Object> resourceGroupList(String groupParentId,String roleId)
 			throws Exception {
 
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		logger.info("resourceGroupList method.");
 		IOrder order = new Order();
 		order.addOrderBy("id", "DESC");
-		List<ResourceGroup> resourceGroupList = this.resourceGroupService.findResourceGroupById(Integer.parseInt(groupParentId));
+		List<ResourceGroup> resourceGroupList=new ArrayList();
+		if(roleId!=null)
+			resourceGroupList=this.resourceGroupService.findResourceGroupByroleId(roleId);
+		else if(groupParentId!=null)
+			resourceGroupList = this.resourceGroupService.findResourceGroupById(Integer.parseInt(groupParentId));
+
 		List<ResourceGroupTreeJson> resourceGroupJsonList = new ArrayList<ResourceGroupTreeJson>();
 		for(int i=0;i<resourceGroupList.size();i++){
 			ResourceGroupTreeJson resourceGroupTreeJson=new ResourceGroupTreeJson();
@@ -185,6 +190,58 @@ public Map<String, Object> checkIfHaveIndexResource(String id)
 		result.put(SUCCESS, Boolean.TRUE);
 	else
 		result.put(SUCCESS, Boolean.FALSE);
+	return result;
+}
+
+@RequestMapping(value = "/resourceGroupOfRoleList", method = RequestMethod.POST)
+@ResponseBody
+public Map<String, Object> resourceGroupOfRoleList(String roleId)
+		throws Exception {
+
+	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+	logger.info("resourceGroupList method.");
+	IOrder order = new Order();
+	order.addOrderBy("id", "DESC");
+	List<ResourceGroup> resourceGroupList=new ArrayList();
+	if(roleId!=null)
+		resourceGroupList=this.resourceGroupService.findResourceGroupByroleId(roleId);
+
+	List<ResourceGroupTreeJson> resourceGroupJsonList = new ArrayList<ResourceGroupTreeJson>();
+	for(int i=0;i<resourceGroupList.size();i++){
+		ResourceGroupTreeJson resourceGroupTreeJson=new ResourceGroupTreeJson();
+		resourceGroupTreeJson.setGroupName(resourceGroupList.get(i).getGroupName());
+		resourceGroupTreeJson.setGroupParentId(resourceGroupList.get(i).getGroupParentId());
+		resourceGroupTreeJson.setId(resourceGroupList.get(i).getId());
+		resourceGroupTreeJson.setMemo(resourceGroupList.get(i).getMemo());
+		if(this.resourceGroupService.ifHaveChild(resourceGroupTreeJson.getId()))
+			resourceGroupTreeJson.setLeaf(false);
+		else
+			resourceGroupTreeJson.setLeaf(true);
+		resourceGroupJsonList.add(resourceGroupTreeJson);
+		
+	}
+	
+	
+	Map<String, Object> result = new HashMap<String, Object>();
+	result.put(RESULT, resourceGroupJsonList);
+	result.put(SUCCESS, Boolean.TRUE);
+	return result;
+}
+@RequestMapping(value = "/getResourceGroupListNotInThisRole", method = RequestMethod.POST)
+@ResponseBody
+public Map<String, Object> getResourceGroupListNotInThisRole(String roleId)
+		throws Exception {
+
+	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+	logger.info("resourceGroupList method.");
+	IOrder order = new Order();
+	order.addOrderBy("id", "DESC");
+	List<ResourceGroup> resourceGroupList=new ArrayList();
+	if(roleId!=null)
+	resourceGroupList = this.resourceGroupService.findResourceGroupNotInThisRole(roleId);
+	Map<String, Object> result = new HashMap<String, Object>();
+	result.put(RESULT, resourceGroupList);
+	result.put(SUCCESS, Boolean.TRUE);
 	return result;
 }
 }

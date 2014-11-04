@@ -7,7 +7,7 @@ Ext.apply(Ext.form.VTypes, {
 });
 Ext.define('userGroupList', {
     extend: 'Ext.data.Store',
-    fields: ['id', 'userGroupName'],
+    fields: ['userGroupId', 'userGroupName'],
 	proxy : {
 		type : 'ajax',
 		actionMethods: {
@@ -88,7 +88,7 @@ Ext.define('Bjfu.user.view.AddUser',{
     	        store : Ext.create('userGroupList'),
     	        editable : false,
     	        displayField : 'userGroupName',
-    	        valueField : 'id',
+    	        valueField : 'userGroupId',
     	        emptyText : '请选择...'	
     	    }]
     	});

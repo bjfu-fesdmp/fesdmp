@@ -1,6 +1,6 @@
 Ext.define('userGroupList', {
     extend: 'Ext.data.Store',
-    fields: ['id', 'userGroupName'],
+    fields: ['userGroupId', 'userGroupName'],
 	proxy : {
 		type : 'ajax',
 		actionMethods: {
@@ -28,8 +28,8 @@ Ext.define('Bjfu.user.view.ModifyUser',{
 	
 	initComponent: function() {
     	var me = this;
-    	var userGroupId = me.userGroupId;
-    	var userGroupName=me.userGroupName; 
+//    	var userGroupId = me.userGroupId;
+//    	var userGroupName=me.userGroupName; 
 
     	Ext.apply(me, {
     		layout: 'column',
@@ -65,12 +65,11 @@ Ext.define('Bjfu.user.view.ModifyUser',{
     	        fieldLabel : '所属用户组<font color="red">*</font>',
     	        allowBlank : false,
     	        name : 'userGroup',
-    	      //  text:me.userGroupName,
     	        value:me.userGroupId,
     	        store : Ext.create('userGroupList'),
     	        editable : false,
     	        displayField : 'userGroupName',
-    	        valueField : 'id',
+    	        valueField : 'userGroupId',
     	        emptyText : '请选择...'	
     	    },{
     	    	fieldLabel:'用户编号',

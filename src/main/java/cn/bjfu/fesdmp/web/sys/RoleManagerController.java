@@ -21,10 +21,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
+
+
 import cn.bjfu.fesdmp.domain.sys.Role;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.frame.dao.Order;
+import cn.bjfu.fesdmp.json.AddResourceGroupForRoleJson;
 import cn.bjfu.fesdmp.json.RoleJson;
 import cn.bjfu.fesdmp.sys.service.IRoleService;
 import cn.bjfu.fesdmp.utils.PageInfoBean;
@@ -153,6 +156,33 @@ public Map<String, Object> deleteRole(String ids) throws Exception {
 	logger.info("deleteRole method.");
 	System.out.println(ids);
 	this.roleService.deleteRole(Integer.parseInt(ids));
+	Map<String, Object> result = new HashMap<String, Object>();
+	result.put(SUCCESS, Boolean.TRUE);
+	return result;
+}
+@RequestMapping(value = "/addResourceGroupForRole", method = RequestMethod.POST)
+@ResponseBody
+public Map<String, Object> addResourceGroupForRole(String formData) throws Exception {
+	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+	logger.info("roleList method.");
+	AddResourceGroupForRoleJson addResourceGroupForRoleJson = null;
+	if (!StringUtils.isEmpty(formData)) {
+		addResourceGroupForRoleJson = mapper.readValue(formData,AddResourceGroupForRoleJson.class);
+	}
+	logger.info(addResourceGroupForRoleJson);
+	this.roleService.addResourceGroupForRole(addResourceGroupForRoleJson);
+
+	Map<String, Object> result = new HashMap<String, Object>();
+
+	result.put(SUCCESS, Boolean.TRUE);
+	return result;
+}
+@RequestMapping(value = "/deleteResourceGroupForRole", method = RequestMethod.POST)
+@ResponseBody
+public Map<String, Object> deleteResourceGroupForRole(String id,String roleId) throws Exception {
+	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+	logger.info("deleteResourceGroup method.");
+
 	Map<String, Object> result = new HashMap<String, Object>();
 	result.put(SUCCESS, Boolean.TRUE);
 	return result;

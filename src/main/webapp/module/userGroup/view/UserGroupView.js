@@ -75,6 +75,10 @@ Ext.define('Bjfu.userGroup.view.UserGroupView',{
 			        text : '创建时间',
 			        dataIndex : 'createTime',
 			        width : '10%'
+			    },{
+			        text : '所属角色',
+			        dataIndex : 'roleName',
+			        width : '10%'
 			    }
 			],
 			tbar : [{ 
@@ -160,7 +164,7 @@ Ext.define('Bjfu.userGroup.view.UserGroupView',{
 														});
 							                    		Ext.Msg.alert('提示','删除用户组成功');
 							    						window.close();
-							    	 	   			Ext.getCmp('userGroupViewId').store.reload();
+							    						Ext.getCmp('userGroupViewId').store.reload();
 							                    	}else{
 							                    		Ext.Msg.alert('提示','该用户组下有用户，无法删除');
 							                    		window.close();
