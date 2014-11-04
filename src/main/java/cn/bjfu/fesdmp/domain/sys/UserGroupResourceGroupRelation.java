@@ -23,8 +23,8 @@ import javax.persistence.Table;
 
 /** 
  * ClassName:UserGroupRelation <br/> 
- * Function: 角色资源组映射表. <br/> 
- * Reason:   角色资源组映射表. <br/> 
+ * Function: 用户组资源组映射表. <br/> 
+ * Reason:  用户组资源组映射表. <br/> 
  * Date:     2014年7月24日 下午9:55:35 <br/> 
  * @author   LuoYangBjfu 
  * @version   
@@ -32,8 +32,8 @@ import javax.persistence.Table;
  * @see       
  */
 @Entity
-@Table(name = "t_role_resource_group_relation")
-public class RoleResourceGroupRelation implements Serializable {
+@Table(name = "t_user_group_resource_group_relation")
+public class UserGroupResourceGroupRelation implements Serializable {
 
 	/**
 	 * @since JDK 1.7
@@ -43,12 +43,12 @@ public class RoleResourceGroupRelation implements Serializable {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	@OneToOne
-	@JoinColumn(name = "role_id")
-	private Role role;
+	@JoinColumn(name = "userGroup_id")
+	private UserGroup userGroup;
 	@OneToOne
 	@JoinColumn(name = "resourceGroup_id")
 	private ResourceGroup resourceGroup;
-	public RoleResourceGroupRelation() {}
+	public UserGroupResourceGroupRelation() {}
 
 	public Integer getId() {
 		return id;
@@ -67,12 +67,12 @@ public class RoleResourceGroupRelation implements Serializable {
 		this.resourceGroup = resourceGroup;
 	}
 
-	public Role getRole() {
-		return role;
+	public UserGroup getUserGroup() {
+		return userGroup;
 	}
 
-	public void setRole(Role role) {
-		this.role = role;
+	public void setUserGroup(UserGroup userGroup) {
+		this.userGroup = userGroup;
 	}
 
 	@Override
@@ -80,7 +80,7 @@ public class RoleResourceGroupRelation implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((resourceGroup == null) ? 0 : resourceGroup.hashCode());
-		result = prime * result + ((role == null) ? 0 : role.hashCode());
+		result = prime * result + ((userGroup == null) ? 0 : userGroup.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		
 		return result;
@@ -94,7 +94,7 @@ public class RoleResourceGroupRelation implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		RoleResourceGroupRelation other = (RoleResourceGroupRelation) obj;
+		UserGroupResourceGroupRelation other = (UserGroupResourceGroupRelation) obj;
 		if (resourceGroup == null) {
 			if (other.resourceGroup != null)
 				return false;
@@ -105,16 +105,16 @@ public class RoleResourceGroupRelation implements Serializable {
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
-		if (role == null) {
-			if (other.role != null)
+		if (userGroup == null) {
+			if (other.userGroup != null)
 				return false;
-		} else if (!role.equals(other.role))
+		} else if (!userGroup.equals(other.userGroup))
 			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "RoleResourceGroupRelation [id=" + id + ", resourceGroup=" + resourceGroup + ", role=" + role+ "]";
+		return "RoleResourceGroupRelation [id=" + id + ", resourceGroup=" + resourceGroup + ", userGroup=" + userGroup+ "]";
 	}
 }

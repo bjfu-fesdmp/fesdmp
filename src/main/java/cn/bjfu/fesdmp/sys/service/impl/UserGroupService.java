@@ -46,9 +46,9 @@ public class UserGroupService implements IUserGroupService {
 		userGroup.setUserGroupName(userGroupJson.getUserGroupName());
 		userGroup.setCreateTime(userGroupJson.getCreateTime());
 		this.userGroupDao.insert(userGroup);
-		userGroupRoleRelation.setUserGroup(userGroup);
-		userGroupRoleRelation.setRole(this.roleDao.findByKey(userGroupJson.getRole()));
-		this.userGroupRoleRelationDao.insert(userGroupRoleRelation);
+//		userGroupRoleRelation.setUserGroup(userGroup);
+//		userGroupRoleRelation.setRole(this.roleDao.findByKey(userGroupJson.getRole()));
+//		this.userGroupRoleRelationDao.insert(userGroupRoleRelation);
 	}
 	
 	@Override

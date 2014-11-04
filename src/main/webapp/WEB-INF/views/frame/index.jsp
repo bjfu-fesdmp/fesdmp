@@ -146,18 +146,7 @@
 			                }, {
 			                    text: '权限设置',
 								menu: {
-				        		    items: [ {
-					                    	text: '角色管理',
-					                    	handler: function () {
-					                        	Ext.getCmp('centerPanel').getLoader().load({
-												autoLoad : true,
-												url: Global_Path + "role/listView",
-	 											scripts : true,
-	 											loadMask : true,
-	 											noCache : true	
-											});
-					                   		}
-					                	}, {
+				        		    items: [{
 						                    text: '用户管理',
 						                    handler: function () {
 												Ext.getCmp('centerPanel').getLoader().load({

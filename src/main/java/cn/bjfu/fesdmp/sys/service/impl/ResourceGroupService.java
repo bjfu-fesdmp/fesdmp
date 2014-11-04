@@ -10,9 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cn.bjfu.fesdmp.domain.sys.ResourceGroup;
 import cn.bjfu.fesdmp.domain.sys.UserGroup;
+import cn.bjfu.fesdmp.domain.sys.UserGroupResourceGroupRelation;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
+import cn.bjfu.fesdmp.json.AddResourceGroupForUserGroupJson;
 import cn.bjfu.fesdmp.sys.dao.IResourceGroupDao;
+import cn.bjfu.fesdmp.sys.dao.IUserGroupDao;
+import cn.bjfu.fesdmp.sys.dao.IUserGroupResourceGroupRelationDao;
 import cn.bjfu.fesdmp.sys.service.IResourceGroupService;
 import cn.bjfu.fesdmp.utils.Pagination;
 
@@ -23,7 +27,10 @@ public class ResourceGroupService implements IResourceGroupService {
 
 	@Autowired
 	private IResourceGroupDao resourceGroupDao;
-	
+	@Autowired
+	private IUserGroupDao userGroupDao;
+	@Autowired
+	private IUserGroupResourceGroupRelationDao userGroupResourceGroupRelationDao;
 	@Override
 	public void addResourceGroup(ResourceGroup resourceGroup) {
 		this.resourceGroupDao.insert(resourceGroup);
@@ -66,8 +73,8 @@ public class ResourceGroupService implements IResourceGroupService {
 	public List<ResourceGroup> findResourceGroupById(int parentId){
 		return this.resourceGroupDao.findResourceGroupById(parentId);	
 	}
-	public List<ResourceGroup> findResourceGroupByroleId(String roleId){
-		return this.resourceGroupDao.findResourceGroupByroleId(roleId);	
+	public List<ResourceGroup> findResourceGroupByUserGroupId(String userGroupId){
+		return this.resourceGroupDao.findResourceGroupByUserGroupId(userGroupId);	
 	}
 	public boolean ifHaveChild(int id){
 		return this.resourceGroupDao.ifHaveChild(id);	
@@ -78,7 +85,21 @@ public class ResourceGroupService implements IResourceGroupService {
 	}
 	@Transactional(readOnly = true)
 	@Override
-	public List<ResourceGroup> findResourceGroupNotInThisRole(String roleId) {
-		return this.resourceGroupDao.findResourceGroupNotInThisRole(roleId);
+	public List<ResourceGroup> findResourceGroupNotInThisUserGroup(String userGroupId) {
+		return this.resourceGroupDao.findResourceGroupNotInThisUserGroup(userGroupId);
+	}
+	
+	@Override
+	public void addResourceGroupForUserGroup(AddResourceGroupForUserGroupJson addResourceGroupForUserGroupJson) {
+		UserGroupResourceGroupRelation userGroupResourceGroupRelation=new UserGroupResourceGroupRelation();
+		userGroupResourceGroupRelation.setUserGroup(this.userGroupDao.findByKey(Integer.parseInt(addResourceGroupForUserGroupJson.getUserGroupId())));
+		userGroupResourceGroupRelation.setResourceGroup(this.resourceGroupDao.findByKey(Integer.parseInt(addResourceGroupForUserGroupJson.getResourceGroupId())));
+		
+		this.userGroupResourceGroupRelationDao.insert(userGroupResourceGroupRelation);
+	}
+	@Override
+	public void deleteResourceGroupForUserGroup(String id,String userGroupId) {
+		UserGroupResourceGroupRelation userGroupResourceGroupRelation=this.userGroupResourceGroupRelationDao.findUserGroupResourceGroupRelationByBothId(id,userGroupId);
+		this.userGroupResourceGroupRelationDao.delete(userGroupResourceGroupRelation);
 	}
 }

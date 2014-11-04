@@ -1,22 +1,3 @@
-Ext.define('roleList', {
-    extend: 'Ext.data.Store',
-    fields: ['id', 'roleName'],
-	proxy : {
-		type : 'ajax',
-		actionMethods: {
-            create : 'POST',
-            read   : 'POST', // by default GET
-            update : 'POST',
-            destroy: 'POST'
-		},
-		url : Global_Path+'role/roleList',
-		reader : {
-			type : 'json',
-			root : 'result'
-		}
-	}
-});
-
 Ext.define('Bjfu.userGroup.view.ModifyUserGroup',{
 	extend:'Ext.form.Panel',
 	bodyPadding: 5,
@@ -46,18 +27,8 @@ Ext.define('Bjfu.userGroup.view.ModifyUserGroup',{
     	    	fieldLabel:'用户组编号',
     	    	name:'id',
     	    	xtype:'hiddenfield'
-    	    },{
-    	    	id : 'role',
-    	    	xtype : 'combo',
-    	        fieldLabel : '所属角色<font color="red">*</font>',
-    	        allowBlank : false,
-    	        name : 'role',
-    	        store : Ext.create('roleList'),
-    	        editable : false,
-    	        displayField : 'roleName',
-    	        valueField : 'id',
-    	        emptyText : '请选择...'	
-    	    }]
+    	    }
+    	    ]
     	});
     	me.callParent(arguments);
 	},

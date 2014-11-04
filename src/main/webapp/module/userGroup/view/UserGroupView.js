@@ -75,11 +75,12 @@ Ext.define('Bjfu.userGroup.view.UserGroupView',{
 			        text : '创建时间',
 			        dataIndex : 'createTime',
 			        width : '10%'
-			    },{
-			        text : '所属角色',
-			        dataIndex : 'roleName',
-			        width : '10%'
 			    }
+//			    ,{
+//			        text : '所属角色',
+//			        dataIndex : 'roleName',
+//			        width : '10%'
+//			    }
 			],
 			tbar : [{ 
 		          text: '新增',
@@ -203,6 +204,33 @@ Ext.define('Bjfu.userGroup.view.UserGroupView',{
 			       	}).show();
 		       }
 			}],
+			listeners:{
+				scope : this,
+				checkchange :function(node, checked) {
+					node.checked = checked;
+					var records = me.getView().getChecked();
+					for (var i = 0; i < records.length; i++) {
+						if (records[i].get('id') != node.get('id')) {
+							records[i].set("checked" , false);
+						}
+					}
+				},
+	        	'itemclick' : function(view, record, item, index, e){
+	        		
+	        		var userGroupId=record.get("id");
+	        		
+	        		 Ext.getCmp("resourceGroupViewId").getStore().baseParams= {
+	        			 userGroupId: userGroupId
+	           			};
+	        		
+		            Ext.getCmp("resourceGroupViewId").getStore().load({
+	               			params: {
+	               				userGroupId: userGroupId
+	               			}
+		            	});
+		            
+	        	}
+			},
 			loadMask:true,
 			bbar : Ext.create('Ext.toolbar.Paging', {
 					width : '100%',

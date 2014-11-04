@@ -49,15 +49,13 @@ import cn.bjfu.fesdmp.web.jsonbean.UserUserGroupRelationSearch;
 public class UserGroupManagerController extends BaseController {
 	private static final Logger logger = Logger
 			.getLogger(UserManagerController.class);
-	// private Gson gson = new
-	// GsonBuilder().serializeNulls().setDateFormat("yyyy-MM-dd").create();
 	private ObjectMapper mapper = new ObjectMapper();
 	@Autowired
 	private IUserGroupService userGroupService;
 	@Autowired
 	private IUserUserGroupRelationService userUserGroupRelationService;
-	@Autowired
-	private IUserGroupRoleRelationService userGroupRoleRelationService;
+//	@Autowired
+//	private IUserGroupRoleRelationService userGroupRoleRelationService;
 	@RequestMapping(value = "/listView", method = RequestMethod.GET)
 	public String userGroupPage() {
 		logger.info("sysuserGeoupPage method.");
@@ -104,8 +102,8 @@ public class UserGroupManagerController extends BaseController {
 			userGroupJson.setUserGroupName(userGroup.getUserGroupName());
 			if(userGroup.getCreater()!=null)
 			userGroupJson.setCreaterId(userGroup.getCreater().getId());
-			userGroupJson.setRoleName(this.userGroupRoleRelationService.findUserGroupRoleRelationByUserGroupId(Integer.toString(userGroup.getId())).getRole().getRoleName());
-			userGroupJson.setRole(this.userGroupRoleRelationService.findUserGroupRoleRelationByUserGroupId(Integer.toString(userGroup.getId())).getRole().getId());
+//			userGroupJson.setRoleName(this.userGroupRoleRelationService.findUserGroupRoleRelationByUserGroupId(Integer.toString(userGroup.getId())).getRole().getRoleName());
+//			userGroupJson.setRole(this.userGroupRoleRelationService.findUserGroupRoleRelationByUserGroupId(Integer.toString(userGroup.getId())).getRole().getId());
 			userGroupJsonList.add(userGroupJson);
 		}
 		result.put(RESULT, userGroupJsonList);

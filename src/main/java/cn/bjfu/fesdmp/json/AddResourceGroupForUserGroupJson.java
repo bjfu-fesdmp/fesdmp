@@ -1,21 +1,21 @@
 package cn.bjfu.fesdmp.json;
 
 
-public class AddResourceGroupForRoleJson {
+public class AddResourceGroupForUserGroupJson {
 
-	private String roleId;
+	private String userGroupId;
 	private String resourceGroupId;
 	
-	public AddResourceGroupForRoleJson() {}
+	public AddResourceGroupForUserGroupJson() {}
 	
 
 
-	public String getRoleId() {
-		return roleId;
+	public String getUserGroupId() {
+		return userGroupId;
 	}
 
-	public void setRoleId(String roleId) {
-		this.roleId = roleId;
+	public void setUserGroupId(String userGroupId) {
+		this.userGroupId = userGroupId;
 	}
 
 	public String getResourceGroupId() {

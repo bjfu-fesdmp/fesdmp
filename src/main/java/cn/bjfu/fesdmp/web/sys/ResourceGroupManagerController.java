@@ -28,11 +28,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 
+
 import cn.bjfu.fesdmp.domain.sys.ResourceGroup;
 import cn.bjfu.fesdmp.domain.sys.UserGroup;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.frame.dao.Order;
+import cn.bjfu.fesdmp.json.AddResourceGroupForUserGroupJson;
 import cn.bjfu.fesdmp.json.ResourceGroupJson;
 import cn.bjfu.fesdmp.json.ResourceGroupTreeJson;
 import cn.bjfu.fesdmp.sys.service.IResourceGroupService;
@@ -57,7 +59,7 @@ public class ResourceGroupManagerController extends BaseController {
 //资源组树形结构
 	@RequestMapping(value = "/resourceGroupList", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> resourceGroupList(String groupParentId,String roleId)
+	public Map<String, Object> resourceGroupList(String groupParentId)
 			throws Exception {
 
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
@@ -65,9 +67,7 @@ public class ResourceGroupManagerController extends BaseController {
 		IOrder order = new Order();
 		order.addOrderBy("id", "DESC");
 		List<ResourceGroup> resourceGroupList=new ArrayList();
-		if(roleId!=null)
-			resourceGroupList=this.resourceGroupService.findResourceGroupByroleId(roleId);
-		else if(groupParentId!=null)
+		if(groupParentId!=null)
 			resourceGroupList = this.resourceGroupService.findResourceGroupById(Integer.parseInt(groupParentId));
 
 		List<ResourceGroupTreeJson> resourceGroupJsonList = new ArrayList<ResourceGroupTreeJson>();
@@ -193,9 +193,9 @@ public Map<String, Object> checkIfHaveIndexResource(String id)
 	return result;
 }
 
-@RequestMapping(value = "/resourceGroupOfRoleList", method = RequestMethod.POST)
+@RequestMapping(value = "/resourceGroupOfUserGroupList", method = RequestMethod.POST)
 @ResponseBody
-public Map<String, Object> resourceGroupOfRoleList(String roleId)
+public Map<String, Object> resourceGroupOfUserGroupList(String userGroupId)
 		throws Exception {
 
 	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
@@ -203,8 +203,8 @@ public Map<String, Object> resourceGroupOfRoleList(String roleId)
 	IOrder order = new Order();
 	order.addOrderBy("id", "DESC");
 	List<ResourceGroup> resourceGroupList=new ArrayList();
-	if(roleId!=null)
-		resourceGroupList=this.resourceGroupService.findResourceGroupByroleId(roleId);
+	if(userGroupId!=null)
+		resourceGroupList=this.resourceGroupService.findResourceGroupByUserGroupId(userGroupId);
 
 	List<ResourceGroupTreeJson> resourceGroupJsonList = new ArrayList<ResourceGroupTreeJson>();
 	for(int i=0;i<resourceGroupList.size();i++){
@@ -227,9 +227,9 @@ public Map<String, Object> resourceGroupOfRoleList(String roleId)
 	result.put(SUCCESS, Boolean.TRUE);
 	return result;
 }
-@RequestMapping(value = "/getResourceGroupListNotInThisRole", method = RequestMethod.POST)
+@RequestMapping(value = "/getResourceGroupListNotInThisUserGroup", method = RequestMethod.POST)
 @ResponseBody
-public Map<String, Object> getResourceGroupListNotInThisRole(String roleId)
+public Map<String, Object> getResourceGroupListNotInThisUserGroup(String userGroupId)
 		throws Exception {
 
 	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
@@ -237,10 +237,39 @@ public Map<String, Object> getResourceGroupListNotInThisRole(String roleId)
 	IOrder order = new Order();
 	order.addOrderBy("id", "DESC");
 	List<ResourceGroup> resourceGroupList=new ArrayList();
-	if(roleId!=null)
-	resourceGroupList = this.resourceGroupService.findResourceGroupNotInThisRole(roleId);
+	if(userGroupId!=null)
+	resourceGroupList = this.resourceGroupService.findResourceGroupNotInThisUserGroup(userGroupId);
 	Map<String, Object> result = new HashMap<String, Object>();
 	result.put(RESULT, resourceGroupList);
+	result.put(SUCCESS, Boolean.TRUE);
+	return result;
+}
+@RequestMapping(value = "/addResourceGroupForUserGroup", method = RequestMethod.POST)
+@ResponseBody
+public Map<String, Object> addResourceGroupForUserGroup(String formData) throws Exception {
+	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+	logger.info("addResourceGroupForUserGroup method.");
+	AddResourceGroupForUserGroupJson addResourceGroupForUserGroupJson = null;
+	if (!StringUtils.isEmpty(formData)) {
+		addResourceGroupForUserGroupJson = mapper.readValue(formData,AddResourceGroupForUserGroupJson.class);
+	}
+	logger.info(addResourceGroupForUserGroupJson);
+	this.resourceGroupService.addResourceGroupForUserGroup(addResourceGroupForUserGroupJson);
+
+	Map<String, Object> result = new HashMap<String, Object>();
+
+	result.put(SUCCESS, Boolean.TRUE);
+	return result;
+}
+@RequestMapping(value = "/deleteResourceGroupForUserGroup", method = RequestMethod.POST)
+@ResponseBody
+public Map<String, Object> deleteResourceGroupForUserGroup(String id,String userGroupId) throws Exception {
+	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+	logger.info("deleteResourceGroupForUserGroup method.");
+	this.resourceGroupService.deleteResourceGroupForUserGroup(id,userGroupId);
+
+	Map<String, Object> result = new HashMap<String, Object>();
+
 	result.put(SUCCESS, Boolean.TRUE);
 	return result;
 }

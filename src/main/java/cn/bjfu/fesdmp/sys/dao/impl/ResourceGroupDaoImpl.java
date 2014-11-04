@@ -38,8 +38,8 @@ public class ResourceGroupDaoImpl extends AbstractGenericDao<ResourceGroup> impl
 
 	}
 	@Override
-	public List<ResourceGroup> findResourceGroupByroleId(String roleId){
-		String jpal = " SELECT p FROM ResourceGroup p,RoleResourceGroupRelation m where p.id=m.resourceGroup.id and m.role.id="+roleId;
+	public List<ResourceGroup> findResourceGroupByUserGroupId(String userGroupId){
+		String jpal = " SELECT p FROM ResourceGroup p,UserGroupResourceGroupRelation m where p.id=m.resourceGroup.id and m.userGroup.id="+userGroupId;
 		logger.info(jpal);
 		Query query = super.getEntityManager().createQuery(jpal);
 		List<ResourceGroup> resourceGroupList=query.getResultList();
@@ -72,8 +72,8 @@ public class ResourceGroupDaoImpl extends AbstractGenericDao<ResourceGroup> impl
 			return true;
 	}
 	@Override
-	public List<ResourceGroup> findResourceGroupNotInThisRole(String roleId){
-		String jpal = " SELECT p FROM ResourceGroup p,RoleResourceGroupRelation m where p.id=m.resourceGroup.id and m.role.id="+roleId;
+	public List<ResourceGroup> findResourceGroupNotInThisUserGroup(String userGroupId){
+		String jpal = " SELECT p FROM ResourceGroup p,UserGroupResourceGroupRelation m where p.id=m.resourceGroup.id and m.userGroup.id="+userGroupId;
 		logger.info(jpal);
 		Query query = super.getEntityManager().createQuery(jpal);
 		List<ResourceGroup> list1=query.getResultList();

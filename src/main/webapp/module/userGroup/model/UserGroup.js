@@ -12,12 +12,6 @@ Ext.define('Bjfu.userGroup.model.UserGroup',{
     },{
 		name : 'createrId', 
     	type : 'int' //创建者id
-	},{
-		name : 'roleName', 
-    	type : 'string' //所属角色
-	},{
-    	name : 'role',   					
-    	type : 'int' //角色id
-    }
+	}
 	]
 });
