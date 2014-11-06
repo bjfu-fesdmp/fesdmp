@@ -16,6 +16,6 @@ import cn.bjfu.fesdmp.web.jsonbean.UserSearch;
 
 public interface IUserDao extends IGenericDao<User> {
 
-
+	public abstract User findByUserLoginName(String userLoginName);
 }
  

@@ -115,8 +115,8 @@ Ext.define('Bjfu.userGroup.view.ResourceGroupView',{
 							                    	var	result =  Ext.decode(response.responseText);
 						                    		Ext.Msg.alert('提示','为用户组删除资源组成功');
 						    						window.close();
-							    	 	   			Ext.getCmp('resourceGroup').store.reload();
-							    	 	   			Ext.getCmp('resourceGroup').store.loadRawData();
+							    	 	   			Ext.getCmp('resourceGroupViewId').store.reload();
+							    	 	   			Ext.getCmp('resourceGroupViewId').store.loadRawData();
 							                    	if(result.success){
 														Ext.Array.each(record,function(data){
 															st.remove(data);

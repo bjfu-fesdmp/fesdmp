@@ -11,12 +11,18 @@ import org.springframework.transaction.annotation.Transactional;
 import cn.bjfu.fesdmp.domain.sys.IndexResource;
 import cn.bjfu.fesdmp.domain.sys.ResourceGroup;
 import cn.bjfu.fesdmp.domain.sys.ResourceRelation;
+import cn.bjfu.fesdmp.domain.sys.UserGroupResourceGroupRelation;
+import cn.bjfu.fesdmp.domain.sys.UserIndexRelation;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
+import cn.bjfu.fesdmp.json.AddIndexResourceForUserJson;
 import cn.bjfu.fesdmp.json.CreateTableJson;
+import cn.bjfu.fesdmp.sys.dao.IDataDao;
 import cn.bjfu.fesdmp.sys.dao.IIndexResourceDao;
 import cn.bjfu.fesdmp.sys.dao.IResourceGroupDao;
 import cn.bjfu.fesdmp.sys.dao.IResourceRelationDao;
+import cn.bjfu.fesdmp.sys.dao.IUserDao;
+import cn.bjfu.fesdmp.sys.dao.IUserIndexRelationDao;
 import cn.bjfu.fesdmp.sys.service.IIndexResourceService;
 import cn.bjfu.fesdmp.utils.Pagination;
 //import cn.bjfu.fesdmp.web.jsonbean.LogSearch;
@@ -31,6 +37,12 @@ public class IndexResourceService implements IIndexResourceService {
 	private IResourceGroupDao resourceGroupDao;
 	@Autowired
 	private IResourceRelationDao resourceRelationDao;
+	@Autowired
+	private IDataDao dataDao;
+	@Autowired
+	private IUserDao userDao;
+	@Autowired
+	private IUserIndexRelationDao userIndexRelationDao;
 	@Override
 	public void addIndexResource(IndexResource indexResource,int resourceGroupId) {
 		ResourceGroup resourceGroup=this.resourceGroupDao.findByKey(resourceGroupId);
@@ -81,9 +93,12 @@ public class IndexResourceService implements IIndexResourceService {
 	@Override
 	public void modifyIndexResource(IndexResource indexResource) {
 		IndexResource indexResourceNew = this.indexResourceDao.findByKey(indexResource.getId());
+		if(!indexResourceNew.getIndexEnName().equalsIgnoreCase(indexResource.getIndexEnName()))
+		this.dataDao.modifyTableName(indexResourceNew.getIndexEnName(), indexResource.getIndexEnName());
 		indexResourceNew.setIndexName(indexResource.getIndexName());
 		indexResourceNew.setIndexEnName(indexResource.getIndexEnName());
 		indexResourceNew.setIndexUnit(indexResource.getIndexUnit());
+		if(indexResource.getIndexMemo()!=null)
 		indexResourceNew.setIndexMemo(indexResource.getIndexMemo());
 		indexResourceNew.setModifier(indexResource.getModifier());
 		indexResourceNew.setModifyTime(new Date());
@@ -96,8 +111,31 @@ public class IndexResourceService implements IIndexResourceService {
 		return this.indexResourceDao.queryByConditionAndResourceGroupId(condition, order, page, joinMode,resourceGroupId);
 	}
 	@Override
+	public List<IndexResource> queryByConditionAndUserId(Object condition, IOrder order,
+			Pagination<IndexResource> page, JoinMode joinMode,String userId) {
+		return this.indexResourceDao.queryByConditionAndUserId(condition, order, page, joinMode,userId);
+	}
+	@Override
 	public List<IndexResource> queryByResourceGroupId(int resourceGroupId) {
 		return this.indexResourceDao.queryByResourceGroupId(resourceGroupId);
+	}
+	@Transactional(readOnly = true)
+	@Override
+	public List<IndexResource> getIndexResourceListNotInThisUser(String userId) {
+		return this.indexResourceDao.getIndexResourceListNotInThisUser(userId);
+	}
+	@Override
+	public void addIndexResourceForUser(AddIndexResourceForUserJson addIndexResourceForUserJson){
+		UserIndexRelation userIndexRelation=new UserIndexRelation();
+		userIndexRelation.setUser(this.userDao.findByKey(Integer.parseInt(addIndexResourceForUserJson.getUserId())));
+		userIndexRelation.setIndexResource(this.indexResourceDao.findByKey(Integer.parseInt(addIndexResourceForUserJson.getIndexResourceId())));
+		
+		this.userIndexRelationDao.insert(userIndexRelation);
+	}
+	@Override
+	public void deleteIndexResourceForUser(String id,String userId) {
+		UserIndexRelation userIndexRelation=this.userIndexRelationDao.findUserIndexRelationByBothId(id,userId);
+		this.userIndexRelationDao.delete(userIndexRelation);
 	}
 }
  

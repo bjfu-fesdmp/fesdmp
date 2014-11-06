@@ -20,6 +20,7 @@ import java.util.Properties;
 
 
 
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -150,6 +151,39 @@ public class DataDaoImpl extends AbstractGenericDao<DataJson> implements IDataDa
         }  
         return list;  
     }  
+	
+	@Override
+	public void modifyTableName(String oldName,String newName){
+        Connection conn = jbpu.getConnection();  
+        ResultSet rs = null;  
+        List<TableJson> list = new ArrayList();  
+        try {  
+            Properties pros = this.getProperties();  
+            String schema = pros.get("jdbc.username").toString();  
+            DatabaseMetaData metaData = conn.getMetaData();  
+            rs = metaData.getTables(null, schema, null, new String[]{"TABLE","VIEW"});  
+            while(rs.next()){  
+                String tableName = rs.getString("TABLE_NAME");  
+                if(tableName.substring(0,1).equals("1")||tableName.substring(0,1).equals("2")){
+                	TableJson tablejson=new TableJson();
+                	tablejson.setName(tableName);
+                	list.add(tablejson);  
+                }
+            }  
+        } catch (SQLException e) {  
+            e.printStackTrace();  
+        } finally{  
+            jbpu.close(rs, null, conn);  
+        }  
+		for(int i=0;i<list.size();i++){
+			if(list.get(i).getName().substring(5).equals(oldName)){
+				String sql="rename table "+list.get(i).getName()+" to "+list.get(i).getName().substring(0,5)+newName;
+				jdbcTemplate.update(sql);
+			}	
+		}
+		
+	}
+	
 	
 	@Override
 	public void dataInsert(String table,List<DataJson> list){

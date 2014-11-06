@@ -1,6 +1,7 @@
  
 package cn.bjfu.fesdmp.sys.dao.impl;  
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -12,9 +13,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import cn.bjfu.fesdmp.domain.sys.IndexResource;
+import cn.bjfu.fesdmp.domain.sys.ResourceGroup;
 import cn.bjfu.fesdmp.domain.sys.UserUserGroupRelation;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
+import cn.bjfu.fesdmp.frame.dao.Order;
 import cn.bjfu.fesdmp.sys.dao.IIndexResourceDao;
 import cn.bjfu.fesdmp.sys.dao.ISystemLogDao;
 import cn.bjfu.fesdmp.utils.DateFormat;
@@ -73,6 +76,30 @@ public class IndexResourceDaoImpl extends AbstractGenericDao<IndexResource> impl
 		}
 	}
 	
+	public List<IndexResource> queryByConditionAndUserId(Object condition, IOrder order,
+			Pagination<IndexResource> page, JoinMode joinMode,String userId){
+		String jpal = " SELECT p FROM UserIndexRelation m,IndexResource p ";
+		if (condition != null) {
+			jpal +=convertBeanToJPAL(condition, joinMode);
+			jpal +=" and m.user.id="+userId+" and m.indexResource.id=p.id ";
+		} 
+		else
+			jpal +="where m.user.id="+userId+" and m.indexResource.id=p.id ";
+		if (order != null) {
+			jpal += convertToSQL(order);
+		}
+		
+		logger.info(jpal);
+		Query query = super.getEntityManager().createQuery(jpal);
+		if (page != null) {
+			page.setTotalRecord(query.getResultList().size());
+			List<IndexResource> result =  query.setFirstResult(page.getOffset()).setMaxResults(page.getPageSize()).getResultList();
+			page.setDatas(result);
+			return result;
+		}else{
+			return query.getResultList();
+		}
+	}
 	public List<IndexResource> queryByResourceGroupId(int resourceGroupId){
 		String jpal = " SELECT p FROM ResourceRelation m,IndexResource p where m.resourceGroup.id="+resourceGroupId+" and m.indexResource.id=p.id ";
 
@@ -82,6 +109,28 @@ public class IndexResourceDaoImpl extends AbstractGenericDao<IndexResource> impl
 		return query.getResultList();
 
 	}
-	
+	@Override
+	public List<IndexResource> getIndexResourceListNotInThisUser(String userId){
+		String jpal = " SELECT p FROM IndexResource p,UserIndexRelation m where p.id=m.indexResource.id and m.user.id="+userId;
+		logger.info(jpal);
+		Query query = super.getEntityManager().createQuery(jpal);
+		List<IndexResource> list1=query.getResultList();
+		IOrder order = new Order();
+		order.addOrderBy("id", "DESC");
+		List<IndexResource> list2=this.findAll(order);
+		List<IndexResource> list=new ArrayList();
+		for(int i=0;i<list2.size();i++){
+			boolean check=false;
+			for(int j=0;j<list1.size();j++){
+				if(list1.get(j).getId()==list2.get(i).getId())
+					check=true;
+			}
+			if(check==false)
+				list.add(list2.get(i));
+		}
+		
+		
+		return list;	
+	}
 }
  

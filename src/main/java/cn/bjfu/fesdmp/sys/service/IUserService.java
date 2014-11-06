@@ -26,5 +26,6 @@ public interface IUserService {
 	public abstract List<User> queryByCondition(final Object condition, IOrder order,
 			Pagination<User> page, JoinMode joinMode);
 	public abstract User findByKey(int id);
+	public abstract User findByUserLoginName(String userLoginName);
 }
  

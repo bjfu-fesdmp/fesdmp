@@ -64,13 +64,13 @@
    	<table width="90%" border="0" align="center" cellpadding="8" cellspacing="0">
       <tr>
         <td height="40" id="content" class="spm_logintitle">
-        <c:if test="${! empty errorMsg }">
-        	消息提示：<c:out value="${errorMsg }"/>
+        <c:if test="${!noSuchUser }">
+        	消息提示：<c:out value="${没有该用户 }"/>
         </c:if>
         </td>
       </tr>
       <tr>
-        <td height="40"><label for="textfield"></label><input type="text" name="userLoginname" id="userName" class="spm_loginuersinput"/></td>
+        <td height="40"><label for="textfield"></label><input type="text" name="userLoginName" id="userName" class="spm_loginuersinput"/></td>
       </tr>
       <tr>
         <td height="40"><input type="password" name="password" id="password" class="spm_loginpwinput"/></td>

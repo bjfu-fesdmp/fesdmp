@@ -43,11 +43,11 @@ public class UserIndexRelation implements Serializable{
 		this.user = user;
 	}
 	
-	public IndexResource getIndexResourceId() {
+	public IndexResource getIndexResource() {
 		return indexResource;
 	}
 	
-	public void setIndexResourceId(IndexResource indexResource) {
+	public void setIndexResource(IndexResource indexResource) {
 		this.indexResource = indexResource;
 	}
 	

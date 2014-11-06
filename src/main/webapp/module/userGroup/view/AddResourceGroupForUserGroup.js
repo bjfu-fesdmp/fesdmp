@@ -118,8 +118,8 @@ Ext.define('Bjfu.userGroup.view.AddResourceGroupForUserGroup',{
 		                    	if(result.success){
 		                    		Ext.Msg.alert('提示','为用户组添加资源组成功');
 		    						window.close();
-		    	 	   			Ext.getCmp('resourceGroup').store.reload();
-		    	 	   			Ext.getCmp('resourceGroup').store.loadRawData();
+		    	 	   			Ext.getCmp('resourceGroupViewId').store.reload();
+		    	 	   			Ext.getCmp('resourceGroupViewId').store.loadRawData();
 		    	 	   			
 		                    	}else{
 		                    		Ext.Msg.alert('提示','为用户组添加资源组失败');

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import cn.bjfu.fesdmp.domain.sys.SystemLog;
 import cn.bjfu.fesdmp.domain.sys.User;
+import cn.bjfu.fesdmp.domain.sys.UserUserGroupRelation;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.sys.dao.IUserDao;
@@ -29,5 +30,16 @@ public class UserDaoImpl extends AbstractGenericDao<User> implements IUserDao {
 		super(User.class);
 	}
 
+	@Override
+	public User findByUserLoginName(String userLoginName){
+		String jpal = " SELECT p FROM User p where p.userLoginName='"+userLoginName+"'";
+		logger.info(jpal);
+		Query query = super.getEntityManager().createQuery(jpal);
+		List list=query.getResultList();
+		User user=new User();
+		if(!list.isEmpty())
+			user=(User)list.get(0);
+		return user;
+	}
 }
  

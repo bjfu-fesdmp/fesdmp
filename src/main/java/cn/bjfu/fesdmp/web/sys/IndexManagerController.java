@@ -23,11 +23,14 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import cn.bjfu.fesdmp.domain.sys.IndexResource;
+import cn.bjfu.fesdmp.domain.sys.ResourceGroup;
 import cn.bjfu.fesdmp.domain.sys.ResourceRelation;
 import cn.bjfu.fesdmp.domain.sys.UserGroup;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.frame.dao.Order;
+import cn.bjfu.fesdmp.json.AddIndexResourceForUserJson;
+import cn.bjfu.fesdmp.json.AddResourceGroupForUserGroupJson;
 import cn.bjfu.fesdmp.json.CreateTableJson;
 import cn.bjfu.fesdmp.json.IndexResourceJson;
 import cn.bjfu.fesdmp.sys.service.IIndexResourceService;
@@ -168,6 +171,94 @@ public class IndexManagerController extends BaseController {
 		logger.info("modifyIndexResource method.");
 		CreateTableJson createTableJson = mapper.readValue(formData,CreateTableJson.class);
 		this.indexService.addTableByYear(createTableJson);
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put(SUCCESS, Boolean.TRUE);
+		return result;
+	}
+	
+	@RequestMapping(value = "/indexResourceOfUserList", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> indexResourceOfUserList(PageInfoBean pageInfo,String userId) throws Exception {
+		
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		
+		logger.info("indexResourceList method.");
+		logger.info(pageInfo);
+		IndexResourceSearch indResourceSearch = null;
+		Pagination<IndexResource> page = new Pagination<IndexResource>();
+		page.setPageSize(pageInfo.getLimit());
+		page.setCurrentPage(pageInfo.getPage());
+		IOrder order = new Order();
+		order.addOrderBy("id", "DESC");
+		if (!StringUtils.isEmpty(pageInfo.getSearchJson())) {
+			indResourceSearch = mapper.readValue(pageInfo.getSearchJson(), IndexResourceSearch.class);
+		}		
+		logger.info(indResourceSearch);
+		
+		List<IndexResource> indexResourceList =this.indexService.queryByConditionAndUserId(indResourceSearch, order, page, JoinMode.AND,userId);		
+		
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put(PAGE_COUNT, page.getTotalRecord());
+		List<IndexResourceJson> indexResourceJsonList = new ArrayList<IndexResourceJson>();
+		for (int i=0; i<indexResourceList.size(); i++) {
+			IndexResource indexResource = page.getDatas().get(i);
+			IndexResourceJson indexResourceJson = new IndexResourceJson();
+			indexResourceJson.setId(indexResource.getId());
+			indexResourceJson.setIndexName(indexResource.getIndexName());
+			indexResourceJson.setIndexEnName(indexResource.getIndexEnName());
+			indexResourceJson.setIndexUnit(indexResource.getIndexUnit());
+			indexResourceJson.setIndexMemo(indexResource.getIndexMemo());
+			if(indexResource.getCreater()!=null)
+				indexResourceJson.setCreaterId(indexResource.getCreater().getId());
+			indexResourceJson.setCreateTime(indexResource.getCreateTime());
+			if(indexResource.getModifier()!=null)
+				indexResourceJson.setModifierId(indexResource.getModifier().getId());
+			indexResourceJson.setModifyTime(indexResource.getModifyTime());
+			indexResourceJsonList.add(indexResourceJson);
+		}
+
+		result.put(RESULT,indexResourceJsonList);
+		result.put(SUCCESS, Boolean.TRUE);
+		return result;
+	}
+	@RequestMapping(value = "/getIndexResourceListNotInThisUser", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> getIndexResourceListNotInThisUser(String userId)
+			throws Exception {
+
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		logger.info("getIndexResourceListNotInThisUser method.");
+		List<IndexResource> indexResourceList=new ArrayList();
+		if(userId!=null)
+			indexResourceList = this.indexService.getIndexResourceListNotInThisUser(userId);
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put(RESULT, indexResourceList);
+		result.put(SUCCESS, Boolean.TRUE);
+		return result;
+	}
+	@RequestMapping(value = "/addIndexResourceForUser", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> addIndexResourceForUser(String formData) throws Exception {
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		logger.info("addIndexResourceForUser method.");
+		AddIndexResourceForUserJson addIndexResourceForUserJson = null;
+		if (!StringUtils.isEmpty(formData)) {
+			addIndexResourceForUserJson = mapper.readValue(formData,AddIndexResourceForUserJson.class);
+		}
+		logger.info(addIndexResourceForUserJson);
+		this.indexService.addIndexResourceForUser(addIndexResourceForUserJson);
+
+		Map<String, Object> result = new HashMap<String, Object>();
+
+		result.put(SUCCESS, Boolean.TRUE);
+		return result;
+	}
+	@RequestMapping(value = "/deleteIndexResourceForUser", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> deleteIndexResourceForUser(String id,String userId) throws Exception {
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		logger.info("deleteIndexResourceForUser method.");
+		this.indexService.deleteIndexResourceForUser(id,userId);
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put(SUCCESS, Boolean.TRUE);
 		return result;

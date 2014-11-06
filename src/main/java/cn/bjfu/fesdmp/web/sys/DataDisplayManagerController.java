@@ -157,7 +157,7 @@ public class DataDisplayManagerController extends BaseController {
 		}
 			//所有其他节点
 		IOrder order = new Order();
-		order.addOrderBy("id", "DESC");
+		order.addOrderBy("id", "ASC");
 		List<ResourceGroup> resourceGroupList=this.resourceGroupService.queryAll(order);
 		for (int i = 0; i < treeList.size(); i++) {
 			if(treeList.get(i).getText().getBytes().length==4){

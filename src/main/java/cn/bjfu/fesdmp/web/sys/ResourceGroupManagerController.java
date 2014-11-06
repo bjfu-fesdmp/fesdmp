@@ -200,8 +200,6 @@ public Map<String, Object> resourceGroupOfUserGroupList(String userGroupId)
 
 	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 	logger.info("resourceGroupList method.");
-	IOrder order = new Order();
-	order.addOrderBy("id", "DESC");
 	List<ResourceGroup> resourceGroupList=new ArrayList();
 	if(userGroupId!=null)
 		resourceGroupList=this.resourceGroupService.findResourceGroupByUserGroupId(userGroupId);
@@ -234,8 +232,6 @@ public Map<String, Object> getResourceGroupListNotInThisUserGroup(String userGro
 
 	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 	logger.info("resourceGroupList method.");
-	IOrder order = new Order();
-	order.addOrderBy("id", "DESC");
 	List<ResourceGroup> resourceGroupList=new ArrayList();
 	if(userGroupId!=null)
 	resourceGroupList = this.resourceGroupService.findResourceGroupNotInThisUserGroup(userGroupId);

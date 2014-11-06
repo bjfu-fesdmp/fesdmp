@@ -100,5 +100,8 @@ public class UserService implements IUserService {
 		
 		return this.userDao.findByKey(id);
 	}
-
+	public User findByUserLoginName(String userLoginName){
+		
+		return this.userDao.findByUserLoginName(userLoginName);
+	}
 }

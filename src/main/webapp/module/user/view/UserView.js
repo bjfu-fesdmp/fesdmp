@@ -257,6 +257,33 @@ Ext.define('Bjfu.user.view.UserView',{
 			       	}).show();
 		       }
 			}],
+			listeners:{
+				scope : this,
+				checkchange :function(node, checked) {
+					node.checked = checked;
+					var records = me.getView().getChecked();
+					for (var i = 0; i < records.length; i++) {
+						if (records[i].get('id') != node.get('id')) {
+							records[i].set("checked" , false);
+						}
+					}
+				},
+	        	'itemclick' : function(view, record, item, index, e){
+	        		
+	        		var userId=record.get("id");
+	        		
+	        		 Ext.getCmp("indexResourceListViewId").getStore().baseParams= {
+	        			 userId: userId
+	           			};
+	        		
+		            Ext.getCmp("indexResourceListViewId").getStore().load({
+	               			params: {
+	               				userId: userId
+	               			}
+		            	});
+		            
+	        	}
+			},
 			loadMask:true,
 			bbar : Ext.create('Ext.toolbar.Paging', {
 					width : '100%',

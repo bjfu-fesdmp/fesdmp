@@ -15,25 +15,35 @@
 		    		'Bjfu.user.view.AddUser': Global_Path + 'module/user/view/AddUser.js',
 		    		'Bjfu.user.view.UserView': Global_Path + 'module/user/view/UserView.js',
 		    		'Bjfu.user.view.ModifyUser': Global_Path + 'module/user/view/ModifyUser.js',
-		    		'Bjfu.user.view.QueryUser' : Global_Path + 'module/user/view/QueryUser.js'
+		    		'Bjfu.user.view.QueryUser' : Global_Path + 'module/user/view/QueryUser.js',
+		    		'Bjfu.user.view.IndexResourceListView' : Global_Path + 'module/user/view/IndexResourceListView.js',
+		    		'Bjfu.indexResource.model.IndexResource' : Global_Path + 'module/indexResource/model/IndexResource.js',
+		    		'Bjfu.user.view.AddIndexResourceForUser' : Global_Path + 'module/user/view/AddIndexResourceForUser.js'
 		    	}
 			 });
 		  	 	
 			var sysuserView = Ext.create('Bjfu.user.view.UserView',{
 									id :'userViewId',
-									width:'100%',
+									title:'用户管理',
+									width:'70%',
 									autoShow : true,
-									//autoRender : true,
+									region:"west",
 									height:400
 								});	
-											
+			var indexResourceListView = Ext.create('Bjfu.user.view.IndexResourceListView',{
+				id :'indexResourceListViewId',
+				title:'指标管理',
+				region:"center",
+				width:'30%',
+				autoShow : true,
+				height:400
+			});		
 			Ext.create('Ext.panel.Panel',{
 				autoRender : true,
-				title:'用户管理',
 				width:'100%',
 				height:'100%',
-				layout:'fit',
-				items:[sysuserView],
+				layout:'border',
+				items:[sysuserView,indexResourceListView],
 				renderTo:'userPanel',
 				listeners : {
 					'boxready' : function(){
