@@ -96,12 +96,20 @@ public class UserService implements IUserService {
 			Pagination<User> page, JoinMode joinMode) {
 		return this.userDao.findByCondition(condition, order, page, joinMode);
 	}
+	@Override
 	public  User findByKey(int id){
-		
 		return this.userDao.findByKey(id);
 	}
+	@Override
 	public User findByUserLoginName(String userLoginName){
-		
 		return this.userDao.findByUserLoginName(userLoginName);
+	}
+	@Override
+	public boolean checkUserName(String userName){
+		return this.userDao.checkUserName(userName);
+	}
+	@Override
+	public boolean checkUserLoginName(String userLoginName){
+		return this.userDao.checkUserLoginName(userLoginName);
 	}
 }

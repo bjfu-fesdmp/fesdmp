@@ -29,6 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 
+
 import cn.bjfu.fesdmp.domain.sys.ResourceGroup;
 import cn.bjfu.fesdmp.domain.sys.UserGroup;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
@@ -268,5 +269,19 @@ public Map<String, Object> deleteResourceGroupForUserGroup(String id,String user
 
 	result.put(SUCCESS, Boolean.TRUE);
 	return result;
+}
+@RequestMapping(value = "/checkResourceGroupName", method = RequestMethod.POST)
+@ResponseBody
+public Map<String, Object> checkResourceGroupName(String resourceGroupName) throws Exception {
+	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+	logger.info("checkResourceGroupName method.");
+	logger.info(resourceGroupName);
+	Map<String, Object> result = new HashMap<String, Object>();
+	boolean checkResult=this.resourceGroupService.checkResourceGroupName(resourceGroupName);
+	if (checkResult==true)
+		result.put(SUCCESS, Boolean.FALSE);	
+	else
+		result.put(SUCCESS, Boolean.TRUE);	
+		return result;	
 }
 }

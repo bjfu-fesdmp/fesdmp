@@ -128,9 +128,31 @@ public class IndexResourceDaoImpl extends AbstractGenericDao<IndexResource> impl
 			if(check==false)
 				list.add(list2.get(i));
 		}
-		
-		
 		return list;	
+	}
+	@Override
+	public boolean checkIndexResourceEnName(String indexResourceEnName){
+		String jpal = " SELECT p FROM IndexResource p where p.indexEnName='"+indexResourceEnName+"'";
+		logger.info(jpal);
+		Query query = super.getEntityManager().createQuery(jpal);
+		List list=query.getResultList();
+		if(list.isEmpty())
+			return false;
+		else
+			return true;
+		
+	}
+	@Override
+	public boolean checkIndexResourceName(String indexResourceName){
+		String jpal = " SELECT p FROM IndexResource p where p.indexName='"+indexResourceName+"'";
+		logger.info(jpal);
+		Query query = super.getEntityManager().createQuery(jpal);
+		List list=query.getResultList();
+		if(list.isEmpty())
+			return false;
+		else
+			return true;
+		
 	}
 }
  

@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 
+
 import cn.bjfu.fesdmp.domain.sys.User;
 import cn.bjfu.fesdmp.domain.sys.UserGroup;
 import cn.bjfu.fesdmp.domain.sys.UserUserGroupRelation;
@@ -205,5 +206,19 @@ public Map<String, Object> findUserGroupIdAndName(String id) throws Exception {
 	result.put(RESULT, userUserGroupRelation.getUserGroup());
 	result.put(SUCCESS, Boolean.TRUE);
 	return result;
+}
+@RequestMapping(value = "/checkUserGroupName", method = RequestMethod.POST)
+@ResponseBody
+public Map<String, Object> checkUserGroupName(String userGroupName) throws Exception {
+	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+	logger.info("checkUserGroupName method.");
+	logger.info(userGroupName);
+	Map<String, Object> result = new HashMap<String, Object>();
+	boolean checkResult=this.userGroupService.checkUserGroupName(userGroupName);
+	if (checkResult==true)
+		result.put(SUCCESS, Boolean.FALSE);	
+	else
+		result.put(SUCCESS, Boolean.TRUE);	
+		return result;	
 }
 }

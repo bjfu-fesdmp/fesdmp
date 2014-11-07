@@ -31,5 +31,7 @@ public interface IIndexResourceService{
 	public abstract List<IndexResource> queryByResourceGroupId(int resourceGroupId);
 	public abstract List<IndexResource> getIndexResourceListNotInThisUser(String userId);
 	public abstract void deleteIndexResourceForUser(String id,String userId);
+	public abstract boolean checkIndexResourceEnName(String indexResourceEnName);
+	public abstract boolean checkIndexResourceName(String indexResourceName);
 }
  

@@ -137,5 +137,13 @@ public class IndexResourceService implements IIndexResourceService {
 		UserIndexRelation userIndexRelation=this.userIndexRelationDao.findUserIndexRelationByBothId(id,userId);
 		this.userIndexRelationDao.delete(userIndexRelation);
 	}
+	@Override
+	public boolean checkIndexResourceName(String indexResourceName){
+		return this.indexResourceDao.checkIndexResourceName(indexResourceName);
+	}
+	@Override
+	public boolean checkIndexResourceEnName(String indexResourceEnName){
+		return this.indexResourceDao.checkIndexResourceEnName(indexResourceEnName);
+	}
 }
  

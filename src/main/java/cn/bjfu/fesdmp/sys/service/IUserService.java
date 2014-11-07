@@ -27,5 +27,7 @@ public interface IUserService {
 			Pagination<User> page, JoinMode joinMode);
 	public abstract User findByKey(int id);
 	public abstract User findByUserLoginName(String userLoginName);
+	public abstract boolean checkUserName(String userName);
+	public abstract boolean checkUserLoginName(String userLoginName);
 }
  

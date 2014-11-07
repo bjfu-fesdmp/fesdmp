@@ -90,9 +90,18 @@ public class ResourceGroupDaoImpl extends AbstractGenericDao<ResourceGroup> impl
 			if(check==false)
 				list.add(list2.get(i));
 		}
-		
-		
 		return list;	
 	}
+	@Override
+	public boolean checkResourceGroupName(String resourceGroupName){
+		String jpal = " SELECT p FROM ResourceGroup p where p.groupName='"+resourceGroupName+"'";
+		logger.info(jpal);
+		Query query = super.getEntityManager().createQuery(jpal);
+		List list=query.getResultList();
+		if(list.isEmpty())
+			return false;
+		else
+			return true;
+		
+	}
 }
-

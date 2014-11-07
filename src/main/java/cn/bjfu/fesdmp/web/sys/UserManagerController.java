@@ -165,4 +165,32 @@ public class UserManagerController extends BaseController {
 			result.put(SUCCESS, Boolean.FALSE);	
 			return result;	
 	}
+	@RequestMapping(value = "/checkUserName", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> checkUserName(String userName) throws Exception {
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		logger.info("checkUserName method.");
+		logger.info(userName);
+		Map<String, Object> result = new HashMap<String, Object>();
+		boolean checkResult=this.userService.checkUserName(userName);
+		if (checkResult==true)
+			result.put(SUCCESS, Boolean.FALSE);	
+		else
+			result.put(SUCCESS, Boolean.TRUE);	
+			return result;	
+	}
+	@RequestMapping(value = "/checkUserLoginName", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> checkUserLoginName(String userLoginName) throws Exception {
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		logger.info("checkUserLoginName method.");
+		logger.info(userLoginName);
+		Map<String, Object> result = new HashMap<String, Object>();
+		boolean checkResult=this.userService.checkUserLoginName(userLoginName);
+		if (checkResult==true)
+			result.put(SUCCESS, Boolean.FALSE);	
+		else
+			result.put(SUCCESS, Boolean.TRUE);	
+			return result;	
+	}
 }

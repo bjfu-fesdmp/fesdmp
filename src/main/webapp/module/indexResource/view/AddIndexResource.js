@@ -42,13 +42,67 @@ Ext.define('Bjfu.indexResource.view.AddIndexResource',{
     	        name: 'indexName',
     	        allowBlank : false,
     	        maxLength : 50,
-				maxLengthText : '长度不能超过50个字符'    	        
+				maxLengthText : '长度不能超过50个字符' ,    	        
+    	        listeners:{
+	    	        'blur' : function(_this, the, e) {
+						var v = _this.getValue();
+						var vv = Ext.String.trim(v);
+						_this.setValue(vv);			
+							if (vv.length > 0) {
+								Ext.Ajax.request({
+									url : Global_Path+'indexresource/checkIndexResourceName',
+									params : {
+										indexResourceName : vv
+									},
+									success : function(response) {
+										var result = Ext.decode(response.responseText);
+										if(!result.success){
+												Ext.Msg.alert("提示", "该指标资源名已经存在");
+												_this.setValue('');
+												return;
+										}
+									},
+									failure: function(response) {
+										var result = Ext.decode(response.responseText);
+										Ext.Msg.alert('错误', result.__msg);
+									}
+								});
+							}			    
+    	        	}
+    	        }     	        
     	    },{
     	    	fieldLabel : '英文名称<font color="red">*</font>',
     	    	name :'indexEnName',
     	    	allowBlank : false,
     	    	maxLength : 50,
- 				maxLengthText : '长度不能超过50个字符' 
+ 				maxLengthText : '长度不能超过50个字符',    	        
+    	        listeners:{
+	    	        'blur' : function(_this, the, e) {
+						var v = _this.getValue();
+						var vv = Ext.String.trim(v);
+						_this.setValue(vv);			
+							if (vv.length > 0) {
+								Ext.Ajax.request({
+									url : Global_Path+'indexresource/checkIndexResourceEnName',
+									params : {
+										indexResourceEnName : vv
+									},
+									success : function(response) {
+										var result = Ext.decode(response.responseText);
+										if(!result.success){
+												Ext.Msg.alert("提示", "该指标资源名已经存在");
+												_this.setValue('');
+												return;
+										}
+									},
+									failure: function(response) {
+										var result = Ext.decode(response.responseText);
+										Ext.Msg.alert('错误', result.__msg);
+									}
+								});
+							}			    
+    	        	}
+    	        }   
     	    },{
     	    	fieldLabel : '指标单位<font color="red">*</font>',
     	    	name : 'indexUnit',

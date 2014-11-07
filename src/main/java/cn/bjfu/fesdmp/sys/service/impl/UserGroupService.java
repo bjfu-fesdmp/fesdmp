@@ -86,5 +86,8 @@ public class UserGroupService implements IUserGroupService {
 		
 		return this.userGroupDao.findByKey(id);
 	}
-	
+	@Override
+	public boolean checkUserGroupName(String userGroupName){
+		return this.userGroupDao.checkUserGroupName(userGroupName);
+	}
 }

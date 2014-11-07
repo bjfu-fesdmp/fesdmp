@@ -20,5 +20,7 @@ public interface IIndexResourceDao extends IGenericDao<IndexResource> {
 			Pagination<IndexResource> page, JoinMode joinMode,String userId);
 	public abstract List<IndexResource> queryByResourceGroupId(int resourceGroupId);
 	public abstract List<IndexResource> getIndexResourceListNotInThisUser(String userId);
+	public abstract boolean checkIndexResourceName(String indexResourceName);
+	public abstract boolean checkIndexResourceEnName(String indexResourceEnName);
 }
  

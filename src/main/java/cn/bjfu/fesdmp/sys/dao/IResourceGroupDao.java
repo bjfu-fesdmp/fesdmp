@@ -11,4 +11,5 @@ public interface IResourceGroupDao extends IGenericDao<ResourceGroup> {
 	public abstract boolean ifHaveChild(int id);
 	public abstract boolean checkIfHaveIndexResource(int id);
 	public abstract List<ResourceGroup> findResourceGroupNotInThisUserGroup(String userGroupId);
+	public abstract boolean checkResourceGroupName(String resourceGroupName);
 }

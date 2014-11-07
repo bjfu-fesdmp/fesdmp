@@ -26,5 +26,6 @@ public interface IResourceGroupService {
 	public abstract List<ResourceGroup> queryByCondition(final Object condition, IOrder order,
 			Pagination<ResourceGroup> page, JoinMode joinMode);
 	public abstract List<ResourceGroup> findResourceGroupNotInThisUserGroup(String userGroupId);
+	public abstract boolean checkResourceGroupName(String resourceGroupName);
 }
  

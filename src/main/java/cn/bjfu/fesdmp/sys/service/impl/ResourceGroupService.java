@@ -102,4 +102,8 @@ public class ResourceGroupService implements IResourceGroupService {
 		UserGroupResourceGroupRelation userGroupResourceGroupRelation=this.userGroupResourceGroupRelationDao.findUserGroupResourceGroupRelationByBothId(id,userGroupId);
 		this.userGroupResourceGroupRelationDao.delete(userGroupResourceGroupRelation);
 	}
+	@Override
+	public boolean checkResourceGroupName(String resourceGroupName){
+		return this.resourceGroupDao.checkResourceGroupName(resourceGroupName);
+	}
 }

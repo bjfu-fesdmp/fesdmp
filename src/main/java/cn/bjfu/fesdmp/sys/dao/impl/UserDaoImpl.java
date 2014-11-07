@@ -41,5 +41,29 @@ public class UserDaoImpl extends AbstractGenericDao<User> implements IUserDao {
 			user=(User)list.get(0);
 		return user;
 	}
+	@Override
+	public boolean checkUserName(String userName){
+		String jpal = " SELECT p FROM User p where p.userName='"+userName+"'";
+		logger.info(jpal);
+		Query query = super.getEntityManager().createQuery(jpal);
+		List list=query.getResultList();
+		if(list.isEmpty())
+			return false;
+		else
+			return true;
+		
+	}
+	@Override
+	public boolean checkUserLoginName(String userLoginName){
+		String jpal = " SELECT p FROM User p where p.userLoginName='"+userLoginName+"'";
+		logger.info(jpal);
+		Query query = super.getEntityManager().createQuery(jpal);
+		List list=query.getResultList();
+		if(list.isEmpty())
+			return false;
+		else
+			return true;
+		
+	}
 }
  

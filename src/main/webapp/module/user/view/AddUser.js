@@ -44,20 +44,75 @@ Ext.define('Bjfu.user.view.AddUser',{
     	    },
 		    defaultType: 'textfield',
     	    items: [{
-    	        fieldLabel: '用户名称<font color="red">*</font>',//验重
+    	        fieldLabel: '用户名称<font color="red">*</font>',
     	        name: 'userName',
     	        allowBlank : false,
     	        maxLength : 50,
 				maxLengthText : '长度不能超过50个字符',    	        
+    	        listeners:{
+	    	        'blur' : function(_this, the, e) {
+						var v = _this.getValue();
+						var vv = Ext.String.trim(v);
+						_this.setValue(vv);			
+							if (vv.length > 0) {
+								Ext.Ajax.request({
+									url : Global_Path+'sysuser/checkUserName',
+									params : {
+										userName : vv
+									},
+									success : function(response) {
+										var result = Ext.decode(response.responseText);
+										if(!result.success){
+												Ext.Msg.alert("提示", "该用户名已经存在");
+												_this.setValue('');
+												return;
+										}
+									},
+									failure: function(response) {
+										var result = Ext.decode(response.responseText);
+										Ext.Msg.alert('错误', result.__msg);
+									}
+								});
+							}			    
+    	        	}
+    	        }     	        
     	    },{
     	        fieldLabel: '用户登录名<font color="red">*</font>', 
     	        name: 'userLoginName',
     	        allowBlank : false,
     	        maxLength : 50,
-				maxLengthText : '长度不能超过50个字符'
+				maxLengthText : '长度不能超过50个字符',
+    	        listeners:{
+	    	        'blur' : function(_this, the, e) {
+						var v = _this.getValue();
+						var vv = Ext.String.trim(v);
+						_this.setValue(vv);			
+							if (vv.length > 0) {
+								Ext.Ajax.request({
+									url : Global_Path+'sysuser/checkUserLoginName',
+									params : {
+										userLoginName : vv
+									},
+									success : function(response) {
+										var result = Ext.decode(response.responseText);
+										if(!result.success){
+												Ext.Msg.alert("提示", "该用户登录名已经存在");
+												_this.setValue('');
+												return;
+										}
+									},
+									failure: function(response) {
+										var result = Ext.decode(response.responseText);
+										Ext.Msg.alert('错误', result.__msg);
+									}
+								});
+							}			    
+    	        	}
+    	        }   
     	    },{
-    	        fieldLabel: '手机号码', 
-    	        name: 'userPhone'
+    	        fieldLabel: '手机号码<font color="red">*</font>', 
+    	        name: 'userPhone',
+        	    allowBlank : false,
     	    },{
     	        fieldLabel: '邮件<font color="red">*</font>',
     	        allowBlank : false,

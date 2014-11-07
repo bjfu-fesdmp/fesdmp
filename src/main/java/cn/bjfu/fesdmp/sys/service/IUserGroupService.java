@@ -6,6 +6,7 @@ import java.util.List;
 
 
 
+
 import cn.bjfu.fesdmp.domain.sys.UserGroup;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
@@ -24,5 +25,6 @@ public interface IUserGroupService {
 	public abstract List<UserGroup> queryByCondition(final Object condition, IOrder order,
 			Pagination<UserGroup> page, JoinMode joinMode);
 	public abstract UserGroup findByKey(int id);
+	public abstract boolean checkUserGroupName(String userGroupName);
 }
  

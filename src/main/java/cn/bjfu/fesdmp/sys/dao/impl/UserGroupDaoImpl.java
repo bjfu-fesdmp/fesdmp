@@ -31,4 +31,16 @@ public class UserGroupDaoImpl extends AbstractGenericDao<UserGroup> implements I
 	public UserGroupDaoImpl() {
 		super(UserGroup.class);
 	}
+	@Override
+	public boolean checkUserGroupName(String userGroupName){
+		String jpal = " SELECT p FROM UserGroup p where p.userGroupName='"+userGroupName+"'";
+		logger.info(jpal);
+		Query query = super.getEntityManager().createQuery(jpal);
+		List list=query.getResultList();
+		if(list.isEmpty())
+			return false;
+		else
+			return true;
+		
+	}
 }

@@ -263,5 +263,33 @@ public class IndexManagerController extends BaseController {
 		result.put(SUCCESS, Boolean.TRUE);
 		return result;
 	}
+	@RequestMapping(value = "/checkIndexResourceName", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> checkIndexResourceName(String indexResourceName) throws Exception {
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		logger.info("checkIndexResourceName method.");
+		logger.info(indexResourceName);
+		Map<String, Object> result = new HashMap<String, Object>();
+		boolean checkResult=this.indexService.checkIndexResourceName(indexResourceName);
+		if (checkResult==true)
+			result.put(SUCCESS, Boolean.FALSE);	
+		else
+			result.put(SUCCESS, Boolean.TRUE);	
+			return result;	
+	}
+	@RequestMapping(value = "/checkIndexResourceEnName", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> checkIndexResourceEnName(String indexResourceEnName) throws Exception {
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		logger.info("checkIndexResourceEnName method.");
+		logger.info(indexResourceEnName);
+		Map<String, Object> result = new HashMap<String, Object>();
+		boolean checkResult=this.indexService.checkIndexResourceEnName(indexResourceEnName);
+		if (checkResult==true)
+			result.put(SUCCESS, Boolean.FALSE);	
+		else
+			result.put(SUCCESS, Boolean.TRUE);	
+			return result;	
+	}
 }
  
