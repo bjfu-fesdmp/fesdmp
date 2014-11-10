@@ -154,5 +154,16 @@ public class IndexResourceDaoImpl extends AbstractGenericDao<IndexResource> impl
 			return true;
 		
 	}
+	@Override
+	public IndexResource findByEnName(String indexResourceEnName){
+		IndexResource indexResource=new IndexResource();
+		String jpal = " SELECT p FROM IndexResource p where p.indexEnName='"+indexResourceEnName+"'";
+		logger.info(jpal);
+		Query query = super.getEntityManager().createQuery(jpal);
+		List list=query.getResultList();
+		if(!list.isEmpty())
+			indexResource=(IndexResource) list.get(0);
+		return indexResource;
+	}
 }
  

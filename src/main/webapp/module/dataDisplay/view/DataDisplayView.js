@@ -1,5 +1,6 @@
 Ext.define('Bjfu.dataDisplay.view.DataDisplayView',{
 	extend : 'Ext.grid.Panel',
+	id:'dataDisplayView',
 	alias:'widget.DataDisplayView',
 	forceFit : true,
 	layout : 'fit',
@@ -85,58 +86,90 @@ Ext.define('Bjfu.dataDisplay.view.DataDisplayView',{
 			],
 			tbar : [{ 
 		          text: '上传',
+		          id:'updata',
 		          scope:this,
 		          icon:Global_Path+'/resources/extjs/images/up2.gif',
 		          handler : function(){
-		        	var tableName=gridStore.baseParams.tableName;
-		        	var upLoadForm = Ext.create('Bjfu.dataDisplay.view.FileUpload',{
-		        		tableName:tableName
-		        	});
-		        	  
-		        	Ext.create('Ext.window.Window',{
-		        		title:'文件上传',
-		        		closable:true,
-		        		closeAction:'destroy',
-		        		modal:true,
-		        		resizable:false,
-		        	    border:false,
-		        		width:300,
-		        		height:150,
-		        		layout:'fit',
-		        		items:[upLoadForm]
-		        	}).show();
+		        	  var tableName=gridStore.baseParams.tableName;
+		      			Ext.Ajax.request({
+		      				url : Global_Path+'sysuser/checkFunctionIfForbid',
+		      				params:{
+		      					tableName:tableName
+		      					},
+		      				success : function(response) {
+		      					var result = Ext.decode(response.responseText);
+		      					if(result.success){
+		      						Ext.Msg.alert('提示','您并没有获得该权限');
+		      						return;
+		      					}
+		      					else{
+		      			        	var upLoadForm = Ext.create('Bjfu.dataDisplay.view.FileUpload',{
+		      			        		tableName:tableName
+		      			        	});
+		      			        	  
+		      			        	Ext.create('Ext.window.Window',{
+		      			        		title:'文件上传',
+		      			        		closable:true,
+		      			        		closeAction:'destroy',
+		      			        		modal:true,
+		      			        		resizable:false,
+		      			        	    border:false,
+		      			        		width:300,
+		      			        		height:150,
+		      			        		layout:'fit',
+		      			        		items:[upLoadForm]
+		      			        	}).show();
+		      					}
+		      				}
+		      			});
+
 		        	} 
 		        },{
 				       text: '修改',
 				       scope:this, 
 				        icon:Global_Path+'/resources/extjs/images/update.png',
 				          handler : function(o){
-					        	var tableName=gridStore.baseParams.tableName;
-				        	 var gird = o.ownerCt.ownerCt;
-						     var record = gird.getSelectionModel().getSelection();
-						     	if(record.length>1||record.length==0)
-						     		{
-						     			Ext.Msg.alert('提示','请选择一条记录！');
-						     			return;
-						     		}else{
-				        	var modifyForm = Ext.create('Bjfu.dataDisplay.view.ModifyData',{
-				        		tableName:tableName
-											});
-				        	modifyForm.loadRecord(record[0]);
-				        	Ext.create('Ext.window.Window',{
-				        		title:'修改数据界面',
-				        		closable:true,
-				        		closeAction:'destroy',
-				        		modal:true,
-				        		border:false,
-				        		resizable:false,
-				        		width:250,
-				        		height:150,
-				        		layout:'fit',
-				        		items:[modifyForm]
-				        	}).show();
-				        	
-				        	}
+					         var tableName=gridStore.baseParams.tableName;
+				      			Ext.Ajax.request({
+				      				url : Global_Path+'sysuser/checkFunctionIfForbid',
+				      				params:{
+				      					tableName:tableName
+				      					},
+				      				success : function(response) {
+				      					var result = Ext.decode(response.responseText);
+				      					if(result.success){
+				      						Ext.Msg.alert('提示','您并没有获得该权限');
+				      						return;
+				      					}
+				      					else{				        	 var gird = o.ownerCt.ownerCt;
+									     var record = gird.getSelectionModel().getSelection();
+									     	if(record.length>1||record.length==0)
+									     		{
+									     			Ext.Msg.alert('提示','请选择一条记录！');
+									     			return;
+									     		}else{
+							        	var modifyForm = Ext.create('Bjfu.dataDisplay.view.ModifyData',{
+							        		tableName:tableName
+														});
+							        	modifyForm.loadRecord(record[0]);
+							        	Ext.create('Ext.window.Window',{
+							        		title:'修改数据界面',
+							        		closable:true,
+							        		closeAction:'destroy',
+							        		modal:true,
+							        		border:false,
+							        		resizable:false,
+							        		width:250,
+							        		height:150,
+							        		layout:'fit',
+							        		items:[modifyForm]
+							        	}).show();
+							        	
+							        	}
+				      					}
+				      				}
+				      			});
+
 				        	}
 				        },{ 
 				        	text: '数据导出' ,
@@ -161,7 +194,11 @@ Ext.define('Bjfu.dataDisplay.view.DataDisplayView',{
 		                    		             params:{ids:ids.join(","),tableName:tableName},
 		                    		             success:function(res){
 		                    		             var obj =res.responseText.replace(/\"/g, "");
+		                    		             if(obj!="")
 		                    		             window.location=obj;
+		                    		             else
+		     			      						Ext.Msg.alert('提示','请先选择一个表');
+		 			      						return; 
 		                    		            },
 		                    		             failure : function() {
 		                    		             Ext.MessageBox.updateProgress(1);   
@@ -221,7 +258,25 @@ Ext.define('Bjfu.dataDisplay.view.DataDisplayView',{
 					    	text:'批量上传',
 					    	scope:this,
 					    	icon : Global_Path + '/resources/extjs/images/up2.gif',
-				    		handler : function(btn) {}
+				    		handler : function(btn) {		      			Ext.Ajax.request({
+			      				url : Global_Path+'sysuser/checkFunctionIfForbid',
+			      				params:{
+			      					tableName:tableName
+			      					},
+			      				success : function(response) {
+			      					var result = Ext.decode(response.responseText);
+			      					if(result.success){
+			      						Ext.Msg.alert('提示','您并没有获得该权限');
+			      						return;
+			      					}
+			      					else{
+			      						
+			      						
+			      						
+			      					}
+			      				}
+			      			});
+				    		}
 						},"->", {
 		    	text:'高级查询',
 		    	scope:this,

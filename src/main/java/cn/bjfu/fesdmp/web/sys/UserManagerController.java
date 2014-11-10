@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,24 +20,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import cn.bjfu.fesdmp.domain.sys.User;
-import cn.bjfu.fesdmp.domain.sys.UserGroup;
 import cn.bjfu.fesdmp.domain.sys.UserUserGroupRelation;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.frame.dao.Order;
 import cn.bjfu.fesdmp.json.AddUserJson;
 import cn.bjfu.fesdmp.json.UserJson;
-import cn.bjfu.fesdmp.sys.dao.IUserGroupDao;
 import cn.bjfu.fesdmp.sys.service.IUserService;
-import cn.bjfu.fesdmp.sys.service.impl.UserGroupService;
 import cn.bjfu.fesdmp.utils.PageInfoBean;
 import cn.bjfu.fesdmp.utils.Pagination;
 import cn.bjfu.fesdmp.web.BaseController;
@@ -58,10 +52,10 @@ public class UserManagerController extends BaseController {
 	
 	@RequestMapping(value = "/userList", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> userList(PageInfoBean pageInfo) throws Exception {
+	public Map<String, Object> userList(HttpServletRequest request,PageInfoBean pageInfo) throws Exception {
 		
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-		
+		User user09= (User) request.getSession().getAttribute("user");
 		logger.info("userList method.");
 		logger.info(pageInfo);
 		UserSearch userSearch = null;
@@ -112,7 +106,7 @@ public class UserManagerController extends BaseController {
 	}
 	@RequestMapping(value = "/addUser", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> addUser(String formData) throws Exception {
+	public Map<String, Object> addUser(HttpServletRequest request,String formData) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		logger.info("userList method.");
 		AddUserJson addUserJson = new AddUserJson();
@@ -131,6 +125,9 @@ public class UserManagerController extends BaseController {
 		user.setUserPhone(addUserJson.getUserPhone());
 		user.setIsAdmin((byte)0);
 		user.setUserStatus((byte)1);
+		User buildUser=(User) request.getSession().getAttribute("user");
+		user.setCreater(buildUser);
+
 		this.userService.addUser(user,addUserJson.getUserGroup());
 
 		Map<String, Object> result = new HashMap<String, Object>();
@@ -192,5 +189,45 @@ public class UserManagerController extends BaseController {
 		else
 			result.put(SUCCESS, Boolean.TRUE);	
 			return result;	
+	}
+	@RequestMapping(value = "/checkIfHidden", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> checkIfHidden(HttpServletRequest request) throws Exception {
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		logger.info("checkIfHidden method.");
+		User user=(User) request.getSession().getAttribute("user");
+		Map<String, Object> result = new HashMap<String, Object>();
+		if(user.getIsAdmin().equals((byte)1))
+			result.put(SUCCESS, Boolean.FALSE);	
+		else 
+			result.put(SUCCESS, Boolean.TRUE);	
+			return result;	
+	}
+	@RequestMapping(value = "/checkFunctionIfForbid", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> checkFunctionIfHidden(HttpServletRequest request,String tableName) throws Exception {
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		logger.info("checkFunctionIfHidden method.");
+		User user=(User) request.getSession().getAttribute("user");
+		Map<String, Object> result = new HashMap<String, Object>();
+		if(tableName!=null){
+			if(tableName.length()>4){
+				if(tableName.charAt(4)=='_'){
+					if(user.getIsAdmin().equals((byte)1))
+						result.put(SUCCESS, Boolean.FALSE);	
+					else if(this.userService.checkIfHaveAuthority(user.getId(),tableName.substring(5)))
+						result.put(SUCCESS, Boolean.FALSE);
+					else
+						result.put(SUCCESS, Boolean.TRUE);
+				}
+				else
+					result.put(SUCCESS, Boolean.TRUE);
+			}
+			else
+				result.put(SUCCESS, Boolean.TRUE);	
+		}
+		else
+			result.put(SUCCESS, Boolean.TRUE);	
+					return result;	
 	}
 }

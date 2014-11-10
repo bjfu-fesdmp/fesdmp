@@ -16,6 +16,7 @@ import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.json.AddUserJson;
 import cn.bjfu.fesdmp.json.UserJson;
+import cn.bjfu.fesdmp.sys.dao.IIndexResourceDao;
 import cn.bjfu.fesdmp.sys.dao.IUserDao;
 import cn.bjfu.fesdmp.sys.dao.IUserGroupDao;
 import cn.bjfu.fesdmp.sys.dao.IUserUserGroupRelationDao;
@@ -37,6 +38,9 @@ public class UserService implements IUserService {
 	private IUserUserGroupRelationDao userUserGroupRelationDao;
 	@Autowired
 	private IUserGroupDao userGroupDao;
+	@Autowired
+	private IIndexResourceDao indexResourceDao;
+	
 	@Override
 	public void addUser(User user,int userGroupId) {
 		UserUserGroupRelation userUserGroupRelation=new UserUserGroupRelation();
@@ -111,5 +115,10 @@ public class UserService implements IUserService {
 	@Override
 	public boolean checkUserLoginName(String userLoginName){
 		return this.userDao.checkUserLoginName(userLoginName);
+	}
+	@Override
+	public boolean checkIfHaveAuthority(int userId,String indexResourceEnName){
+		
+		return this.userDao.checkIfHaveAuthority(userId,this.indexResourceDao.findByEnName(indexResourceEnName).getId());
 	}
 }

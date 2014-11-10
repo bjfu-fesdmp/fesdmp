@@ -115,7 +115,7 @@ public class UserGroupManagerController extends BaseController {
 
 	@RequestMapping(value = "/addUserGroup", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> addUserGroup(String formData) throws Exception {
+	public Map<String, Object> addUserGroup(HttpServletRequest request,String formData) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		logger.info("userGroupList method.");
 		UserGroupJson userGroupJson = null;
@@ -125,7 +125,8 @@ public class UserGroupManagerController extends BaseController {
 		logger.info(userGroupJson);
 		Date dt=new Date();
 		userGroupJson.setCreateTime(dt);
-		this.userGroupService.addUserGroup(userGroupJson);
+		User buildUser=(User) request.getSession().getAttribute("user");
+		this.userGroupService.addUserGroup(userGroupJson,buildUser);
 
 		Map<String, Object> result = new HashMap<String, Object>();
 

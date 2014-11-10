@@ -65,5 +65,17 @@ public class UserDaoImpl extends AbstractGenericDao<User> implements IUserDao {
 			return true;
 		
 	}
+	@Override
+	public boolean checkIfHaveAuthority(int userId,int indexResourceId){
+		String jpal = " SELECT p FROM UserIndexRelation p where p.user.id="+userId+"and p.indexResource.id="+indexResourceId;
+		logger.info(jpal);
+		Query query = super.getEntityManager().createQuery(jpal);
+		List list=query.getResultList();
+		if(list.isEmpty())
+			return false;
+		else
+			return true;
+		
+	}
 }
  

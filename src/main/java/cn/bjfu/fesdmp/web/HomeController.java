@@ -2,6 +2,7 @@ package cn.bjfu.fesdmp.web;
 
 import java.util.Locale;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
@@ -26,7 +27,6 @@ import cn.bjfu.fesdmp.sys.service.IUserService;
  */
 @Controller
 public class HomeController extends BaseController {
-	
 	private static final Logger logger = Logger.getLogger(HomeController.class);
 	@Autowired
 	private IUserService userService;
@@ -36,12 +36,13 @@ public class HomeController extends BaseController {
 	}
 	
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public String index(User user) {
+	public String index(HttpServletRequest request,User user) {
 		logger.info("index method");
 		logger.info(user);
 		User nowUser=this.userService.findByUserLoginName(user.getUserLoginName());
 		if(nowUser.getUserLoginName()!=null){
 			if(user.getPassword().equals(nowUser.getPassword())){
+				request.getSession(true).setAttribute("user", nowUser); 
 				return "frame/index";
 			}
 			else 

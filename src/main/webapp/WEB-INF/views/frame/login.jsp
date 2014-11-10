@@ -64,8 +64,8 @@
    	<table width="90%" border="0" align="center" cellpadding="8" cellspacing="0">
       <tr>
         <td height="40" id="content" class="spm_logintitle">
-        <c:if test="${!noSuchUser }">
-        	消息提示：<c:out value="${没有该用户 }"/>
+        <c:if test="${! empty errorMsg }">
+        	消息提示：<c:out value="${errorMsg }"/>
         </c:if>
         </td>
       </tr>

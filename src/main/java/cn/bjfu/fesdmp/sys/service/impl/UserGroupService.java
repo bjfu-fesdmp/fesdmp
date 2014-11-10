@@ -40,11 +40,12 @@ public class UserGroupService implements IUserGroupService {
 	@Autowired
 	private IUserGroupRoleRelationDao userGroupRoleRelationDao;
 	@Override
-	public void addUserGroup(UserGroupJson userGroupJson) {
+	public void addUserGroup(UserGroupJson userGroupJson,User buildUser) {
 		UserGroup userGroup=new UserGroup();
-		UserGroupRoleRelation userGroupRoleRelation=new UserGroupRoleRelation();
+//		UserGroupRoleRelation userGroupRoleRelation=new UserGroupRoleRelation();
 		userGroup.setUserGroupName(userGroupJson.getUserGroupName());
 		userGroup.setCreateTime(userGroupJson.getCreateTime());
+		userGroup.setCreater(buildUser);
 		this.userGroupDao.insert(userGroup);
 //		userGroupRoleRelation.setUserGroup(userGroup);
 //		userGroupRoleRelation.setRole(this.roleDao.findByKey(userGroupJson.getRole()));

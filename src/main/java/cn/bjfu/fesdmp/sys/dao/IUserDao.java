@@ -19,5 +19,6 @@ public interface IUserDao extends IGenericDao<User> {
 	public abstract User findByUserLoginName(String userLoginName);
 	public abstract boolean checkUserName(String userName);
 	public abstract boolean checkUserLoginName(String userLoginName);
+	public abstract boolean checkIfHaveAuthority(int userId,int indexResourceId);
 }
  

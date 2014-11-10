@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -25,6 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import cn.bjfu.fesdmp.domain.sys.IndexResource;
 import cn.bjfu.fesdmp.domain.sys.ResourceGroup;
 import cn.bjfu.fesdmp.domain.sys.ResourceRelation;
+import cn.bjfu.fesdmp.domain.sys.User;
 import cn.bjfu.fesdmp.domain.sys.UserGroup;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
@@ -114,7 +116,7 @@ public class IndexManagerController extends BaseController {
 	
 	@RequestMapping(value = "/addIndexResource", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> addIndexResource(String formData) throws Exception {
+	public Map<String, Object> addIndexResource(HttpServletRequest request,String formData) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		logger.info("addIndexResource method.");
 		IndexResourceJson indexResourceJson=new IndexResourceJson();
@@ -135,6 +137,8 @@ public class IndexManagerController extends BaseController {
 		indexResource.setCreateTime(dt);
 		Date dtm = new Date(70,0,1,0,0,0);
 		indexResource.setModifyTime(dtm);
+		User buildUser=(User) request.getSession().getAttribute("user");
+		indexResource.setCreater(buildUser);
 		this.indexService.addIndexResource(indexResource,resourceGroupId);
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put(SUCCESS, Boolean.TRUE);

@@ -65,6 +65,7 @@
            	    nocache : true                            
             }));
 	  	}
+	
 		
 		Ext.create('Ext.util.KeyMap',{
 			target: Ext.getBody(),
@@ -84,7 +85,17 @@
 		// 记录当前页面的状态
 		Ext.state.Manager.setProvider(Ext.create("Ext.state.CookieProvider"));
 		Ext.BLANK_IMAGE_URL = '<%=request.getContextPath()%>/resources/extjs/images/s.gif';
-		
+		Ext.onReady(function(){
+			Ext.Ajax.request({
+				url : Global_Path+'sysuser/checkIfHidden',
+				success : function(response) {
+					var result = Ext.decode(response.responseText);
+					if(result.success){
+						Ext.getCmp('systemManager').hide();
+					}
+				}
+			});
+			});
 		var tb = Ext.create('Ext.toolbar.Toolbar' , {
 			style : {
 				backgroundColor : '#157FCC'
@@ -130,6 +141,7 @@
 			        }
 			},' ',{
 				text : '系统管理',
+				id : 'systemManager',
 				menu: {
 			            items: [
 			                {

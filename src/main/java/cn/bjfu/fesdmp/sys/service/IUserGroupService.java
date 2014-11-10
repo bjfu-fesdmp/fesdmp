@@ -7,6 +7,8 @@ import java.util.List;
 
 
 
+
+import cn.bjfu.fesdmp.domain.sys.User;
 import cn.bjfu.fesdmp.domain.sys.UserGroup;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
@@ -17,7 +19,7 @@ import cn.bjfu.fesdmp.utils.Pagination;
 
 public interface IUserGroupService {
 
-	public abstract void addUserGroup(UserGroupJson userGroupJson);
+	public abstract void addUserGroup(UserGroupJson userGroupJson,User buildUser);
 	public abstract void modifyUserGroup(UserGroup userGroup);
 	public abstract void deleteUserGroup(int id);
 	public abstract List<UserGroup> queryAll(IOrder order);

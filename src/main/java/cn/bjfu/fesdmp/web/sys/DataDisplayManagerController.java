@@ -87,7 +87,6 @@ public class DataDisplayManagerController extends BaseController {
 		Map<String, Object> result = new HashMap<String, Object>();
 		if(tableName!=null){
 		if(tableName.length()>4){
-			System.out.println(tableName.charAt(4));
 			if(tableName.charAt(4)=='_'){
 				String newTableName = tableName.substring(0, 4) + "_"
 				+ tableName.substring(5);
@@ -224,6 +223,9 @@ public class DataDisplayManagerController extends BaseController {
 	public String create(HttpServletRequest request, FileUploadBean uploadItem,
 			BindingResult result, String tableName) throws IOException {
 		ExtJSFormResult extjsFormResult = new ExtJSFormResult();
+		if(tableName!=null){
+			if(tableName.length()>4){
+				if(tableName.charAt(4)=='_'){
 		String newTableName = tableName.substring(0, 4) + "_"
 				+ tableName.substring(5);
 		if (result.hasErrors()) {
@@ -345,7 +347,16 @@ public class DataDisplayManagerController extends BaseController {
 			}
 			dataService.addData(newTableName, list);
 		}
-		extjsFormResult.setSuccess(true);
+			extjsFormResult.setSuccess(true);
+		}
+		else
+			extjsFormResult.setSuccess(false);
+		}
+		else
+			extjsFormResult.setSuccess(false);
+		}
+		else
+			extjsFormResult.setSuccess(false);
 		return extjsFormResult.toString();
 	}
 
@@ -369,6 +380,10 @@ public class DataDisplayManagerController extends BaseController {
 	public String downloadData(HttpServletRequest request,String ids, String tableName) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		logger.info("downloadData method.");
+		String FinalPath =null;
+		if(tableName!=null){
+			if(tableName.length()>4){
+				if(tableName.charAt(4)=='_'){
 		String newTableName = tableName.substring(0, 4) + "_"
 				+ tableName.substring(5);
 		List<DataJson> list = new ArrayList<DataJson>();
@@ -419,7 +434,11 @@ public class DataDisplayManagerController extends BaseController {
 		}
 		wb.write(fos);
 		fos.close();
-		String FinalPath = TEMP_PATH + "/" + excelFile.getName();
+		FinalPath = TEMP_PATH + "/" + excelFile.getName();
+				}
+			}
+			}
+		
 		return FinalPath;
 	}
 

@@ -22,5 +22,6 @@ public interface IIndexResourceDao extends IGenericDao<IndexResource> {
 	public abstract List<IndexResource> getIndexResourceListNotInThisUser(String userId);
 	public abstract boolean checkIndexResourceName(String indexResourceName);
 	public abstract boolean checkIndexResourceEnName(String indexResourceEnName);
+	public abstract IndexResource findByEnName(String indexResourceEnName);
 }
  

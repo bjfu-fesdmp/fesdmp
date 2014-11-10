@@ -30,7 +30,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 
+
 import cn.bjfu.fesdmp.domain.sys.ResourceGroup;
+import cn.bjfu.fesdmp.domain.sys.User;
 import cn.bjfu.fesdmp.domain.sys.UserGroup;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
@@ -95,7 +97,7 @@ public class ResourceGroupManagerController extends BaseController {
 
 	@RequestMapping(value = "/addResourceGroup", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> addResourceGroup(String formData) throws Exception {
+	public Map<String, Object> addResourceGroup(HttpServletRequest request,String formData) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		logger.info("userGroupList method.");
 		ResourceGroup resourceGroup = new ResourceGroup();
@@ -105,7 +107,6 @@ public class ResourceGroupManagerController extends BaseController {
 		
 		if(resourceGroup.getGroupParentId()==null)
 			resourceGroup.setGroupParentId(0);
-		
 		logger.info(resourceGroup);
 	 	this.resourceGroupService.addResourceGroup(resourceGroup);
 
