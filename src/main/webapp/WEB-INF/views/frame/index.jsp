@@ -105,21 +105,7 @@
 				text : '首页'
 			},' ',{
 				text : '个人中心',
-				menu: {
-			            items: [
-			                {
-			                    text: '选项1'
-			                }, {
-			                    text: '选项2'
-			                }, {
-			                    text: '选项3',
-			                    handler: function () {
-			                        Ext.Msg.alert("提示", "来自菜单的消息");
-			                    }
-			                }
-			            ]
-			        }
-			},' ',{
+
 				text : '数据管理',
 				menu: {
 			            items: [
@@ -195,12 +181,7 @@
 									});
 								} 
 				
-					        }, {
-			                    text: '字典管理',
-			                    handler: function () {
-			                        Ext.Msg.alert("提示", "来自菜单的消息");
-			                    }
-			                }
+					        }
 			            ]
 			        }
 			},'->',{
