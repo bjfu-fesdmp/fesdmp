@@ -95,7 +95,7 @@ Ext.define('Bjfu.indexResource.view.IndexResourceListView',{
 			        editor : 'textfield'
 			    },{
 			        text : '添加人',
-			        dataIndex : 'creater_id',
+			        dataIndex : 'createrId',
 			        width : '8%'
 			    },{
 			        text : '添加时间',
@@ -103,7 +103,7 @@ Ext.define('Bjfu.indexResource.view.IndexResourceListView',{
 			        width : '15%'
 			    },{
 			        text : '修改人',
-			        dataIndex : 'modifier_id',
+			        dataIndex : 'modifierId',
 			        width : '8%'
 			    },{
 			    	text : '修改时间',

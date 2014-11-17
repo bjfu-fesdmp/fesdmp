@@ -307,14 +307,7 @@ Ext.define('Bjfu.dataDisplay.view.DataDisplayView',{
 			       	}).show();
 		       }
 			}],
-			loadMask:true,
-			bbar : Ext.create('Ext.toolbar.Paging', {
-					width : '100%',
-					store : gridStore,
-					displayInfo : true,
-					displayMsg : '显示 {0} - {1} 条，共计 {2} 条',
-					emptyMsg : "没有数据"
-			})
+			loadMask:true
 		});
 		me.callParent(arguments);
 	}

@@ -128,6 +128,8 @@ public class IndexManagerController extends BaseController {
 			indexResource.setIndexEnName(indexResourceJson.getIndexEnName());
 			indexResource.setIndexMemo(indexResourceJson.getIndexMemo());
 			indexResource.setIndexUnit(indexResourceJson.getIndexUnit());
+			User buildUser=(User) request.getSession().getAttribute("user");
+			indexResource.setCreater(buildUser);
 			resourceGroupId=indexResourceJson.getResourceGroupId();
 		}
 		logger.info(indexResource);
@@ -137,8 +139,6 @@ public class IndexManagerController extends BaseController {
 		indexResource.setCreateTime(dt);
 		Date dtm = new Date(70,0,1,0,0,0);
 		indexResource.setModifyTime(dtm);
-		User buildUser=(User) request.getSession().getAttribute("user");
-		indexResource.setCreater(buildUser);
 		this.indexService.addIndexResource(indexResource,resourceGroupId);
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put(SUCCESS, Boolean.TRUE);
@@ -159,10 +159,14 @@ public class IndexManagerController extends BaseController {
 	
 	@RequestMapping(value = "/modifyIndexResource", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> modifyIndexResource(String formData) throws Exception {
+	public Map<String, Object> modifyIndexResource(HttpServletRequest request,String formData) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		logger.info("modifyIndexResource method.");
 		IndexResource indexResource = mapper.readValue(formData,IndexResource.class);
+		User modifyUser=(User) request.getSession().getAttribute("user");
+		indexResource.setModifier(modifyUser);
+		Date dt=new Date();
+		indexResource.setModifyTime(dt);
 		this.indexService.modifyIndexResource(indexResource);;
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put(SUCCESS, Boolean.TRUE);

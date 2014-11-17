@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -33,6 +34,7 @@ import cn.bjfu.fesdmp.sys.service.IUserService;
 import cn.bjfu.fesdmp.utils.PageInfoBean;
 import cn.bjfu.fesdmp.utils.Pagination;
 import cn.bjfu.fesdmp.web.BaseController;
+import cn.bjfu.fesdmp.web.annotation.MethodRecordLog;
 import cn.bjfu.fesdmp.web.jsonbean.UserSearch;
 
 
@@ -40,7 +42,6 @@ import cn.bjfu.fesdmp.web.jsonbean.UserSearch;
 @RequestMapping(value = "/sysuser")
 public class UserManagerController extends BaseController {
 	private static final Logger logger = Logger.getLogger(UserManagerController.class);
-	//private Gson gson = new GsonBuilder().serializeNulls().setDateFormat("yyyy-MM-dd").create();
 	private ObjectMapper mapper = new ObjectMapper();
 	@Autowired
 	private IUserService userService;
@@ -105,13 +106,13 @@ public class UserManagerController extends BaseController {
 		return result;
 	}
 	@RequestMapping(value = "/addUser", method = RequestMethod.POST)
+	@MethodRecordLog(moduleName="用户管理", bussinessType="SYS_OPERATE", operateType = "ADD", desc="添加用户") 
 	@ResponseBody
-	public Map<String, Object> addUser(HttpServletRequest request,String formData) throws Exception {
+	public Map<String, Object> addUser(HttpServletRequest request,@RequestParam String formData) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		logger.info("userList method.");
 		AddUserJson addUserJson = new AddUserJson();
 		User user = new User();
-		UserUserGroupRelation userUserGroupRelation =new UserUserGroupRelation();
 		if (!StringUtils.isEmpty(formData)) {
 			addUserJson = mapper.readValue(formData,AddUserJson.class);
 		}
@@ -205,7 +206,7 @@ public class UserManagerController extends BaseController {
 	}
 	@RequestMapping(value = "/checkFunctionIfForbid", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> checkFunctionIfHidden(HttpServletRequest request,String tableName) throws Exception {
+	public Map<String, Object> checkFunctionIfForbid(HttpServletRequest request,String tableName) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		logger.info("checkFunctionIfHidden method.");
 		User user=(User) request.getSession().getAttribute("user");
