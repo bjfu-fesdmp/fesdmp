@@ -39,6 +39,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -52,7 +53,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 @Controller
 @RequestMapping(value = "/dataDisplay")
@@ -218,6 +223,146 @@ public class DataDisplayManagerController extends BaseController {
 		return result;
 	}
 
+	@RequestMapping(value = "/uploadGroupFile", method = RequestMethod.POST)
+	@ResponseBody
+	public String uploadGroupFile(MultipartHttpServletRequest request,FileUploadBean uploadItem,
+			BindingResult result, String tableName) throws IOException {
+		 List<MultipartFile> multipartFiles = request.getFiles("file");
+		 List<CommonsMultipartFile> files=new ArrayList();
+		 for(int i=0;i<multipartFiles.size();i++){
+			 CommonsMultipartFile file= (CommonsMultipartFile)multipartFiles.get(i);
+			 files.add(file);
+		 }
+		 ExtJSFormResult extjsFormResult = new ExtJSFormResult();
+		if(tableName==null){
+			extjsFormResult.setSuccess(false);
+			return extjsFormResult.toString();
+		}
+		if(tableName.length()<=4){
+			extjsFormResult.setSuccess(false);
+			return extjsFormResult.toString();
+		}
+		if(tableName.charAt(4)!='_'){
+			extjsFormResult.setSuccess(false);
+			return extjsFormResult.toString();	
+		}
+		String newTableName = tableName.substring(0, 4) + "_"+ tableName.substring(5);
+		if (result.hasErrors()) {
+			for (ObjectError error : result.getAllErrors()) {
+				System.err.println("Error: " + error.getCode() + " - "+ error.getDefaultMessage());
+			}
+			extjsFormResult.setSuccess(false);
+			return extjsFormResult.toString();
+		}
+		for(int i=0;i<files.size();i++){		
+			if ((!files.get(i).getOriginalFilename().substring(files.get(i).getOriginalFilename().length() - 3,
+				files.get(i).getOriginalFilename().length()).equals("xls") && !files.get(i)
+				.getOriginalFilename().substring(files.get(i).getOriginalFilename().length() - 3,
+				files.get(i).getOriginalFilename().length()).equals("txt"))) {
+				for (ObjectError error : result.getAllErrors()) {
+					System.err.println("Error: " + error.getCode() + " - "
+						+ error.getDefaultMessage());
+				}
+				extjsFormResult.setSuccess(false);
+				return extjsFormResult.toString();
+			}
+		}
+			// Some type of file processing...
+			System.err.println("-------------------------------------------");
+			for(int i=0;i<files.size();i++){
+			System.err.println("Test upload: "
+					+ files.get(i).getOriginalFilename());
+			}
+			System.err.println("-------------------------------------------");
+			for(int i=0;i<files.size();i++){	
+			// 将文件存到服务器
+			String savePath = request.getSession().getServletContext()
+					.getRealPath(FILE_PATH);
+			System.out.println(request.getSession().getServletContext()
+					.getRealPath(FILE_PATH));
+			java.io.File folder = new java.io.File(request.getSession()
+					.getServletContext().getRealPath(FILE_PATH));
+			if (!folder.exists()) {
+				folder.mkdirs();
+			}
+			System.out.println("文件保存路径：" + savePath);
+			String rndFilename = (new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-"))
+					.format(new Date());
+			java.io.File file = new java.io.File(savePath + "/" + rndFilename
+					+ files.get(i).getOriginalFilename());
+			try {
+				files.get(i).transferTo(file);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			// 读取excel文件进入相应表中
+			if (files.get(i).getOriginalFilename().substring(
+					files.get(i).getOriginalFilename().length() - 3,
+					files.get(i).getOriginalFilename().length())
+					.equals("xls")) {
+				InputStream is = new FileInputStream(savePath + "/" + rndFilename
+						+ files.get(i).getOriginalFilename());
+				HSSFWorkbook hssfWorkbook = new HSSFWorkbook(is);
+				DataJson dataJson = null;
+				List<DataJson> list = new ArrayList<DataJson>();
+				for (int numSheet = 0; numSheet < hssfWorkbook.getNumberOfSheets(); numSheet++) {
+					HSSFSheet hssfSheet = hssfWorkbook.getSheetAt(numSheet);
+					if (hssfSheet == null) {
+						continue;
+					}
+					// 循环行Row
+					for (int rowNum = 1; rowNum <= hssfSheet.getLastRowNum(); rowNum++) {
+						HSSFRow hssfRow = hssfSheet.getRow(rowNum);
+						if (hssfRow == null) {
+							continue;
+						}
+						dataJson = new DataJson();
+						hssfRow.getCell(0).setCellType(Cell.CELL_TYPE_NUMERIC);
+						hssfRow.getCell(1).setCellType(Cell.CELL_TYPE_STRING);
+						HSSFCell timeCell = hssfRow.getCell(0);
+						if (timeCell == null) {
+							continue;
+						}
+						dataJson.setTime(timeCell.getDateCellValue());
+						HSSFCell dataCell = hssfRow.getCell(1);
+						if (dataCell == null) {
+							continue;
+						}
+						dataJson.setData(dataCell.getStringCellValue());
+						list.add(dataJson);
+					}
+				}
+				dataService.addData(newTableName, list);
+			} else {
+				BufferedReader input = new BufferedReader(new FileReader(savePath
+						+ "/" + rndFilename
+						+ files.get(i).getOriginalFilename()));
+				String s = input.readLine();
+				DataJson dataJson = null;
+				List<DataJson> list = new ArrayList<DataJson>();
+				while ((s = input.readLine()) != null) {
+					try {
+						String info[] = s.split("	");
+						SimpleDateFormat sdf = new SimpleDateFormat(
+								"yyyy/MM/dd HH:mm:ss");
+						Date date = sdf.parse(info[0]);
+						dataJson = new DataJson();
+						dataJson.setData(info[1]);
+						dataJson.setTime(date);
+						list.add(dataJson);
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
+				}
+				dataService.addData(newTableName, list);
+			}
+			}
+			
+				extjsFormResult.setSuccess(true);
+			
+			return extjsFormResult.toString();
+	}
+	
 	@RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
 	@ResponseBody
 	public String create(HttpServletRequest request, FileUploadBean uploadItem,

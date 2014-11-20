@@ -141,7 +141,8 @@ Ext.define('Bjfu.dataDisplay.view.DataDisplayView',{
 				      						Ext.Msg.alert('提示','您并没有获得该权限');
 				      						return;
 				      					}
-				      					else{				        	 var gird = o.ownerCt.ownerCt;
+				      					else{				        	
+				      						var gird = o.ownerCt.ownerCt;
 									     var record = gird.getSelectionModel().getSelection();
 									     	if(record.length>1||record.length==0)
 									     		{
@@ -258,7 +259,9 @@ Ext.define('Bjfu.dataDisplay.view.DataDisplayView',{
 					    	text:'批量上传',
 					    	scope:this,
 					    	icon : Global_Path + '/resources/extjs/images/up2.gif',
-				    		handler : function(btn) {		      			Ext.Ajax.request({
+				    		handler : function(btn) {
+				    			var tableName=gridStore.baseParams.tableName;
+				    			Ext.Ajax.request({
 			      				url : Global_Path+'sysuser/checkFunctionIfForbid',
 			      				params:{
 			      					tableName:tableName
@@ -269,11 +272,23 @@ Ext.define('Bjfu.dataDisplay.view.DataDisplayView',{
 			      						Ext.Msg.alert('提示','您并没有获得该权限');
 			      						return;
 			      					}
-			      					else{
-			      						
-			      						
-			      						
-			      					}
+			      					else{		      			        	
+			      						var groupUpLoadForm = Ext.create('Bjfu.dataDisplay.view.FileGroupUpload',{
+		      			        		tableName:tableName
+		      			        	});
+		      			        	  
+		      			        	Ext.create('Ext.window.Window',{
+		      			        		title:'文件批量上传',
+		      			        		closable:true,
+		      			        		closeAction:'destroy',
+		      			        		modal:true,
+		      			        		resizable:false,
+		      			        	    border:false,
+		      			        		width:300,
+		      			        		height:150,
+		      			        		layout:'fit',
+		      			        		items:[groupUpLoadForm]
+		      			        	}).show();}
 			      				}
 			      			});
 				    		}
