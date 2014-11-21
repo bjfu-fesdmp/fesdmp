@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import cn.bjfu.fesdmp.constant.AppConstants;
 import cn.bjfu.fesdmp.domain.sys.IndexResource;
 import cn.bjfu.fesdmp.domain.sys.ResourceGroup;
 import cn.bjfu.fesdmp.domain.sys.ResourceRelation;
@@ -128,7 +129,7 @@ public class IndexManagerController extends BaseController {
 			indexResource.setIndexEnName(indexResourceJson.getIndexEnName());
 			indexResource.setIndexMemo(indexResourceJson.getIndexMemo());
 			indexResource.setIndexUnit(indexResourceJson.getIndexUnit());
-			User buildUser=(User) request.getSession().getAttribute("user");
+			User buildUser=(User) request.getSession().getAttribute(AppConstants.SESSION_USER);
 			indexResource.setCreater(buildUser);
 			resourceGroupId=indexResourceJson.getResourceGroupId();
 		}
@@ -163,7 +164,7 @@ public class IndexManagerController extends BaseController {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		logger.info("modifyIndexResource method.");
 		IndexResource indexResource = mapper.readValue(formData,IndexResource.class);
-		User modifyUser=(User) request.getSession().getAttribute("user");
+		User modifyUser=(User) request.getSession().getAttribute(AppConstants.SESSION_USER);
 		indexResource.setModifier(modifyUser);
 		Date dt=new Date();
 		indexResource.setModifyTime(dt);

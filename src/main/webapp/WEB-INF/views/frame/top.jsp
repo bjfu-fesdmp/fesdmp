@@ -3,14 +3,6 @@
 <html>
   <head>
   	<script language="javascript">
-  	
-  	    dwr.engine.setAsync(true);      
-        dwr.engine.setActiveReverseAjax(true);
-        dwr.engine.setNotifyServerOnPageUnload(true);
-        
-		var user = '<s:property value="#session.user.userName"/>';
-        DWRPushHelper.onPageLoad(user);
-        
 		function callback(content){ 
 	   		Ext.create('Ext.ux.window.Notification', {
 	  			title: '短消息通知',
@@ -31,7 +23,7 @@
     <td width="617"><img src="<%=request.getContextPath() %>/resources/extjs/images/smplogo.png" width="617" height="70" /></td>
     <td>&nbsp;</td>
     <td width="410" align="center" class="smp_toptime"><img style="vertical-align: middle;" width="12px;" height="12px;" src="<%=request.getContextPath() %>/resources/extjs/images/uers.png"/>
-    <%User nowUser=(User)request.getSession().getAttribute("user");
+    <%User nowUser=(User)request.getSession().getAttribute("SESSION_USER");
     Date date=new Date();
     SimpleDateFormat matter=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     String dates=matter.format(date);%>

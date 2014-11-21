@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import cn.bjfu.fesdmp.constant.AppConstants;
 import cn.bjfu.fesdmp.domain.sys.User;
 import cn.bjfu.fesdmp.domain.sys.UserUserGroupRelation;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
@@ -126,7 +127,7 @@ public class UserManagerController extends BaseController {
 		user.setUserPhone(addUserJson.getUserPhone());
 		user.setIsAdmin((byte)0);
 		user.setUserStatus((byte)1);
-		User buildUser=(User) request.getSession().getAttribute("user");
+		User buildUser=(User) request.getSession().getAttribute(AppConstants.SESSION_USER);
 		user.setCreater(buildUser);
 
 		this.userService.addUser(user,addUserJson.getUserGroup());
@@ -196,7 +197,7 @@ public class UserManagerController extends BaseController {
 	public Map<String, Object> checkIfHidden(HttpServletRequest request) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		logger.info("checkIfHidden method.");
-		User user=(User) request.getSession().getAttribute("user");
+		User user=(User) request.getSession().getAttribute(AppConstants.SESSION_USER);
 		Map<String, Object> result = new HashMap<String, Object>();
 		if(user.getIsAdmin().equals((byte)1))
 			result.put(SUCCESS, Boolean.FALSE);	

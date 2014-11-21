@@ -45,6 +45,7 @@ public class LogAspect {
 	private ISystemLogService systemLogService;
 	
 	public LogAspect() {
+		System.out.println("----------------");
 	}
 	
 	@Pointcut("@annotation(cn.bjfu.fesdmp.web.annotation.MethodRecordLog)")  

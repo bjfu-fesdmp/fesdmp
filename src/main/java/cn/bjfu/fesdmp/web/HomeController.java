@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import cn.bjfu.fesdmp.constant.AppConstants;
 import cn.bjfu.fesdmp.domain.sys.User;
 import cn.bjfu.fesdmp.sys.service.IUserService;
 
@@ -47,7 +48,7 @@ public class HomeController extends BaseController {
 		User nowUser=this.userService.findByUserLoginName(user.getUserLoginName());
 		if(nowUser.getUserLoginName()!=null){
 			if(user.getPassword().equals(nowUser.getPassword())){
-				request.getSession(true).setAttribute("user", nowUser); 
+				request.getSession(true).setAttribute(AppConstants.SESSION_USER, nowUser); 
 				return "frame/index";
 			}
 			else 

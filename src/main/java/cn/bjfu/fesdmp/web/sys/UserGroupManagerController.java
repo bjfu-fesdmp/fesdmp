@@ -28,6 +28,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 
+
+import cn.bjfu.fesdmp.constant.AppConstants;
 import cn.bjfu.fesdmp.domain.sys.User;
 import cn.bjfu.fesdmp.domain.sys.UserGroup;
 import cn.bjfu.fesdmp.domain.sys.UserUserGroupRelation;
@@ -125,7 +127,7 @@ public class UserGroupManagerController extends BaseController {
 		logger.info(userGroupJson);
 		Date dt=new Date();
 		userGroupJson.setCreateTime(dt);
-		User buildUser=(User) request.getSession().getAttribute("user");
+		User buildUser=(User) request.getSession().getAttribute(AppConstants.SESSION_USER);
 		this.userGroupService.addUserGroup(userGroupJson,buildUser);
 
 		Map<String, Object> result = new HashMap<String, Object>();
