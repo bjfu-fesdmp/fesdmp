@@ -165,5 +165,17 @@ public class IndexResourceDaoImpl extends AbstractGenericDao<IndexResource> impl
 			indexResource=(IndexResource) list.get(0);
 		return indexResource;
 	}
+	@Override
+	public boolean checkYear(String year,String indexResoure){
+		String jpal = " SELECT p FROM ResourceTable p where p.year='"+year+"'"+" and p.indexResource.indexEnName='"+indexResoure+"'";
+		logger.info(jpal);
+		Query query = super.getEntityManager().createQuery(jpal);
+		List list=query.getResultList();
+		if(list.isEmpty())
+			return false;
+		else
+			return true;
+		
+	}
 }
  

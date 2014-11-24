@@ -11,16 +11,13 @@ import org.springframework.transaction.annotation.Transactional;
 import cn.bjfu.fesdmp.domain.sys.SystemLog;
 import cn.bjfu.fesdmp.domain.sys.User;
 import cn.bjfu.fesdmp.domain.sys.UserGroup;
-import cn.bjfu.fesdmp.domain.sys.UserGroupRoleRelation;
 import cn.bjfu.fesdmp.domain.sys.UserUserGroupRelation;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.json.UserGroupJson;
 import cn.bjfu.fesdmp.json.UserJson;
-import cn.bjfu.fesdmp.sys.dao.IRoleDao;
 import cn.bjfu.fesdmp.sys.dao.IUserDao;
 import cn.bjfu.fesdmp.sys.dao.IUserGroupDao;
-import cn.bjfu.fesdmp.sys.dao.IUserGroupRoleRelationDao;
 import cn.bjfu.fesdmp.sys.dao.IUserUserGroupRelationDao;
 import cn.bjfu.fesdmp.sys.service.IUserGroupService;
 import cn.bjfu.fesdmp.sys.service.IUserService;
@@ -35,21 +32,13 @@ public class UserGroupService implements IUserGroupService {
 
 	@Autowired
 	private IUserGroupDao userGroupDao;
-	@Autowired
-	private IRoleDao roleDao;
-	@Autowired
-	private IUserGroupRoleRelationDao userGroupRoleRelationDao;
 	@Override
 	public void addUserGroup(UserGroupJson userGroupJson,User buildUser) {
 		UserGroup userGroup=new UserGroup();
-//		UserGroupRoleRelation userGroupRoleRelation=new UserGroupRoleRelation();
 		userGroup.setUserGroupName(userGroupJson.getUserGroupName());
 		userGroup.setCreateTime(userGroupJson.getCreateTime());
 		userGroup.setCreater(buildUser);
 		this.userGroupDao.insert(userGroup);
-//		userGroupRoleRelation.setUserGroup(userGroup);
-//		userGroupRoleRelation.setRole(this.roleDao.findByKey(userGroupJson.getRole()));
-//		this.userGroupRoleRelationDao.insert(userGroupRoleRelation);
 	}
 	
 	@Override

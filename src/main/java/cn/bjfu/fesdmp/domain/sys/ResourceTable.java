@@ -1,8 +1,8 @@
 /** 
  * Project Name:fesdmp 
- * File Name:RoleFunctionRelation.java 
+ * File Name:UserGroup.java 
  * Package Name:cn.bjfu.fesdmp.domain.sys 
- * Date:2014年7月24日 下午9:55:35 
+ * Date:2014年7月24日 下午8:25:36 
  * Copyright (c) 2014, 1153405224@qq.com All Rights Reserved. 
  * 
 */  
@@ -22,18 +22,18 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /** 
- * ClassName:UserGroupRelation <br/> 
- * Function: 功能权限映射表. <br/> 
- * Reason:   功能权限映射表. <br/> 
- * Date:     2014年7月24日 下午9:55:35 <br/> 
+ * ClassName:UserGroup <br/> 
+ * Function: 用户组表. <br/> 
+ * Reason:   用户组表. <br/> 
+ * Date:     2014年7月24日 下午8:25:36 <br/> 
  * @author   LuoYangBjfu 
  * @version   
  * @since    JDK 1.7 
  * @see       
  */
 @Entity
-@Table(name = "t_role_function_relation")
-public class RoleFunctionRelation implements Serializable {
+@Table(name = "t_table")
+public class ResourceTable implements Serializable {
 
 	/**
 	 * @since JDK 1.7
@@ -42,13 +42,12 @@ public class RoleFunctionRelation implements Serializable {
 
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
+	@Column(nullable = false)
+	private Integer year;
 	@OneToOne
-	@JoinColumn(name = "role_id")
-	private Role role;
-	@OneToOne
-	@JoinColumn(name = "function_id")
-	private Function function;
-	public RoleFunctionRelation() {}
+	@JoinColumn(name = "index_resource_id")
+	private IndexResource indexResource;
+	public ResourceTable() {}
 
 	public Integer getId() {
 		return id;
@@ -57,32 +56,32 @@ public class RoleFunctionRelation implements Serializable {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
-
-	public Function getFunction() {
-		return function;
+	public Integer getYear() {
+		return year;
 	}
 
-	public void setFunction(Function function) {
-		this.function = function;
+	public void setYear(Integer year) {
+		this.year = year;
 	}
 
-	public Role getRole() {
-		return role;
+
+	public IndexResource getIndexResource() {
+		return indexResource;
 	}
 
-	public void setRole(Role role) {
-		this.role = role;
+	public void setIndexResource(IndexResource indexResource) {
+		this.indexResource = indexResource;
 	}
+
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((function == null) ? 0 : function.hashCode());
-		result = prime * result + ((role == null) ? 0 : role.hashCode());
+		result = prime * result + ((indexResource == null) ? 0 : indexResource.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		
+		result = prime * result
+				+ ((year == null) ? 0 : year.hashCode());
 		return result;
 	}
 
@@ -94,27 +93,27 @@ public class RoleFunctionRelation implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		RoleFunctionRelation other = (RoleFunctionRelation) obj;
-		if (function == null) {
-			if (other.function != null)
+		ResourceTable other = (ResourceTable) obj;
+		if (year == null) {
+			if (other.year != null)
 				return false;
-		} else if (!function.equals(other.function))
+		} else if (!year.equals(other.year))
+			return false;
+		if (indexResource == null) {
+			if (other.indexResource != null)
+				return false;
+		} else if (!indexResource.equals(other.indexResource))
 			return false;
 		if (id == null) {
 			if (other.id != null)
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
-		if (role == null) {
-			if (other.role != null)
-				return false;
-		} else if (!role.equals(other.role))
-			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "RoleFunctionRelation [id=" + id + ", function=" + function + ", role=" + role+ "]";
+		return "User [id=" + id + ", year=" + year + "]";
 	}
 }

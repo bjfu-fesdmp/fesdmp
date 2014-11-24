@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import cn.bjfu.fesdmp.domain.sys.IndexResource;
 import cn.bjfu.fesdmp.domain.sys.ResourceGroup;
 import cn.bjfu.fesdmp.domain.sys.ResourceRelation;
+import cn.bjfu.fesdmp.domain.sys.ResourceTable;
 import cn.bjfu.fesdmp.domain.sys.UserGroupResourceGroupRelation;
 import cn.bjfu.fesdmp.domain.sys.UserIndexRelation;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
@@ -21,6 +22,7 @@ import cn.bjfu.fesdmp.sys.dao.IDataDao;
 import cn.bjfu.fesdmp.sys.dao.IIndexResourceDao;
 import cn.bjfu.fesdmp.sys.dao.IResourceGroupDao;
 import cn.bjfu.fesdmp.sys.dao.IResourceRelationDao;
+import cn.bjfu.fesdmp.sys.dao.IResourceTableDao;
 import cn.bjfu.fesdmp.sys.dao.IUserDao;
 import cn.bjfu.fesdmp.sys.dao.IUserIndexRelationDao;
 import cn.bjfu.fesdmp.sys.service.IIndexResourceService;
@@ -43,6 +45,8 @@ public class IndexResourceService implements IIndexResourceService {
 	private IUserDao userDao;
 	@Autowired
 	private IUserIndexRelationDao userIndexRelationDao;
+	@Autowired
+	private IResourceTableDao resourceTableDao;
 	@Override
 	public void addIndexResource(IndexResource indexResource,int resourceGroupId) {
 		ResourceGroup resourceGroup=this.resourceGroupDao.findByKey(resourceGroupId);
@@ -54,7 +58,12 @@ public class IndexResourceService implements IIndexResourceService {
 	}
 	@Override
 	public void addTableByYear(CreateTableJson createTableJson){
+		ResourceTable resourceTable=new ResourceTable();
+		IndexResource indexResource=this.indexResourceDao.findByEnName(createTableJson.getIndexEnName());
+		resourceTable.setIndexResource(indexResource);
+		resourceTable.setYear(Integer.valueOf(createTableJson.getYear()));
 		this.indexResourceDao.createResourceListByTime(createTableJson.getIndexEnName(), createTableJson.getYear());
+		this.resourceTableDao.insert(resourceTable);
 	}
 
 	@Override
@@ -144,6 +153,10 @@ public class IndexResourceService implements IIndexResourceService {
 	@Override
 	public boolean checkIndexResourceEnName(String indexResourceEnName){
 		return this.indexResourceDao.checkIndexResourceEnName(indexResourceEnName);
+	}
+	@Override
+	public boolean checkYear(String year,String indexResoure){
+		return this.indexResourceDao.checkYear(year,indexResoure);
 	}
 }
  

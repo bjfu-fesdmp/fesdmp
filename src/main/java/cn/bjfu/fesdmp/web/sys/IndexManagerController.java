@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -41,6 +43,7 @@ import cn.bjfu.fesdmp.sys.service.IResourceRelationService;
 import cn.bjfu.fesdmp.utils.PageInfoBean;
 import cn.bjfu.fesdmp.utils.Pagination;
 import cn.bjfu.fesdmp.web.BaseController;
+import cn.bjfu.fesdmp.web.annotation.MethodRecordLog;
 import cn.bjfu.fesdmp.web.jsonbean.IndexResourceSearch;
 
 @Controller
@@ -116,6 +119,7 @@ public class IndexManagerController extends BaseController {
 	}
 	
 	@RequestMapping(value = "/addIndexResource", method = RequestMethod.POST)
+	@MethodRecordLog(moduleName="指标资源管理", bussinessType="SYS_OPERATE", operateType = "ADD", desc="添加指标资源") 
 	@ResponseBody
 	public Map<String, Object> addIndexResource(HttpServletRequest request,String formData) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
@@ -147,6 +151,7 @@ public class IndexManagerController extends BaseController {
 	}
 	
 	@RequestMapping(value = "/deleteIndexResource", method = RequestMethod.POST)
+	@MethodRecordLog(moduleName="指标资源管理", bussinessType="SYS_OPERATE", operateType = "DELETE", desc="删除指标资源")
 	@ResponseBody
 	public Map<String, Object> deleteIndexResource(String ids) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
@@ -159,6 +164,7 @@ public class IndexManagerController extends BaseController {
 	}
 	
 	@RequestMapping(value = "/modifyIndexResource", method = RequestMethod.POST)
+	@MethodRecordLog(moduleName="指标资源管理", bussinessType="SYS_OPERATE", operateType = "UPDATE", desc="修改指标资源")
 	@ResponseBody
 	public Map<String, Object> modifyIndexResource(HttpServletRequest request,String formData) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
@@ -174,6 +180,7 @@ public class IndexManagerController extends BaseController {
 		return result;
 	}
 	@RequestMapping(value = "/addTable", method = RequestMethod.POST)
+	@MethodRecordLog(moduleName="数据表管理", bussinessType="DATA_OPERATE", operateType = "ADD", desc="添加数据表")
 	@ResponseBody
 	public Map<String, Object> addTable(String formData) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
@@ -246,6 +253,7 @@ public class IndexManagerController extends BaseController {
 		return result;
 	}
 	@RequestMapping(value = "/addIndexResourceForUser", method = RequestMethod.POST)
+	@MethodRecordLog(moduleName="用户管理", bussinessType="SYS_OPERATE", operateType = "ADD", desc="为用户添加指标资源") 
 	@ResponseBody
 	public Map<String, Object> addIndexResourceForUser(String formData) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
@@ -263,6 +271,7 @@ public class IndexManagerController extends BaseController {
 		return result;
 	}
 	@RequestMapping(value = "/deleteIndexResourceForUser", method = RequestMethod.POST)
+	@MethodRecordLog(moduleName="用户管理", bussinessType="SYS_OPERATE", operateType = "DELETE", desc="为用户删除指标资源") 
 	@ResponseBody
 	public Map<String, Object> deleteIndexResourceForUser(String id,String userId) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
@@ -294,6 +303,46 @@ public class IndexManagerController extends BaseController {
 		logger.info(indexResourceEnName);
 		Map<String, Object> result = new HashMap<String, Object>();
 		boolean checkResult=this.indexService.checkIndexResourceEnName(indexResourceEnName);
+		if (checkResult==true)
+			result.put(SUCCESS, Boolean.FALSE);	
+		else
+			result.put(SUCCESS, Boolean.TRUE);	
+			return result;	
+	}
+	@RequestMapping(value = "/checkIfIsYear", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> checkIfIsYear(String year) throws Exception {
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		logger.info("checkIfIsYear method.");
+		logger.info(year);
+		Map<String, Object> result = new HashMap<String, Object>();
+		Pattern pattern = Pattern.compile("[0-9]*");
+		Matcher isNum = pattern.matcher(year);
+		 if( !isNum.matches() ){
+			 result.put(SUCCESS, Boolean.FALSE);	
+			 return result;
+		 }
+		 if(Integer.parseInt(year)<1900||Integer.parseInt(year)>2100){
+			 result.put(SUCCESS, Boolean.FALSE);	
+			 return result;
+		 }
+//		boolean checkResult=this.indexService.checkIndexResourceEnName(indexResourceEnName);
+//		if (checkResult==true)
+//			result.put(SUCCESS, Boolean.FALSE);	
+//		else
+			result.put(SUCCESS, Boolean.TRUE);	
+			return result;	
+	}
+	@RequestMapping(value = "/checkIfIsExist", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> checkIfIsExist(String year,String indexResoure) throws Exception {
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		logger.info("checkIfIsExist method.");
+		logger.info(year);
+		logger.info(indexResoure);
+		Map<String, Object> result = new HashMap<String, Object>();
+
+		boolean checkResult=this.indexService.checkYear(year,indexResoure);
 		if (checkResult==true)
 			result.put(SUCCESS, Boolean.FALSE);	
 		else

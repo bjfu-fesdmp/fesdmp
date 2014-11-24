@@ -3,7 +3,6 @@ package cn.bjfu.fesdmp.sys.dao;
 import java.util.List;
 
 import cn.bjfu.fesdmp.domain.sys.ResourceGroup;
-import cn.bjfu.fesdmp.domain.sys.Role;
 
 public interface IResourceGroupDao extends IGenericDao<ResourceGroup> {
 	public abstract List<ResourceGroup> findResourceGroupById(int parentId);

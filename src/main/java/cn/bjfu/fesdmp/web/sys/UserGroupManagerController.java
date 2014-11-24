@@ -16,19 +16,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-
-
-
-
-
-
-
-
-
 import cn.bjfu.fesdmp.constant.AppConstants;
 import cn.bjfu.fesdmp.domain.sys.User;
 import cn.bjfu.fesdmp.domain.sys.UserGroup;
@@ -36,16 +25,14 @@ import cn.bjfu.fesdmp.domain.sys.UserUserGroupRelation;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.frame.dao.Order;
-import cn.bjfu.fesdmp.json.AddUserJson;
 import cn.bjfu.fesdmp.json.UserGroupJson;
-import cn.bjfu.fesdmp.sys.service.IUserGroupRoleRelationService;
 import cn.bjfu.fesdmp.sys.service.IUserGroupService;
 import cn.bjfu.fesdmp.sys.service.IUserUserGroupRelationService;
 import cn.bjfu.fesdmp.utils.PageInfoBean;
 import cn.bjfu.fesdmp.utils.Pagination;
 import cn.bjfu.fesdmp.web.BaseController;
+import cn.bjfu.fesdmp.web.annotation.MethodRecordLog;
 import cn.bjfu.fesdmp.web.jsonbean.UserGroupSearch;
-import cn.bjfu.fesdmp.web.jsonbean.UserUserGroupRelationSearch;
 
 @Controller
 @RequestMapping(value = "/sysuserGroup")
@@ -116,6 +103,7 @@ public class UserGroupManagerController extends BaseController {
 	}
 
 	@RequestMapping(value = "/addUserGroup", method = RequestMethod.POST)
+	@MethodRecordLog(moduleName="用户组管理", bussinessType="SYS_OPERATE", operateType = "ADD", desc="添加用户组") 
 	@ResponseBody
 	public Map<String, Object> addUserGroup(HttpServletRequest request,String formData) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
@@ -173,6 +161,7 @@ public Map<String, Object> getUserGroupList()
 }
 
 @RequestMapping(value = "/deleteUserGroup", method = RequestMethod.POST)
+@MethodRecordLog(moduleName="用户组管理", bussinessType="SYS_OPERATE", operateType = "DELETE", desc="删除用户组") 
 @ResponseBody
 public Map<String, Object> deleteUserGroup(String ids) throws Exception {
 	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
@@ -189,6 +178,7 @@ public Map<String, Object> deleteUserGroup(String ids) throws Exception {
 	return result;
 }
 @RequestMapping(value = "/modifyUserGroup", method = RequestMethod.POST)
+@MethodRecordLog(moduleName="用户组管理", bussinessType="SYS_OPERATE", operateType = "UPDATE", desc="修改用户组") 
 @ResponseBody
 public Map<String, Object> modifyUserGroup(String formData) throws Exception {
 	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);

@@ -80,6 +80,8 @@ Ext.define('Bjfu.log.view.LogListView',{
 			        		return "系统退出";
 			        	} else if (value == "SYS_OPERATE") {
 			        		return "系统操作";
+			        	} else if (value == "DATA_OPERATE") {
+			        		return "数据操作";
 			        	} else {
 			        		return "其他业务";
 			        	}

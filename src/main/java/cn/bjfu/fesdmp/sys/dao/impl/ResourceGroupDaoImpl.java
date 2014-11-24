@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 
 import cn.bjfu.fesdmp.domain.sys.ResourceGroup;
 import cn.bjfu.fesdmp.domain.sys.ResourceRelation;
-import cn.bjfu.fesdmp.domain.sys.Role;
 import cn.bjfu.fesdmp.domain.sys.UserUserGroupRelation;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.Order;

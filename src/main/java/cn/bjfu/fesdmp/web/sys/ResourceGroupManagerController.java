@@ -31,6 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 
+
 import cn.bjfu.fesdmp.domain.sys.ResourceGroup;
 import cn.bjfu.fesdmp.domain.sys.User;
 import cn.bjfu.fesdmp.domain.sys.UserGroup;
@@ -44,6 +45,7 @@ import cn.bjfu.fesdmp.sys.service.IResourceGroupService;
 import cn.bjfu.fesdmp.utils.PageInfoBean;
 import cn.bjfu.fesdmp.utils.Pagination;
 import cn.bjfu.fesdmp.web.BaseController;
+import cn.bjfu.fesdmp.web.annotation.MethodRecordLog;
 import cn.bjfu.fesdmp.web.jsonbean.ResourceGroupSearch;
 
 @Controller
@@ -96,6 +98,7 @@ public class ResourceGroupManagerController extends BaseController {
 	}
 
 	@RequestMapping(value = "/addResourceGroup", method = RequestMethod.POST)
+	@MethodRecordLog(moduleName="资源组管理", bussinessType="SYS_OPERATE", operateType = "ADD", desc="添加资源组") 
 	@ResponseBody
 	public Map<String, Object> addResourceGroup(HttpServletRequest request,String formData) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
@@ -143,6 +146,7 @@ public String getResourceGroupList(PageInfoBean pageInfo)
 }
 
 @RequestMapping(value = "/deleteResourceGroup", method = RequestMethod.POST)
+@MethodRecordLog(moduleName="资源组管理", bussinessType="SYS_OPERATE", operateType = "DELETE", desc="删除资源组") 
 @ResponseBody
 public Map<String, Object> deleteResourceGroup(String id) throws Exception {
 	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
@@ -154,6 +158,7 @@ public Map<String, Object> deleteResourceGroup(String id) throws Exception {
 	return result;
 }
 @RequestMapping(value = "/modifyResourceGroup", method = RequestMethod.POST)
+@MethodRecordLog(moduleName="资源组管理", bussinessType="SYS_OPERATE", operateType = "UPDATE", desc="修改资源组") 
 @ResponseBody
 public Map<String, Object> modifyResourceGroup(String formData) throws Exception {
 	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
@@ -243,6 +248,7 @@ public Map<String, Object> getResourceGroupListNotInThisUserGroup(String userGro
 	return result;
 }
 @RequestMapping(value = "/addResourceGroupForUserGroup", method = RequestMethod.POST)
+@MethodRecordLog(moduleName="用户组管理", bussinessType="SYS_OPERATE", operateType = "ADD", desc="为用户组添加资源组") 
 @ResponseBody
 public Map<String, Object> addResourceGroupForUserGroup(String formData) throws Exception {
 	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
@@ -260,6 +266,7 @@ public Map<String, Object> addResourceGroupForUserGroup(String formData) throws 
 	return result;
 }
 @RequestMapping(value = "/deleteResourceGroupForUserGroup", method = RequestMethod.POST)
+@MethodRecordLog(moduleName="用户组管理", bussinessType="SYS_OPERATE", operateType = "DELETE", desc="为用户组删除资源组") 
 @ResponseBody
 public Map<String, Object> deleteResourceGroupForUserGroup(String id,String userGroupId) throws Exception {
 	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);

@@ -138,6 +138,7 @@ public class UserManagerController extends BaseController {
 		return result;
 	}
 	@RequestMapping(value = "/modifyUser", method = RequestMethod.POST)
+	@MethodRecordLog(moduleName="用户管理", bussinessType="SYS_OPERATE", operateType = "UPDATE", desc="修改用户") 
 	@ResponseBody
 	public Map<String, Object> modifyUser(String formData) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
@@ -149,6 +150,7 @@ public class UserManagerController extends BaseController {
 		return result;
 	}
 	@RequestMapping(value = "/deleteUser", method = RequestMethod.POST)
+	@MethodRecordLog(moduleName="用户管理", bussinessType="SYS_OPERATE", operateType = "DELETE", desc="删除用户") 
 	@ResponseBody
 	public Map<String, Object> deleteUser(String ids) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
