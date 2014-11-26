@@ -9,14 +9,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.bjfu.fesdmp.domain.sys.ResourceGroup;
-import cn.bjfu.fesdmp.domain.sys.UserGroup;
-import cn.bjfu.fesdmp.domain.sys.UserGroupResourceGroupRelation;
+import cn.bjfu.fesdmp.domain.sys.UserResourceGroupRelation;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
-import cn.bjfu.fesdmp.json.AddResourceGroupForUserGroupJson;
+import cn.bjfu.fesdmp.json.AddResourceGroupForUserJson;
 import cn.bjfu.fesdmp.sys.dao.IResourceGroupDao;
-import cn.bjfu.fesdmp.sys.dao.IUserGroupDao;
-import cn.bjfu.fesdmp.sys.dao.IUserGroupResourceGroupRelationDao;
+import cn.bjfu.fesdmp.sys.dao.IUserDao;
+import cn.bjfu.fesdmp.sys.dao.IUserResourceGroupRelationDao;
 import cn.bjfu.fesdmp.sys.service.IResourceGroupService;
 import cn.bjfu.fesdmp.utils.Pagination;
 
@@ -28,9 +27,9 @@ public class ResourceGroupService implements IResourceGroupService {
 	@Autowired
 	private IResourceGroupDao resourceGroupDao;
 	@Autowired
-	private IUserGroupDao userGroupDao;
+	private IUserDao userDao;
 	@Autowired
-	private IUserGroupResourceGroupRelationDao userGroupResourceGroupRelationDao;
+	private IUserResourceGroupRelationDao userResourceGroupRelationDao;
 	@Override
 	public void addResourceGroup(ResourceGroup resourceGroup) {
 		this.resourceGroupDao.insert(resourceGroup);
@@ -73,8 +72,8 @@ public class ResourceGroupService implements IResourceGroupService {
 	public List<ResourceGroup> findResourceGroupById(int parentId){
 		return this.resourceGroupDao.findResourceGroupById(parentId);	
 	}
-	public List<ResourceGroup> findResourceGroupByUserGroupId(String userGroupId){
-		return this.resourceGroupDao.findResourceGroupByUserGroupId(userGroupId);	
+	public List<ResourceGroup> findResourceGroupByUserId(String userId){
+		return this.resourceGroupDao.findResourceGroupByUserId(userId);	
 	}
 	public boolean ifHaveChild(int id){
 		return this.resourceGroupDao.ifHaveChild(id);	
@@ -85,22 +84,22 @@ public class ResourceGroupService implements IResourceGroupService {
 	}
 	@Transactional(readOnly = true)
 	@Override
-	public List<ResourceGroup> findResourceGroupNotInThisUserGroup(String userGroupId) {
-		return this.resourceGroupDao.findResourceGroupNotInThisUserGroup(userGroupId);
+	public List<ResourceGroup> findResourceGroupNotInThisUser(String userId) {
+		return this.resourceGroupDao.findResourceGroupNotInThisUser(userId);
 	}
 	
 	@Override
-	public void addResourceGroupForUserGroup(AddResourceGroupForUserGroupJson addResourceGroupForUserGroupJson) {
-		UserGroupResourceGroupRelation userGroupResourceGroupRelation=new UserGroupResourceGroupRelation();
-		userGroupResourceGroupRelation.setUserGroup(this.userGroupDao.findByKey(Integer.parseInt(addResourceGroupForUserGroupJson.getUserGroupId())));
-		userGroupResourceGroupRelation.setResourceGroup(this.resourceGroupDao.findByKey(Integer.parseInt(addResourceGroupForUserGroupJson.getResourceGroupId())));
+	public void addResourceGroupForUser(AddResourceGroupForUserJson addResourceGroupForUserJson) {
+		UserResourceGroupRelation userResourceGroupRelation=new UserResourceGroupRelation();
+		userResourceGroupRelation.setUser(this.userDao.findByKey(Integer.parseInt(addResourceGroupForUserJson.getUserId())));
+		userResourceGroupRelation.setResourceGroup(this.resourceGroupDao.findByKey(Integer.parseInt(addResourceGroupForUserJson.getResourceGroupId())));
 		
-		this.userGroupResourceGroupRelationDao.insert(userGroupResourceGroupRelation);
+		this.userResourceGroupRelationDao.insert(userResourceGroupRelation);
 	}
 	@Override
-	public void deleteResourceGroupForUserGroup(String id,String userGroupId) {
-		UserGroupResourceGroupRelation userGroupResourceGroupRelation=this.userGroupResourceGroupRelationDao.findUserGroupResourceGroupRelationByBothId(id,userGroupId);
-		this.userGroupResourceGroupRelationDao.delete(userGroupResourceGroupRelation);
+	public void deleteResourceGroupForUser(String id,String userId) {
+		UserResourceGroupRelation userResourceGroupRelation=this.userResourceGroupRelationDao.findUserResourceGroupRelationByBothId(id,userId);
+		this.userResourceGroupRelationDao.delete(userResourceGroupRelation);
 	}
 	@Override
 	public boolean checkResourceGroupName(String resourceGroupName){

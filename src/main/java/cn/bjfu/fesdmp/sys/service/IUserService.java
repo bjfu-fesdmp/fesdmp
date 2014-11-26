@@ -5,8 +5,6 @@ import java.util.List;
 
 import cn.bjfu.fesdmp.domain.sys.SystemLog;
 import cn.bjfu.fesdmp.domain.sys.User;
-import cn.bjfu.fesdmp.domain.sys.UserGroup;
-import cn.bjfu.fesdmp.domain.sys.UserUserGroupRelation;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.json.AddUserJson;
@@ -18,7 +16,7 @@ import cn.bjfu.fesdmp.web.jsonbean.UserSearch;
 
 public interface IUserService {
 
-	public abstract void addUser(User user,int userGroupId);
+	public abstract void addUser(User user);
 	public abstract void modifyUser(AddUserJson addUserJson);
 	public abstract void deleteUser(int id);
 	public abstract List<User> queryAll(IOrder order);

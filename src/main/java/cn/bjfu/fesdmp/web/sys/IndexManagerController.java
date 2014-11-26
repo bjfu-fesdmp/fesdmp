@@ -30,12 +30,10 @@ import cn.bjfu.fesdmp.domain.sys.IndexResource;
 import cn.bjfu.fesdmp.domain.sys.ResourceGroup;
 import cn.bjfu.fesdmp.domain.sys.ResourceRelation;
 import cn.bjfu.fesdmp.domain.sys.User;
-import cn.bjfu.fesdmp.domain.sys.UserGroup;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.frame.dao.Order;
 import cn.bjfu.fesdmp.json.AddIndexResourceForUserJson;
-import cn.bjfu.fesdmp.json.AddResourceGroupForUserGroupJson;
 import cn.bjfu.fesdmp.json.CreateTableJson;
 import cn.bjfu.fesdmp.json.IndexResourceJson;
 import cn.bjfu.fesdmp.sys.service.IIndexResourceService;
@@ -239,16 +237,24 @@ public class IndexManagerController extends BaseController {
 	}
 	@RequestMapping(value = "/getIndexResourceListNotInThisUser", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> getIndexResourceListNotInThisUser(String userId)
+	public Map<String, Object> getIndexResourceListNotInThisUser(String userId,String resourceGroupId)
 			throws Exception {
 
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		logger.info("getIndexResourceListNotInThisUser method.");
 		List<IndexResource> indexResourceList=new ArrayList();
 		if(userId!=null)
-			indexResourceList = this.indexService.getIndexResourceListNotInThisUser(userId);
+			indexResourceList = this.indexService.getIndexResourceListNotInThisUser(userId,resourceGroupId);
+		List<IndexResource> newIndexResourceList=new ArrayList();
+		for(int i=0;i<indexResourceList.size();i++){
+			IndexResource indexResource=new IndexResource();
+			indexResource.setId(indexResourceList.get(i).getId());
+			indexResource.setIndexEnName(indexResourceList.get(i).getIndexEnName());
+			newIndexResourceList.add(indexResource);
+		}
+		
 		Map<String, Object> result = new HashMap<String, Object>();
-		result.put(RESULT, indexResourceList);
+		result.put(RESULT, newIndexResourceList);
 		result.put(SUCCESS, Boolean.TRUE);
 		return result;
 	}
@@ -326,10 +332,6 @@ public class IndexManagerController extends BaseController {
 			 result.put(SUCCESS, Boolean.FALSE);	
 			 return result;
 		 }
-//		boolean checkResult=this.indexService.checkIndexResourceEnName(indexResourceEnName);
-//		if (checkResult==true)
-//			result.put(SUCCESS, Boolean.FALSE);	
-//		else
 			result.put(SUCCESS, Boolean.TRUE);	
 			return result;	
 	}

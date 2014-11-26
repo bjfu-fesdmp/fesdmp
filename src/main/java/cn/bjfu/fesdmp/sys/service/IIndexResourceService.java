@@ -7,7 +7,6 @@ import cn.bjfu.fesdmp.domain.sys.IndexResource;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.json.AddIndexResourceForUserJson;
-import cn.bjfu.fesdmp.json.AddResourceGroupForUserGroupJson;
 import cn.bjfu.fesdmp.json.CreateTableJson;
 import cn.bjfu.fesdmp.utils.Pagination;
 //import cn.bjfu.fesdmp.web.jsonbean.LogSearch;
@@ -29,7 +28,7 @@ public interface IIndexResourceService{
 			Pagination<IndexResource> page, JoinMode joinMode,String userId);
 	public abstract IndexResource findByKey(int id);
 	public abstract List<IndexResource> queryByResourceGroupId(int resourceGroupId);
-	public abstract List<IndexResource> getIndexResourceListNotInThisUser(String userId);
+	public abstract List<IndexResource> getIndexResourceListNotInThisUser(String userId,String resourceGroupId);
 	public abstract void deleteIndexResourceForUser(String id,String userId);
 	public abstract boolean checkIndexResourceEnName(String indexResourceEnName);
 	public abstract boolean checkIndexResourceName(String indexResourceName);

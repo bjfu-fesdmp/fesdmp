@@ -145,22 +145,22 @@
 			                    text: '权限设置',
 								menu: {
 				        		    items: [{
-						                    text: '用户管理',
+						                    text: '用户指标管理设置',
 						                    handler: function () {
 												Ext.getCmp('centerPanel').getLoader().load({
 												autoLoad : true,
-			    								url: Global_Path + "sysuser/listView",
+			    								url: Global_Path + "sysuser/userIndexResourceListView",
 		                	 					scripts : true,
 		                	 					loadMask : true,
 		                	 					noCache : true	
 			    							});
 						                    }
 						                }, {
-							                    text: '用户组管理',
+							                    text: '资源组管理员设置',
 							                    handler: function () {
 													Ext.getCmp('centerPanel').getLoader().load({
 													autoLoad : true,
-				    								url: Global_Path + "sysuserGroup/listView",
+				    								url: Global_Path + "sysuser/userResourceGroupListView",
 			                	 					scripts : true,
 			                	 					loadMask : true,
 			                	 					noCache : true	
@@ -169,7 +169,18 @@
 							                }
 				            ]
 				        	}
-			               }, {
+			               },{
+				                    text: '用户管理',
+				                    handler: function () {
+										Ext.getCmp('centerPanel').getLoader().load({
+										autoLoad : true,
+	    								url: Global_Path + "sysuser/listView",
+                	 					scripts : true,
+                	 					loadMask : true,
+                	 					noCache : true	
+	    							});
+				                    }
+				                }, {
 				                text: '指标资源管理',
  								handler:  function () {
 									Ext.getCmp('centerPanel').getLoader().load({

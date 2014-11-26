@@ -1,5 +1,5 @@
-var indexResourceListStore=new Ext.data.Store({
-    fields: ['id', 'indexEnName'],
+var resourceGroupListStore=new Ext.data.Store({
+    fields: ['id', 'groupName'],
 	proxy : {
 		type : 'ajax',
 		actionMethods: {
@@ -8,7 +8,7 @@ var indexResourceListStore=new Ext.data.Store({
             update : 'POST',
             destroy: 'POST'
 		},
-		url : Global_Path+'indexresource/getIndexResourceListNotInThisUser',
+		url : Global_Path+'resourceGroup/getResourceGroupListNotInThisUser',
 		reader : {
 			type : 'json',
 			root : 'result'
@@ -34,7 +34,7 @@ Ext.define('userList', {
 		}
 	}
 });
-Ext.define('Bjfu.user.view.AddIndexResourceForUser',{
+Ext.define('Bjfu.userResourceGroup.view.AddResourceGroupForUser',{
 	extend:'Ext.form.Panel',
 	bodyPadding: 5,
 	border:false,
@@ -66,9 +66,9 @@ Ext.define('Bjfu.user.view.AddIndexResourceForUser',{
     	        emptyText : '请选择...'	,
     	        listeners : { //监听该下拉列表的选择事件
     	            select : function(combo, record, index) {
-    	            	Ext.getCmp('indexResource').clearValue();
+    	            	Ext.getCmp('resourceGroup').clearValue();
     	            	var userId=combo.getValue();
-    	            	indexResourceListStore.load({
+    	                resourceGroupListStore.load({
     	               		params: {
     	               			userId: userId
     	           			}
@@ -77,14 +77,14 @@ Ext.define('Bjfu.user.view.AddIndexResourceForUser',{
     	    
     	        }
     	    },{
-    	    	id : 'indexResource',
+    	    	id : 'resourceGroup',
     	    	xtype : 'combo',
-    	        fieldLabel : '指标资源<font color="red">*</font>',
-    	        name : 'indexResourceId',
-    	        store : indexResourceListStore,
+    	        fieldLabel : '资源组<font color="red">*</font>',
+    	        name : 'resourceGroupId',
+    	        store : resourceGroupListStore,
     	        allowBlank : false,
     	        editable : false,
-    	        displayField : 'indexEnName',
+    	        displayField : 'groupName',
     	        valueField : 'id',
     	        emptyText : '请选择...'	,
     	        queryMode:'local'
@@ -106,23 +106,23 @@ Ext.define('Bjfu.user.view.AddIndexResourceForUser',{
 		            var form = this.up('form').getForm();
 		            var window = this.up('window');
 		            if (form.isValid()) {
-		            	var UserGroupValues = form.getValues();
+		            	var UserValues = form.getValues();
 		            		Ext.Ajax.request({
-		    	 	   			url:Global_Path+'indexresource/addIndexResourceForUser',
+		    	 	   			url:Global_Path+'resourceGroup/addResourceGroupForUser',
 		    	 	   			method:'post',
 		    	 	   			params:{
-		    	 	   					formData:Ext.encode(UserGroupValues)
+		    	 	   					formData:Ext.encode(UserValues)
 		    	 	   			},
 		    	 	   		success: function(response) {
 		                    	var	result =  Ext.decode(response.responseText);
 		                    	if(result.success){
-		                    		Ext.Msg.alert('提示','为用户组添加资源组成功');
+		                    		Ext.Msg.alert('提示','为用户添加资源组成功');
 		    						window.close();
-		    	 	   			Ext.getCmp('indexResourceListViewId').store.reload();
-		    	 	   			Ext.getCmp('indexResourceListViewId').store.loadRawData();
+		    	 	   			Ext.getCmp('resourceGroupViewId').store.reload();
+		    	 	   			Ext.getCmp('resourceGroupViewId').store.loadRawData();
 		    	 	   			
 		                    	}else{
-		                    		Ext.Msg.alert('提示','为用户组添加资源组失败');
+		                    		Ext.Msg.alert('提示','为用户添加资源组失败');
 		                    		window.close();
 		                    	}
 		                    },

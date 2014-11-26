@@ -1,8 +1,8 @@
 /** 
  * Project Name:fesdmp 
- * File Name:UserGroupRelation.java 
+ * File Name:RoleFunctionRelation.java 
  * Package Name:cn.bjfu.fesdmp.domain.sys 
- * Date:2014年7月24日 下午9:25:36 
+ * Date:2014年7月24日 下午9:55:35 
  * Copyright (c) 2014, 1153405224@qq.com All Rights Reserved. 
  * 
 */  
@@ -22,18 +22,18 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /** 
- * ClassName:UserUserGroupRelation <br/> 
- * Function: 用户组映射表. <br/> 
- * Reason:   用户组映射表. <br/> 
- * Date:     2014年7月24日 下午9:25:36 <br/> 
+ * ClassName:UserGroupRelation <br/> 
+ * Function: 用户资源组映射表. <br/> 
+ * Reason:  用户资源组映射表. <br/> 
+ * Date:     2014年7月24日 下午9:55:35 <br/> 
  * @author   LuoYangBjfu 
  * @version   
  * @since    JDK 1.7 
  * @see       
  */
 @Entity
-@Table(name = "t_user_user_group_relation")
-public class UserUserGroupRelation implements Serializable {
+@Table(name = "t_user_resource_group_relation")
+public class UserResourceGroupRelation implements Serializable {
 
 	/**
 	 * @since JDK 1.7
@@ -43,12 +43,12 @@ public class UserUserGroupRelation implements Serializable {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	@OneToOne
-	@JoinColumn(name = "user_group_id")
-	private UserGroup userGroup;
-	@OneToOne
 	@JoinColumn(name = "user_id")
 	private User user;
-	public UserUserGroupRelation() {}
+	@OneToOne
+	@JoinColumn(name = "resourceGroup_id")
+	private ResourceGroup resourceGroup;
+	public UserResourceGroupRelation() {}
 
 	public Integer getId() {
 		return id;
@@ -59,12 +59,12 @@ public class UserUserGroupRelation implements Serializable {
 	}
 
 
-	public UserGroup getUserGroup() {
-		return userGroup;
+	public ResourceGroup getResourceGroup() {
+		return resourceGroup;
 	}
 
-	public void setUserGroup(UserGroup userGroup) {
-		this.userGroup = userGroup;
+	public void setResourceGroup(ResourceGroup resourceGroup) {
+		this.resourceGroup = resourceGroup;
 	}
 
 	public User getUser() {
@@ -79,7 +79,7 @@ public class UserUserGroupRelation implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((userGroup == null) ? 0 : userGroup.hashCode());
+		result = prime * result + ((resourceGroup == null) ? 0 : resourceGroup.hashCode());
 		result = prime * result + ((user == null) ? 0 : user.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		
@@ -94,11 +94,11 @@ public class UserUserGroupRelation implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		UserUserGroupRelation other = (UserUserGroupRelation) obj;
-		if (userGroup == null) {
-			if (other.userGroup != null)
+		UserResourceGroupRelation other = (UserResourceGroupRelation) obj;
+		if (resourceGroup == null) {
+			if (other.resourceGroup != null)
 				return false;
-		} else if (!userGroup.equals(other.userGroup))
+		} else if (!resourceGroup.equals(other.resourceGroup))
 			return false;
 		if (id == null) {
 			if (other.id != null)
@@ -115,6 +115,6 @@ public class UserUserGroupRelation implements Serializable {
 
 	@Override
 	public String toString() {
-		return "UserUserGroupRelation [id=" + id + ", userGroup=" + userGroup + ", user=" + user+ "]";
+		return "UserResourceGroupRelation [id=" + id + ", resourceGroup=" + resourceGroup + ", user=" + user+ "]";
 	}
 }

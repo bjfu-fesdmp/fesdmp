@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 
 import cn.bjfu.fesdmp.domain.sys.ResourceGroup;
 import cn.bjfu.fesdmp.domain.sys.ResourceRelation;
-import cn.bjfu.fesdmp.domain.sys.UserUserGroupRelation;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.Order;
 import cn.bjfu.fesdmp.sys.dao.IResourceGroupDao;
@@ -37,8 +36,8 @@ public class ResourceGroupDaoImpl extends AbstractGenericDao<ResourceGroup> impl
 
 	}
 	@Override
-	public List<ResourceGroup> findResourceGroupByUserGroupId(String userGroupId){
-		String jpal = " SELECT p FROM ResourceGroup p,UserGroupResourceGroupRelation m where p.id=m.resourceGroup.id and m.userGroup.id="+userGroupId;
+	public List<ResourceGroup> findResourceGroupByUserId(String userId){
+		String jpal = " SELECT p FROM ResourceGroup p,UserResourceGroupRelation m where p.id=m.resourceGroup.id and m.user.id="+userId;
 		logger.info(jpal);
 		Query query = super.getEntityManager().createQuery(jpal);
 		List<ResourceGroup> resourceGroupList=query.getResultList();
@@ -71,8 +70,8 @@ public class ResourceGroupDaoImpl extends AbstractGenericDao<ResourceGroup> impl
 			return true;
 	}
 	@Override
-	public List<ResourceGroup> findResourceGroupNotInThisUserGroup(String userGroupId){
-		String jpal = " SELECT p FROM ResourceGroup p,UserGroupResourceGroupRelation m where p.id=m.resourceGroup.id and m.userGroup.id="+userGroupId;
+	public List<ResourceGroup> findResourceGroupNotInThisUser(String userId){
+		String jpal = " SELECT p FROM ResourceGroup p,UserResourceGroupRelation m where p.id=m.resourceGroup.id and m.user.id="+userId;
 		logger.info(jpal);
 		Query query = super.getEntityManager().createQuery(jpal);
 		List<ResourceGroup> list1=query.getResultList();

@@ -5,7 +5,7 @@ public class AddIndexResourceForUserJson {
 
 	private String userId;
 	private String indexResourceId;
-	
+	private String resourceGroupId;
 	public AddIndexResourceForUserJson() {}
 	
 
@@ -25,5 +25,11 @@ public class AddIndexResourceForUserJson {
 	public void setIndexResourceId(String indexResourceId) {
 		this.indexResourceId = indexResourceId;
 	}
+	public String getResourceGroupId() {
+		return resourceGroupId;
+	}
 
+	public void setResourceGroupId(String resourceGroupId) {
+		this.resourceGroupId = resourceGroupId;
+	}
 }

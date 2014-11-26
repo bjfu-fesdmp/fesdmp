@@ -2,7 +2,6 @@ package cn.bjfu.fesdmp.web.sys;
 
 import cn.bjfu.fesdmp.domain.sys.IndexResource;
 import cn.bjfu.fesdmp.domain.sys.ResourceGroup;
-import cn.bjfu.fesdmp.domain.sys.UserGroup;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.frame.dao.Order;
@@ -193,19 +192,6 @@ public class DataDisplayManagerController extends BaseController {
 				}
 			}
 		}
-//		for (int i = 0; i < tableList.size(); i++) {
-//			TreeJson tempTree = new TreeJson();
-//			Integer temp = Integer.parseInt(tableList.get(i).getName()
-//					.substring(0, 4));
-//			Integer temp0 = temp * 100000 + i;
-//			tempTree.setId(temp0);
-//			tempTree.setParentId(temp);
-//			tempTree.setText(String.valueOf(temp) + "年"
-//					+ tableList.get(i).getName().substring(5));
-//			tempTree.setLeaf(true);
-//			treeList.add(tempTree);
-//
-//		}
 		
 		
 		

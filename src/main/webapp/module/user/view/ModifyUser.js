@@ -1,23 +1,3 @@
-Ext.define('userGroupList', {
-    extend: 'Ext.data.Store',
-    fields: ['userGroupId', 'userGroupName'],
-	proxy : {
-		type : 'ajax',
-		actionMethods: {
-            create : 'POST',
-            read   : 'POST', // by default GET
-            update : 'POST',
-            destroy: 'POST'
-		},
-		url : Global_Path+'sysuserGroup/getUserGroupList',
-		reader : {
-			type : 'json',
-			root : 'result'
-		}
-	}
-});
-
-
 Ext.define('Bjfu.user.view.ModifyUser',{
 	extend:'Ext.form.Panel',
 	bodyPadding: 5,
@@ -28,8 +8,6 @@ Ext.define('Bjfu.user.view.ModifyUser',{
 	
 	initComponent: function() {
     	var me = this;
-//    	var userGroupId = me.userGroupId;
-//    	var userGroupName=me.userGroupName; 
 
     	Ext.apply(me, {
     		layout: 'column',
@@ -113,18 +91,6 @@ Ext.define('Bjfu.user.view.ModifyUser',{
     	    },{
     	        fieldLabel: '邮件',
     	        name: 'email'
-    	    },{
-    	    	id : 'userGroup',
-    	    	xtype : 'combo',
-    	        fieldLabel : '所属用户组<font color="red">*</font>',
-    	        allowBlank : false,
-    	        name : 'userGroup',
-    	        value:me.userGroupId,
-    	        store : Ext.create('userGroupList'),
-    	        editable : false,
-    	        displayField : 'userGroupName',
-    	        valueField : 'userGroupId',
-    	        emptyText : '请选择...'	
     	    },{
     	    	fieldLabel:'用户编号',
     	    	name:'id',

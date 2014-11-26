@@ -1,4 +1,4 @@
-Ext.define('Bjfu.user.view.IndexResourceListView',{
+Ext.define('Bjfu.userIndexResource.view.IndexResourceListView',{
 	extend : 'Ext.grid.Panel',
 	alias:'widget.IndexResourceListView',
 	forceFit : true,
@@ -99,7 +99,7 @@ Ext.define('Bjfu.user.view.IndexResourceListView',{
 		          scope:this,
 		          icon:Global_Path+'/resources/extjs/images/add.png',
 		          handler : function(){
-		        	var addForm = Ext.create('Bjfu.user.view.AddIndexResourceForUser',{
+		        	var addForm = Ext.create('Bjfu.userIndexResource.view.AddIndexResourceForUser',{
 		        	});
 		        	Ext.create('Ext.window.Window',{
 		        		title:'为用户添加指标资源',

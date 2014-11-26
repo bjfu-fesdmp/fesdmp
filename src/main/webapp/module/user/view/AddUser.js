@@ -5,24 +5,6 @@ Ext.apply(Ext.form.VTypes, {
 		},
 	passwordText : "确认密码不一致！！！"
 });
-Ext.define('userGroupList', {
-    extend: 'Ext.data.Store',
-    fields: ['userGroupId', 'userGroupName'],
-	proxy : {
-		type : 'ajax',
-		actionMethods: {
-            create : 'POST',
-            read   : 'POST', // by default GET
-            update : 'POST',
-            destroy: 'POST'
-		},
-		url : Global_Path+'sysuserGroup/getUserGroupList',
-		reader : {
-			type : 'json',
-			root : 'result'
-		}
-	}
-});
 
 Ext.define('Bjfu.user.view.AddUser',{
 	extend:'Ext.form.Panel',
@@ -134,17 +116,6 @@ Ext.define('Bjfu.user.view.AddUser',{
     	        allowBlank : false,
 				blankText : "不能为空，请填写",
 				maxLength : 30
-    	    },{
-    	    	id : 'userGroup',
-    	    	xtype : 'combo',
-    	        fieldLabel : '所属用户组<font color="red">*</font>',
-    	        allowBlank : false,
-    	        name : 'userGroup',
-    	        store : Ext.create('userGroupList'),
-    	        editable : false,
-    	        displayField : 'userGroupName',
-    	        valueField : 'userGroupId',
-    	        emptyText : '请选择...'	
     	    }]
     	});
     	me.callParent(arguments);

@@ -9,7 +9,6 @@ import javax.persistence.Query;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
-import cn.bjfu.fesdmp.domain.sys.UserGroupResourceGroupRelation;
 import cn.bjfu.fesdmp.domain.sys.UserIndexRelation;
 import cn.bjfu.fesdmp.sys.dao.IUserIndexRelationDao;
 

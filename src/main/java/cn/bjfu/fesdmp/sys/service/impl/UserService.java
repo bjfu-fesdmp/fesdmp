@@ -8,24 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cn.bjfu.fesdmp.domain.sys.SystemLog;
 import cn.bjfu.fesdmp.domain.sys.User;
-import cn.bjfu.fesdmp.domain.sys.UserGroup;
-import cn.bjfu.fesdmp.domain.sys.UserUserGroupRelation;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.json.AddUserJson;
-import cn.bjfu.fesdmp.json.UserJson;
 import cn.bjfu.fesdmp.sys.dao.IIndexResourceDao;
 import cn.bjfu.fesdmp.sys.dao.IUserDao;
-import cn.bjfu.fesdmp.sys.dao.IUserGroupDao;
-import cn.bjfu.fesdmp.sys.dao.IUserUserGroupRelationDao;
-import cn.bjfu.fesdmp.sys.dao.impl.UserGroupDaoImpl;
-import cn.bjfu.fesdmp.sys.service.IUserGroupService;
 import cn.bjfu.fesdmp.sys.service.IUserService;
 import cn.bjfu.fesdmp.utils.Pagination;
-import cn.bjfu.fesdmp.web.jsonbean.LogSearch;
-import cn.bjfu.fesdmp.web.jsonbean.UserSearch;
 
 
 @Service
@@ -34,31 +24,18 @@ public class UserService implements IUserService {
 
 	@Autowired
 	private IUserDao userDao;
-	@Autowired
-	private IUserUserGroupRelationDao userUserGroupRelationDao;
-	@Autowired
-	private IUserGroupDao userGroupDao;
+
 	@Autowired
 	private IIndexResourceDao indexResourceDao;
 	
 	@Override
-	public void addUser(User user,int userGroupId) {
-		UserUserGroupRelation userUserGroupRelation=new UserUserGroupRelation();
-
+	public void addUser(User user) {
 		this.userDao.insert(user);
-		UserGroup userGroup = this.userGroupDao.findByKey(userGroupId);	
-		
-		userUserGroupRelation.setUser(user);
-		userUserGroupRelation.setUserGroup(userGroup);
-		this.userUserGroupRelationDao.insert(userUserGroupRelation);
 	}
 
 	@Override
 	public void modifyUser(AddUserJson addUserJson){
 		User user = this.userDao.findByKey(addUserJson.getId());
-		UserUserGroupRelation userUserGroupRelation=this.userUserGroupRelationDao.findUserUserGroupRelationByUserId(Integer.toString(addUserJson.getId()));
-		UserGroup userGroup=this.userGroupDao.findByKey(addUserJson.getUserGroup());
-		userUserGroupRelation.setUserGroup(userGroup);
 		user.setUserName(addUserJson.getUserName());
 		if (addUserJson.getUserLoginName()!="")
 			user.setUserLoginName(addUserJson.getUserLoginName());
@@ -73,11 +50,9 @@ public class UserService implements IUserService {
 		else
 			user.setEmail(null);
 		this.userDao.update(user);
-		this.userUserGroupRelationDao.update(userUserGroupRelation);
 	}
 	@Override
 	public void deleteUser(int id) {
-		this.userUserGroupRelationDao.delete(this.userUserGroupRelationDao.findUserUserGroupRelationByUserId(Integer.toString(id)));
 		this.userDao.delete(this.userDao.findByKey(id));
 	}
 

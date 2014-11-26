@@ -14,7 +14,6 @@ import org.springframework.stereotype.Repository;
 
 import cn.bjfu.fesdmp.domain.sys.IndexResource;
 import cn.bjfu.fesdmp.domain.sys.ResourceGroup;
-import cn.bjfu.fesdmp.domain.sys.UserUserGroupRelation;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.frame.dao.Order;
@@ -110,14 +109,12 @@ public class IndexResourceDaoImpl extends AbstractGenericDao<IndexResource> impl
 
 	}
 	@Override
-	public List<IndexResource> getIndexResourceListNotInThisUser(String userId){
-		String jpal = " SELECT p FROM IndexResource p,UserIndexRelation m where p.id=m.indexResource.id and m.user.id="+userId;
+	public List<IndexResource> getIndexResourceListNotInThisUser(String userId,String resourceGroupId){
+		String jpal = " SELECT p FROM IndexResource p,UserIndexRelation m,ResourceRelation n where p.id=n.indexResource.id and p.id=m.indexResource.id and m.user.id="+userId+" and n.resourceGroup.id="+resourceGroupId;
 		logger.info(jpal);
 		Query query = super.getEntityManager().createQuery(jpal);
 		List<IndexResource> list1=query.getResultList();
-		IOrder order = new Order();
-		order.addOrderBy("id", "DESC");
-		List<IndexResource> list2=this.findAll(order);
+		List<IndexResource> list2=this.queryByResourceGroupId(Integer.parseInt(resourceGroupId));
 		List<IndexResource> list=new ArrayList();
 		for(int i=0;i<list2.size();i++){
 			boolean check=false;

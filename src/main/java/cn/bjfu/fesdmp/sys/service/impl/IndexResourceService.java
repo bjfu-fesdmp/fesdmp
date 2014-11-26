@@ -12,7 +12,6 @@ import cn.bjfu.fesdmp.domain.sys.IndexResource;
 import cn.bjfu.fesdmp.domain.sys.ResourceGroup;
 import cn.bjfu.fesdmp.domain.sys.ResourceRelation;
 import cn.bjfu.fesdmp.domain.sys.ResourceTable;
-import cn.bjfu.fesdmp.domain.sys.UserGroupResourceGroupRelation;
 import cn.bjfu.fesdmp.domain.sys.UserIndexRelation;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
@@ -130,8 +129,8 @@ public class IndexResourceService implements IIndexResourceService {
 	}
 	@Transactional(readOnly = true)
 	@Override
-	public List<IndexResource> getIndexResourceListNotInThisUser(String userId) {
-		return this.indexResourceDao.getIndexResourceListNotInThisUser(userId);
+	public List<IndexResource> getIndexResourceListNotInThisUser(String userId,String resourceGroupId) {
+		return this.indexResourceDao.getIndexResourceListNotInThisUser(userId,resourceGroupId);
 	}
 	@Override
 	public void addIndexResourceForUser(AddIndexResourceForUserJson addIndexResourceForUserJson){

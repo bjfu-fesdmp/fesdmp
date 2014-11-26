@@ -88,17 +88,19 @@ Ext.define('Bjfu.user.view.UserView',{
 			        text : '电话',
 			        dataIndex : 'userPhone',
 			        width : '10%'
-			    },{
-			        text : '用户状态',
-			        dataIndex : 'userStatus',
-			        renderer : function (value) {
-			        	if (value == "1") {
-			        		return "正常";
-			        	} else {
-			        		return "锁定";
-			        	}
-			        }
-			    },{
+			    },
+//			    {
+//			        text : '用户状态',
+//			        dataIndex : 'userStatus',
+//			        renderer : function (value) {
+//			        	if (value == "1") {
+//			        		return "正常";
+//			        	} else {
+//			        		return "锁定";
+//			        	}
+//			        }
+//			    },
+			    {
 			        text : '创建者id',
 			        dataIndex : 'createrId',
 			        width : '10%'
@@ -142,33 +144,8 @@ Ext.define('Bjfu.user.view.UserView',{
 						   		}else{
 					        		var userId = record[0].data.id;
 					        	
-					        		var userGroupId = "";
-					        		var userGroupName = "";
-				        			Ext.Ajax.request({
-				        				url : Global_Path+'sysuserGroup/findUserGroupIdAndName',
-										async:false,
-										params : {
-											id : userId
-										},
-										reader : {
-											type : 'json',
-											root : 'result'
-										},
-										success : function(response) {
-											var result = Ext.decode(response.responseText);
-													userGroupId = result.result.id;
-													userGroupName = result.result.userGroupName;
-
-										},
-										failure: function(response) {
-													userGroupId.setValue(''); 
-													userGroupNmae.setValue(''); 
-									    }
-									}); 
 						   			var modifyForm = Ext.create('Bjfu.user.view.ModifyUser',{
 										userId:userId,
-										userGroupId:userGroupId,
-										userGroupName:userGroupName
 												});
 					        	modifyForm.loadRecord(record[0]);
 					        	Ext.create('Ext.window.Window',{

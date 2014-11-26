@@ -25,7 +25,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import cn.bjfu.fesdmp.constant.AppConstants;
 import cn.bjfu.fesdmp.domain.sys.User;
-import cn.bjfu.fesdmp.domain.sys.UserUserGroupRelation;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.frame.dao.Order;
@@ -51,13 +50,21 @@ public class UserManagerController extends BaseController {
 		logger.info("sysuserPage method.");
 		return "user/userView";
 	}
-	
+	@RequestMapping(value = "/userIndexResourceListView", method = RequestMethod.GET)
+	public String userIndexResourcePage() {
+		logger.info("userIndexResourcePage method.");
+		return "userIndexResource/userIndexResourceView";
+	}
+	@RequestMapping(value = "/userResourceGroupListView", method = RequestMethod.GET)
+	public String userResourceGroupPage() {
+		logger.info("userResourceGroupPage method.");
+		return "userResourceGroup/userResourceGroupView";
+	}
 	@RequestMapping(value = "/userList", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> userList(HttpServletRequest request,PageInfoBean pageInfo) throws Exception {
 		
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-		User user09= (User) request.getSession().getAttribute("user");
 		logger.info("userList method.");
 		logger.info(pageInfo);
 		UserSearch userSearch = null;
@@ -130,7 +137,7 @@ public class UserManagerController extends BaseController {
 		User buildUser=(User) request.getSession().getAttribute(AppConstants.SESSION_USER);
 		user.setCreater(buildUser);
 
-		this.userService.addUser(user,addUserJson.getUserGroup());
+		this.userService.addUser(user);
 
 		Map<String, Object> result = new HashMap<String, Object>();
 
@@ -212,7 +219,7 @@ public class UserManagerController extends BaseController {
 	public Map<String, Object> checkFunctionIfForbid(HttpServletRequest request,String tableName) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		logger.info("checkFunctionIfHidden method.");
-		User user=(User) request.getSession().getAttribute("user");
+		User user=(User) request.getSession().getAttribute(AppConstants.SESSION_USER);
 		Map<String, Object> result = new HashMap<String, Object>();
 		if(tableName!=null){
 			if(tableName.length()>4){

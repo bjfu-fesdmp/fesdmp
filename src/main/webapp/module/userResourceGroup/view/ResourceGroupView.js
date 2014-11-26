@@ -1,4 +1,4 @@
-Ext.define('Bjfu.userGroup.view.ResourceGroupView',{
+Ext.define('Bjfu.userResourceGroup.view.ResourceGroupView',{
 	extend : 'Ext.tree.Panel',
 	forceFit : true,
 	layout : 'fit',
@@ -23,7 +23,7 @@ Ext.define('Bjfu.userGroup.view.ResourceGroupView',{
 	                update : 'POST',
 	                destroy: 'POST'
 				},
-				url : Global_Path+'resourceGroup/resourceGroupOfUserGroupList',
+				url : Global_Path+'resourceGroup/resourceGroupOfUserList',
 				reader : {
 					type : 'json',
 					root : 'result',
@@ -55,9 +55,11 @@ Ext.define('Bjfu.userGroup.view.ResourceGroupView',{
 			    	flex : 1,
 					sortable : true,
 			        text : '资源组名',
+			        width:'40%',
 			        dataIndex : 'groupName'
 			    },{
 			        text : '资源组描述',
+			        width:'60%',
 			        dataIndex : 'memo'
 			    },{
 			        text : '叶子',
@@ -66,14 +68,14 @@ Ext.define('Bjfu.userGroup.view.ResourceGroupView',{
 			    }
 			],
 			tbar : [{
-		          text: '为用户组添加资源组',
+		          text: '为用户添加资源组',
 		          scope:this,
 		          icon:Global_Path+'/resources/extjs/images/add.png',
 		          handler : function(){
-		        	var addForm = Ext.create('Bjfu.userGroup.view.AddResourceGroupForUserGroup',{
+		        	var addForm = Ext.create('Bjfu.userResourceGroup.view.AddResourceGroupForUser',{
 		        	});
 		        	Ext.create('Ext.window.Window',{
-		        		title:'为用户组添加资源组',
+		        		title:'为用户添加资源组',
 		        		closable:true,
 		        		closeAction:'destroy',
 		        		modal:true,
@@ -86,7 +88,7 @@ Ext.define('Bjfu.userGroup.view.ResourceGroupView',{
 		        	}).show();
 		        	} 
 		        },{
-		        	text: '为用户组删除资源组' ,
+		        	text: '为用户删除资源组' ,
 		        	icon:Global_Path+'/resources/extjs/images/delete.png',
 		        	scope:this,
 		        	handler : function(o){
@@ -100,20 +102,20 @@ Ext.define('Bjfu.userGroup.view.ResourceGroupView',{
 			        		//1.先得到ID的数据(domtId)
 			        		var st = gird.getStore();
 			        		var id = null;
-			        		var userGroupId=st.baseParams;
+			        		var userId=st.baseParams;
 			        		Ext.Array.each(record,function(data){
 			        			id=data.get('id');
 			        			Ext.Msg.confirm("提示","确定删除所选记录吗？",function(btn){
 			        				if(btn=='yes'){
 			        						Ext.Ajax.request({
-			        							url:Global_Path+'resourceGroup/deleteResourceGroupForUserGroup',
-												params:{id:id,userGroupId:userGroupId
+			        							url:Global_Path+'resourceGroup/deleteResourceGroupForUser',
+												params:{id:id,userId:userId
 													},
 												method:'POST',
 												timeout:2000,
 												success:function(response,opts){
 							                    	var	result =  Ext.decode(response.responseText);
-						                    		Ext.Msg.alert('提示','为用户组删除资源组成功');
+						                    		Ext.Msg.alert('提示','为用户删除资源组成功');
 						    						window.close();
 							    	 	   			Ext.getCmp('resourceGroupViewId').store.reload();
 							    	 	   			Ext.getCmp('resourceGroupViewId').store.loadRawData();
@@ -122,7 +124,7 @@ Ext.define('Bjfu.userGroup.view.ResourceGroupView',{
 															st.remove(data);
 														});
 							                    	}else{
-							                    		Ext.Msg.alert('提示','为用户组删除资源组失败');
+							                    		Ext.Msg.alert('提示','为用户删除资源组失败');
 							                    		window.close();
 							                    	}
 			        							}

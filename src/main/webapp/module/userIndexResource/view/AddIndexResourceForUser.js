@@ -1,4 +1,41 @@
-var resourceGroupListStore=new Ext.data.Store({
+var indexResourceListStore=new Ext.data.Store({
+    fields: ['id', 'indexEnName'],
+	proxy : {
+		type : 'ajax',
+		actionMethods: {
+            create : 'POST',
+            read   : 'POST', // by default GET
+            update : 'POST',
+            destroy: 'POST'
+		},
+		url : Global_Path+'indexresource/getIndexResourceListNotInThisUser',
+		reader : {
+			type : 'json',
+			root : 'result'
+		}
+	},
+	autoLoad:false
+});
+Ext.define('userList', {
+    extend: 'Ext.data.Store',
+    fields: ['id', 'userName'],
+	proxy : {
+		type : 'ajax',
+		actionMethods: {
+            create : 'POST',
+            read   : 'POST', // by default GET
+            update : 'POST',
+            destroy: 'POST'
+		},
+		url : Global_Path+'sysuser/userList',
+		reader : {
+			type : 'json',
+			root : 'result'
+		}
+	}
+});
+Ext.define('resourceGroupList', {
+    extend: 'Ext.data.Store',
     fields: ['id', 'groupName'],
 	proxy : {
 		type : 'ajax',
@@ -8,33 +45,14 @@ var resourceGroupListStore=new Ext.data.Store({
             update : 'POST',
             destroy: 'POST'
 		},
-		url : Global_Path+'resourceGroup/getResourceGroupListNotInThisUserGroup',
-		reader : {
-			type : 'json',
-			root : 'result'
-		}
-	},
-	autoLoad:false
-});
-Ext.define('userGroupList', {
-    extend: 'Ext.data.Store',
-    fields: ['userGroupId', 'userGroupName'],
-	proxy : {
-		type : 'ajax',
-		actionMethods: {
-            create : 'POST',
-            read   : 'POST', // by default GET
-            update : 'POST',
-            destroy: 'POST'
-		},
-		url : Global_Path+'sysuserGroup/getUserGroupList',
+		url : Global_Path+'resourceGroup/getResourceGroupListOfNowUser',
 		reader : {
 			type : 'json',
 			root : 'result'
 		}
 	}
 });
-Ext.define('Bjfu.userGroup.view.AddResourceGroupForUserGroup',{
+Ext.define('Bjfu.userIndexResource.view.AddIndexResourceForUser',{
 	extend:'Ext.form.Panel',
 	bodyPadding: 5,
 	border:false,
@@ -54,37 +72,62 @@ Ext.define('Bjfu.userGroup.view.AddResourceGroupForUserGroup',{
     	    },
 		    defaultType: 'textfield',
     	    items: [{
-    	    	id : 'userGroup',
+    	    	id : 'user',
     	    	xtype : 'combo',
-    	        fieldLabel : '用户组<font color="red">*</font>',
-    	        name : 'userGroupId',
-    	        store : Ext.create('userGroupList'),
+    	        fieldLabel : '用户<font color="red">*</font>',
+    	        name : 'userId',
+    	        store : Ext.create('userList'),
     	        allowBlank : false,
     	        editable : false,
-    	        displayField : 'userGroupName',
-    	        valueField : 'userGroupId',
+    	        displayField : 'userName',
+    	        valueField : 'id',
     	        emptyText : '请选择...'	,
     	        listeners : { //监听该下拉列表的选择事件
     	            select : function(combo, record, index) {
-    	            	Ext.getCmp('resourceGroup').clearValue();
-    	            	var userGroupId=combo.getValue();
-    	                resourceGroupListStore.load({
+    	            	Ext.getCmp('indexResource').clearValue();
+//    	            	var userId=combo.getValue();
+//    	            	indexResourceListStore.load({
+//    	               		params: {
+//    	               			userId: userId
+//    	           			}
+//    	            });
+    	            }
+    	    
+    	        }
+    	    },{
+    	    	id : 'ResourceGroup',
+    	    	xtype : 'combo',
+    	        fieldLabel : '资源组<font color="red">*</font>',
+    	        name : 'resourceGroupId',
+    	        store : Ext.create('resourceGroupList'),
+    	        allowBlank : false,
+    	        editable : false,
+    	        displayField : 'groupName',
+    	        valueField : 'id',
+    	        emptyText : '请选择...'	,
+    	        listeners : { //监听该下拉列表的选择事件
+    	            select : function(combo, record, index) {
+    	            	Ext.getCmp('indexResource').clearValue();
+    	            	var userId=Ext.getCmp('user').getValue();
+    	            	var resourceGroupId=combo.getValue();
+    	            	indexResourceListStore.load({
     	               		params: {
-    	               			userGroupId: userGroupId
+    	               			userId: userId,
+    	               			resourceGroupId:resourceGroupId
     	           			}
     	            });
     	            }
     	    
     	        }
     	    },{
-    	    	id : 'resourceGroup',
+    	    	id : 'indexResource',
     	    	xtype : 'combo',
-    	        fieldLabel : '资源组<font color="red">*</font>',
-    	        name : 'resourceGroupId',
-    	        store : resourceGroupListStore,
+    	        fieldLabel : '指标资源<font color="red">*</font>',
+    	        name : 'indexResourceId',
+    	        store : indexResourceListStore,
     	        allowBlank : false,
     	        editable : false,
-    	        displayField : 'groupName',
+    	        displayField : 'indexEnName',
     	        valueField : 'id',
     	        emptyText : '请选择...'	,
     	        queryMode:'local'
@@ -108,7 +151,7 @@ Ext.define('Bjfu.userGroup.view.AddResourceGroupForUserGroup',{
 		            if (form.isValid()) {
 		            	var UserGroupValues = form.getValues();
 		            		Ext.Ajax.request({
-		    	 	   			url:Global_Path+'resourceGroup/addResourceGroupForUserGroup',
+		    	 	   			url:Global_Path+'indexresource/addIndexResourceForUser',
 		    	 	   			method:'post',
 		    	 	   			params:{
 		    	 	   					formData:Ext.encode(UserGroupValues)
@@ -118,8 +161,8 @@ Ext.define('Bjfu.userGroup.view.AddResourceGroupForUserGroup',{
 		                    	if(result.success){
 		                    		Ext.Msg.alert('提示','为用户组添加资源组成功');
 		    						window.close();
-		    	 	   			Ext.getCmp('resourceGroupViewId').store.reload();
-		    	 	   			Ext.getCmp('resourceGroupViewId').store.loadRawData();
+		    	 	   			Ext.getCmp('indexResourceListViewId').store.reload();
+		    	 	   			Ext.getCmp('indexResourceListViewId').store.loadRawData();
 		    	 	   			
 		                    	}else{
 		                    		Ext.Msg.alert('提示','为用户组添加资源组失败');

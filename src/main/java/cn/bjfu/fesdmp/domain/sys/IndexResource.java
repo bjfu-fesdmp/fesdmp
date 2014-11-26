@@ -192,7 +192,7 @@ public class IndexResource implements Serializable{
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", indexName=" + indexName + ", indexEnName="
+		return "IndexResource [id=" + id + ", indexName=" + indexName + ", indexEnName="
 				+ indexEnName + ", indexUnit=" + indexUnit + ", indexMemo=" + indexMemo
 				+ ", creater=" + creater + ", createTime=" + createTime
 				+ ", modifier=" + modifier + ", modifyTime=" + modifyTime + "]";

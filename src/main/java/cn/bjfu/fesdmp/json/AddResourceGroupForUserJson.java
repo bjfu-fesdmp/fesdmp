@@ -1,21 +1,21 @@
 package cn.bjfu.fesdmp.json;
 
 
-public class AddResourceGroupForUserGroupJson {
+public class AddResourceGroupForUserJson {
 
-	private String userGroupId;
+	private String userId;
 	private String resourceGroupId;
 	
-	public AddResourceGroupForUserGroupJson() {}
+	public AddResourceGroupForUserJson() {}
 	
 
 
-	public String getUserGroupId() {
-		return userGroupId;
+	public String getUserId() {
+		return userId;
 	}
 
-	public void setUserGroupId(String userGroupId) {
-		this.userGroupId = userGroupId;
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 	public String getResourceGroupId() {
