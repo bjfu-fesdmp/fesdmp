@@ -52,16 +52,16 @@ public class ResourceGroupManagerController extends BaseController {
 //资源组树形结构
 	@RequestMapping(value = "/resourceGroupList", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> resourceGroupList(String groupParentId)
+	public Map<String, Object> resourceGroupList(HttpServletRequest request,String groupParentId)
 			throws Exception {
-
+		User nowUser=(User) request.getSession().getAttribute(AppConstants.SESSION_USER);
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		logger.info("resourceGroupList method.");
 		IOrder order = new Order();
 		order.addOrderBy("id", "DESC");
 		List<ResourceGroup> resourceGroupList=new ArrayList();
 		if(groupParentId!=null)
-			resourceGroupList = this.resourceGroupService.findResourceGroupById(Integer.parseInt(groupParentId));
+			resourceGroupList = this.resourceGroupService.findResourceGroupByParentIdAndUserId(Integer.parseInt(groupParentId),nowUser.getId());
 
 		List<ResourceGroupTreeJson> resourceGroupJsonList = new ArrayList<ResourceGroupTreeJson>();
 		for(int i=0;i<resourceGroupList.size();i++){

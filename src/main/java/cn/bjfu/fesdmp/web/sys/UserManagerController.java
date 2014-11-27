@@ -72,18 +72,12 @@ public class UserManagerController extends BaseController {
 		Pagination<User> page = new Pagination<User>();
 		page.setPageSize(pageInfo.getLimit());
 		page.setCurrentPage(pageInfo.getPage());
-		
 		IOrder order = new Order();
-		//order.addOrderBy("operateTime", "DESC");
 		order.addOrderBy("id", "DESC");
-		
 		if (!StringUtils.isEmpty(pageInfo.getSearchJson())) {
 			userSearch = mapper.readValue(pageInfo.getSearchJson(), UserSearch.class);
 		}
-		
 		logger.info(userSearch);
-		
-		
 		this.userService.queryByCondition(userSearch,order,page, JoinMode.AND);
 		
 		Map<String, Object> result = new HashMap<String, Object>();
@@ -91,6 +85,7 @@ public class UserManagerController extends BaseController {
 		List<UserJson> userJsonList = new ArrayList<UserJson>();
 		for (int i=0; i<page.getDatas().size(); i++) {
 			User user = page.getDatas().get(i);
+			if(!user.getUserStatus().equals((byte)3)){
 			UserJson userJson = new UserJson();
 			userJson.setId(user.getId());
 			if(user.getEmail()!=null)
@@ -106,6 +101,7 @@ public class UserManagerController extends BaseController {
 			userJson.setUserPhone(user.getUserPhone());
 			userJson.setUserStatus(user.getUserStatus());
 			userJsonList.add(userJson);
+			}
 		}
 
 		result.put(RESULT, userJsonList);
@@ -201,14 +197,28 @@ public class UserManagerController extends BaseController {
 			result.put(SUCCESS, Boolean.TRUE);	
 			return result;	
 	}
-	@RequestMapping(value = "/checkIfHidden", method = RequestMethod.GET)
+	@RequestMapping(value = "/checkIfAdmin", method = RequestMethod.GET)
 	@ResponseBody
-	public Map<String, Object> checkIfHidden(HttpServletRequest request) throws Exception {
+	public Map<String, Object> checkIfAdmin(HttpServletRequest request) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		logger.info("checkIfHidden method.");
 		User user=(User) request.getSession().getAttribute(AppConstants.SESSION_USER);
 		Map<String, Object> result = new HashMap<String, Object>();
 		if(user.getIsAdmin().equals((byte)1))
+			result.put(SUCCESS, Boolean.TRUE);	
+		else 
+			result.put(SUCCESS, Boolean.FALSE);	
+			return result;	
+	}
+	@RequestMapping(value = "/checkIfNotIsTemporaryManager", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> checkIfNotIsTemporaryManager(HttpServletRequest request) throws Exception {
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		logger.info("checkIfHidden method.");
+		User user=(User) request.getSession().getAttribute(AppConstants.SESSION_USER);
+		Map<String, Object> result = new HashMap<String, Object>();
+		boolean check=this.userService.checkIfIsTemporaryManager(user.getId());
+		if(check)
 			result.put(SUCCESS, Boolean.FALSE);	
 		else 
 			result.put(SUCCESS, Boolean.TRUE);	

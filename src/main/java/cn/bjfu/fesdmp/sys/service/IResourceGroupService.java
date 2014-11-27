@@ -19,7 +19,7 @@ public interface IResourceGroupService {
 	public abstract boolean ifHaveChild(int id);
 	public abstract void modifyResourceGroup(ResourceGroup resourceGroup);
 	public abstract List<ResourceGroup> queryAll(IOrder order);
-	public abstract List<ResourceGroup> findResourceGroupById(int parentId);
+	public abstract List<ResourceGroup> findResourceGroupByParentIdAndUserId(int parentId,int userId);
 	public abstract List<ResourceGroup> findResourceGroupByUserId(String userId);
 	public abstract void queryByCondition(final Object condition, IOrder order, Pagination<ResourceGroup> page);
 	public abstract List<ResourceGroup> queryByCondition(final Object condition, IOrder order,

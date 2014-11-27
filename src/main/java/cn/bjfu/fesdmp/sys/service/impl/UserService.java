@@ -53,7 +53,9 @@ public class UserService implements IUserService {
 	}
 	@Override
 	public void deleteUser(int id) {
-		this.userDao.delete(this.userDao.findByKey(id));
+		User user=this.userDao.findByKey(id);
+		user.setUserStatus((byte) 3);
+		this.userDao.update(user);
 	}
 
 	@Transactional(readOnly = true)
@@ -93,7 +95,13 @@ public class UserService implements IUserService {
 	}
 	@Override
 	public boolean checkIfHaveAuthority(int userId,String indexResourceEnName){
-		
-		return this.userDao.checkIfHaveAuthority(userId,this.indexResourceDao.findByEnName(indexResourceEnName).getId());
+		if(this.userDao.checkIfIsTemporaryManager(userId,this.indexResourceDao.findByEnName(indexResourceEnName).getId()))
+			return true;
+		else
+			return this.userDao.checkIfHaveAuthority(userId,this.indexResourceDao.findByEnName(indexResourceEnName).getId());
+	}
+	@Override
+	public boolean checkIfIsTemporaryManager(int userId){
+		return this.userDao.checkIfIsTemporaryManager(userId);
 	}
 }

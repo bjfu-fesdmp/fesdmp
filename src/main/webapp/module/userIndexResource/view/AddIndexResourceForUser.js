@@ -50,7 +50,8 @@ Ext.define('resourceGroupList', {
 			type : 'json',
 			root : 'result'
 		}
-	}
+	},
+	autoLoad:false
 });
 Ext.define('Bjfu.userIndexResource.view.AddIndexResourceForUser',{
 	extend:'Ext.form.Panel',
@@ -85,12 +86,8 @@ Ext.define('Bjfu.userIndexResource.view.AddIndexResourceForUser',{
     	        listeners : { //监听该下拉列表的选择事件
     	            select : function(combo, record, index) {
     	            	Ext.getCmp('indexResource').clearValue();
-//    	            	var userId=combo.getValue();
-//    	            	indexResourceListStore.load({
-//    	               		params: {
-//    	               			userId: userId
-//    	           			}
-//    	            });
+    	            	Ext.getCmp('ResourceGroup').clearValue();
+    	            	
     	            }
     	    
     	        }

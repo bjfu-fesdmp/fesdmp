@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.Query;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import cn.bjfu.fesdmp.domain.sys.ResourceGroup;
@@ -13,12 +14,14 @@ import cn.bjfu.fesdmp.domain.sys.ResourceRelation;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.Order;
 import cn.bjfu.fesdmp.sys.dao.IResourceGroupDao;
+import cn.bjfu.fesdmp.sys.dao.IUserDao;
 
 @Repository
 public class ResourceGroupDaoImpl extends AbstractGenericDao<ResourceGroup> implements IResourceGroupDao{
 
 	private static final Logger logger = Logger.getLogger(ResourceGroupDaoImpl.class);
-	
+	@Autowired
+	private IUserDao userDao;
 	public ResourceGroupDaoImpl() {
 		super(ResourceGroup.class);
 	}
@@ -27,8 +30,12 @@ public class ResourceGroupDaoImpl extends AbstractGenericDao<ResourceGroup> impl
 	
 	
 	@Override
-	public List<ResourceGroup> findResourceGroupById(int parentId){
-		String jpal = " SELECT p FROM ResourceGroup p where p.groupParentId="+parentId;
+	public List<ResourceGroup> findResourceGroupByParentIdAndUserId(int parentId,int userId){
+		String jpal =""; 
+		if(this.userDao.findByKey(userId).getIsAdmin().equals((byte)1))
+			jpal = " SELECT p FROM ResourceGroup p where p.groupParentId="+parentId;
+		else
+			jpal = " SELECT p FROM ResourceGroup p,UserResourceGroupRelation n where p.id=n.resourceGroup.id and p.groupParentId="+parentId+" and n.user.id="+userId;
 		logger.info(jpal);
 		Query query = super.getEntityManager().createQuery(jpal);
 		List<ResourceGroup> resourceGroupList=query.getResultList();

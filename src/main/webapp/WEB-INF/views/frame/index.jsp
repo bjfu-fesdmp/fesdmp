@@ -87,14 +87,26 @@
 		Ext.BLANK_IMAGE_URL = '<%=request.getContextPath()%>/resources/extjs/images/s.gif';
 		Ext.onReady(function(){
 			Ext.Ajax.request({
-				url : Global_Path+'sysuser/checkIfHidden',
+				url : Global_Path+'sysuser/checkIfAdmin',
 				success : function(response) {
 					var result = Ext.decode(response.responseText);
-					if(result.success){
+					if(!result.success){
 						Ext.getCmp('systemManager').hide();
+						Ext.getCmp('resourcrGroupManager').hide();
+						Ext.Ajax.request({
+							url : Global_Path+'sysuser/checkIfNotIsTemporaryManager',
+							success : function(response) {
+								var result = Ext.decode(response.responseText);
+								if(result.success){
+									Ext.getCmp('indexManager').hide();
+									
+								}
+							}
+						});
 					}
 				}
 			});
+			
 			});
 		var tb = Ext.create('Ext.toolbar.Toolbar' , {
 			style : {
@@ -102,10 +114,17 @@
 			},
 			border : true,
 			items : [' ',{
-				text : '首页'
+				text : '首页',
+				    handler: function () {
+					Ext.getCmp('centerPanel').getLoader().load({
+					autoLoad : true,
+					url: Global_Path + "statistic/portal",
+ 					scripts : true,
+ 					loadMask : true,
+ 					noCache : true	
+				});
+                    }
 			},' ',{
-				text : '个人中心',
-
 				text : '数据管理',
 				menu: {
 			            items: [
@@ -126,6 +145,49 @@
 			            ]
 			        }
 			},' ',{
+				text : '指标与权限管理',
+				id : 'indexManager',
+				menu: {
+			            items: [
+			                 {
+						       text: '用户指标管理设置',
+						       handler: function () {
+								Ext.getCmp('centerPanel').getLoader().load({
+								autoLoad : true,
+			    				url: Global_Path + "sysuser/userIndexResourceListView",
+		                	 	scripts : true,
+		                	 	loadMask : true,
+		                	 	noCache : true	
+			    				});
+						       	}
+						       }, {
+							     text: '资源组管理员设置',
+								id : 'resourcrGroupManager',
+							     handler: function () {
+									Ext.getCmp('centerPanel').getLoader().load({
+									autoLoad : true,
+				    				url: Global_Path + "sysuser/userResourceGroupListView",
+			                	 	scripts : true,
+			                	 	loadMask : true,
+			                	 	noCache : true	
+				    			});
+							   }
+			               }, {
+				                text: '指标资源管理',
+ 								handler:  function () {
+									Ext.getCmp('centerPanel').getLoader().load({
+									autoLoad : true,	
+									url: Global_Path + "indexresource/listView",
+									scripts : true,
+									loadMask : true,
+									noCache : true
+									});
+								} 
+				
+					        }
+			            ]
+			        }
+			},' ',{
 				text : '系统管理',
 				id : 'systemManager',
 				menu: {
@@ -141,35 +203,7 @@
 				                	 	noCache : true	
 					    			});
 								}
-			                }, {
-			                    text: '权限设置',
-								menu: {
-				        		    items: [{
-						                    text: '用户指标管理设置',
-						                    handler: function () {
-												Ext.getCmp('centerPanel').getLoader().load({
-												autoLoad : true,
-			    								url: Global_Path + "sysuser/userIndexResourceListView",
-		                	 					scripts : true,
-		                	 					loadMask : true,
-		                	 					noCache : true	
-			    							});
-						                    }
-						                }, {
-							                    text: '资源组管理员设置',
-							                    handler: function () {
-													Ext.getCmp('centerPanel').getLoader().load({
-													autoLoad : true,
-				    								url: Global_Path + "sysuser/userResourceGroupListView",
-			                	 					scripts : true,
-			                	 					loadMask : true,
-			                	 					noCache : true	
-				    							});
-							                    }
-							                }
-				            ]
-				        	}
-			               },{
+			                },{
 				                    text: '用户管理',
 				                    handler: function () {
 										Ext.getCmp('centerPanel').getLoader().load({
@@ -180,19 +214,7 @@
                 	 					noCache : true	
 	    							});
 				                    }
-				                }, {
-				                text: '指标资源管理',
- 								handler:  function () {
-									Ext.getCmp('centerPanel').getLoader().load({
-									autoLoad : true,	
-									url: Global_Path + "indexresource/listView",
-									scripts : true,
-									loadMask : true,
-									noCache : true
-									});
-								} 
-				
-					        }
+				                }
 			            ]
 			        }
 			},'->',{

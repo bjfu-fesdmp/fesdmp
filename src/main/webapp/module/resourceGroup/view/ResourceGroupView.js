@@ -64,109 +64,136 @@ Ext.define('Bjfu.resourceGroup.view.ResourceGroupView',{
 		          scope:this,
 		          icon:Global_Path+'/resources/extjs/images/add.png',
 		          handler : function(){
-		        	var addForm = Ext.create('Bjfu.resourceGroup.view.AddResourceGroup',{
-		        	});
-		        	Ext.create('Ext.window.Window',{
-		        		title:'新增资源组',
-		        		closable:true,
-		        		closeAction:'destroy',
-		        		modal:true,
-		        		resizable:false,
-		        	    border:false,
-		        		width:300,
-		        		height:230,
-		        		layout:'fit',
-		        		items:[addForm]
-		        	}).show();
+		      			Ext.Ajax.request({
+		      				url : Global_Path+'sysuser/checkIfAdmin',
+		      				success : function(response) {
+		      					var result = Ext.decode(response.responseText);
+		      					if(!result.success){
+		      						Ext.Msg.alert('提示','您并没有获得该权限');
+		      						return;
+		      					}
+		      					else{
+		      			        	var addForm = Ext.create('Bjfu.resourceGroup.view.AddResourceGroup',{
+		      			        	});
+		      			        	Ext.create('Ext.window.Window',{
+		      			        		title:'新增资源组',
+		      			        		closable:true,
+		      			        		closeAction:'destroy',
+		      			        		modal:true,
+		      			        		resizable:false,
+		      			        	    border:false,
+		      			        		width:300,
+		      			        		height:230,
+		      			        		layout:'fit',
+		      			        		items:[addForm]
+		      			        	}).show();
+		      					}
+		      				}
+		      			});
+
 		        	} 
 		        },{
 				       text: '修改',
 				       scope:this, 
 				        icon:Global_Path+'/resources/extjs/images/update.png',
 				          handler : function(o){
-				        	 var gird = o.ownerCt.ownerCt;
-						     var record = gird.getSelectionModel().getSelection();
-						     	if(record.length>1||record.length==0)
-						     		{
-						     			Ext.Msg.alert('提示','请选择一条记录！');
-						     			return;
-						     		}else{
-				        	
-				        	var modifyForm = Ext.create('Bjfu.resourceGroup.view.ModifyResourceGroup',{
-											});
-				        	modifyForm.loadRecord(record[0]);
-				        	Ext.create('Ext.window.Window',{
-				        		title:'修改资源组界面',
-				        		closable:true,
-				        		closeAction:'destroy',
-				        		modal:true,
-				        		border:false,
-				        		resizable:false,
-				        		width:400,
-				        		height:250,
-				        		layout:'fit',
-				        		items:[modifyForm]
-				        	}).show();
-				        	
+					        	 var gird = o.ownerCt.ownerCt;
+							     var record = gird.getSelectionModel().getSelection();
+							     	if(record.length>1||record.length==0)
+							     		{
+							     			Ext.Msg.alert('提示','请选择一条记录！');
+							     			return;
+							     		}else{
+					        	
+					        	var modifyForm = Ext.create('Bjfu.resourceGroup.view.ModifyResourceGroup',{
+												});
+					        	modifyForm.loadRecord(record[0]);
+					        	Ext.create('Ext.window.Window',{
+					        		title:'修改资源组界面',
+					        		closable:true,
+					        		closeAction:'destroy',
+					        		modal:true,
+					        		border:false,
+					        		resizable:false,
+					        		width:400,
+					        		height:250,
+					        		layout:'fit',
+					        		items:[modifyForm]
+					        	}).show();
+	      					}
 				        	}
-				        	}
+				        	
 				        },{
 		        	text: '删除' ,
 		        	icon:Global_Path+'/resources/extjs/images/delete.png',
 		        	scope:this,
 		        	handler : function(o){
-	                	var gird = o.ownerCt.ownerCt;
-				    	var record = gird.getSelectionModel().getSelection();		        	
-			        	if(record.length==0)
-			        		{
-			        		Ext.Msg.alert('提示','请选择删除的记录！');
-			        		return;
-			        	}else{
-			        		//1.先得到ID的数据(Id)
-			        		var st = gird.getStore();
-			        		var id = null;
-			        		Ext.Array.each(record,function(data){
-			        			id=data.get('id');
-			        			if(data.get('leaf')!=true)
-			        				{
-			        				Ext.Msg.alert('提示','该资源组有子资源组不能删除');
-			        				}
-			        			else
-			        			{
-				        			Ext.Ajax.request({
-										url : Global_Path+'resourceGroup/checkIfHaveIndexResource',
-										params :{id:id},
-										success:function(response) {
-											var	result =  Ext.decode(response.responseText);
-					                    	if(result.success){
-											Ext.Msg.alert('提示','该资源组下有指标资源不能删除');
-					                    	}
-					                    	else{
-											Ext.Msg.confirm("提示","要删除该资源组吗？",function(btn){
-												if(btn=='yes'){
-													Ext.Ajax.request({
-														url:Global_Path+'resourceGroup/deleteResourceGroup',
-														params:{id:id},
-														method:'POST',
-														timeout:2000,
-														success:function(response,opts){
-															Ext.Array.each(record,function(data){
-																st.remove(data);
-															});
-													Ext.getCmp('resourceGroupViewId').store.reload();
-														}
-													});
-											}
-										});
-					                   }
-									}
-			        				
-				        			});
-			        				
-			        				
-			        			}
-			        		});
-			        	}    
+		      			Ext.Ajax.request({
+		      				url : Global_Path+'sysuser/checkIfAdmin',
+		      				
+		      				success : function(response) {
+		      					var result = Ext.decode(response.responseText);
+		      					if(!result.success){
+		      						Ext.Msg.alert('提示','您并没有获得该权限');
+		      						return;
+		      					}
+		      					else{
+		    	                	var gird = o.ownerCt.ownerCt;
+		    				    	var record = gird.getSelectionModel().getSelection();		        	
+		    			        	if(record.length==0)
+		    			        		{
+		    			        		Ext.Msg.alert('提示','请选择删除的记录！');
+		    			        		return;
+		    			        	}else{
+		    			        		//1.先得到ID的数据(Id)
+		    			        		var st = gird.getStore();
+		    			        		var id = null;
+		    			        		Ext.Array.each(record,function(data){
+		    			        			id=data.get('id');
+		    			        			if(data.get('leaf')!=true)
+		    			        				{
+		    			        				Ext.Msg.alert('提示','该资源组有子资源组不能删除');
+		    			        				}
+		    			        			else
+		    			        			{
+		    				        			Ext.Ajax.request({
+		    										url : Global_Path+'resourceGroup/checkIfHaveIndexResource',
+		    										params :{id:id},
+		    										success:function(response) {
+		    											var	result =  Ext.decode(response.responseText);
+		    					                    	if(result.success){
+		    											Ext.Msg.alert('提示','该资源组下有指标资源不能删除');
+		    					                    	}
+		    					                    	else{
+		    											Ext.Msg.confirm("提示","要删除该资源组吗？",function(btn){
+		    												if(btn=='yes'){
+		    													Ext.Ajax.request({
+		    														url:Global_Path+'resourceGroup/deleteResourceGroup',
+		    														params:{id:id},
+		    														method:'POST',
+		    														timeout:2000,
+		    														success:function(response,opts){
+		    															Ext.Array.each(record,function(data){
+		    																st.remove(data);
+		    															});
+		    													Ext.getCmp('resourceGroupViewId').store.reload();
+		    														}
+		    													});
+		    											}
+		    										});
+		    					                   }
+		    									}
+		    			        				
+		    				        			});
+		    			        				
+		    			        				
+		    			        			}
+		    			        		});
+		    			        	}    
+		      					}
+		      				}
+		      			});
+
 		    		}
 		        }
 		        ],
