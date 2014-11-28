@@ -178,22 +178,38 @@ Ext.define('Bjfu.indexResource.view.IndexResourceListView',{
 			        		var ids = [];
 			        		Ext.Array.each(record,function(data){
 			        			ids.push(data.get('id'));
-			        			Ext.Msg.confirm("提示","确定删除所选记录吗？",function(btn){
-			        				if(btn=='yes'){
-			        						Ext.Ajax.request({
-			        							url:Global_Path+'indexresource/deleteIndexResource',
-												params:{ids:ids.join(",")},
-												method:'POST',
-												timeout:2000,
-												success:function(response,opts){
-													Ext.Array.each(record,function(data){
-														st.remove(data);
-													});
-													Ext.getCmp('indexResourceListViewId').store.reload();
-			        							}
-			        						})
-			        				}
-			        			})
+			        			Ext.Ajax.request({
+				      				url : Global_Path+'indexresource/checkIfHaveTable',
+				      				params:{
+				      					ids:ids.join(",")
+				      					},
+				      				success : function(response) {
+				      					var result = Ext.decode(response.responseText);
+				      					if(result.success){
+				      						Ext.Msg.alert('提示','该指标资源还有表，不能删除');
+				      						return;
+				      					}
+				      					else{
+						        			Ext.Msg.confirm("提示","确定删除所选记录吗？",function(btn){
+						        				if(btn=='yes'){
+						        						Ext.Ajax.request({
+						        							url:Global_Path+'indexresource/deleteIndexResource',
+															params:{ids:ids.join(",")},
+															method:'POST',
+															timeout:2000,
+															success:function(response,opts){
+																Ext.Array.each(record,function(data){
+																	st.remove(data);
+																});
+																Ext.getCmp('indexResourceListViewId').store.reload();
+						        							}
+						        						})
+						        				}
+						        			})
+				      				}
+				      		
+					    		}
+			        			});
 			        		});
 			        	}    
 		    		}

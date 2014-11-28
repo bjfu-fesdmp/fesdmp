@@ -69,6 +69,9 @@ public class IndexResourceService implements IIndexResourceService {
 	public void deleteIndexResource(int id) {
 		ResourceRelation resourceRelation=new ResourceRelation();
 		resourceRelation=this.resourceRelationDao.findByIndexResourceId(id);
+		List<UserIndexRelation> list=this.userIndexRelationDao.findUserIndexRelationByIndexResourceId(String.valueOf(id));
+		for(int i=0;i<list.size();i++)
+			this.userIndexRelationDao.delete(list.get(i));
 		this.resourceRelationDao.delete(resourceRelation);
 		this.indexResourceDao.delete(this.indexResourceDao.findByKey(id));
 	}
@@ -156,6 +159,10 @@ public class IndexResourceService implements IIndexResourceService {
 	@Override
 	public boolean checkYear(String year,String indexResoure){
 		return this.indexResourceDao.checkYear(year,indexResoure);
+	}
+	@Override
+	public boolean checkIfHaveTable(String ids){
+		return this.indexResourceDao.checkIfHaveTable(ids);
 	}
 }
  

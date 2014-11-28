@@ -33,5 +33,6 @@ public interface IIndexResourceService{
 	public abstract boolean checkIndexResourceEnName(String indexResourceEnName);
 	public abstract boolean checkIndexResourceName(String indexResourceName);
 	public abstract boolean checkYear(String year,String indexResoure);
+	public abstract boolean checkIfHaveTable(String ids);
 }
  

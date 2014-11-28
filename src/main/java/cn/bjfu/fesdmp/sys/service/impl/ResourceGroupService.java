@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.bjfu.fesdmp.domain.sys.ResourceGroup;
+import cn.bjfu.fesdmp.domain.sys.UserIndexRelation;
 import cn.bjfu.fesdmp.domain.sys.UserResourceGroupRelation;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
@@ -37,6 +38,10 @@ public class ResourceGroupService implements IResourceGroupService {
 
 	@Override
 	public void deleteResourceGroup(int id) {
+		
+		List<UserResourceGroupRelation> list=this.userResourceGroupRelationDao.findUserResourceGroupByResourceGroupId(String.valueOf(id));
+		for(int i=0;i<list.size();i++)
+			this.userResourceGroupRelationDao.delete(list.get(i));
 		this.resourceGroupDao.delete(this.resourceGroupDao.findByKey(id));
 	}
 

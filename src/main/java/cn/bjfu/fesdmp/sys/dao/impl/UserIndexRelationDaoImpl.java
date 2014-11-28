@@ -21,6 +21,7 @@ public class UserIndexRelationDaoImpl extends AbstractGenericDao<UserIndexRelati
 	public UserIndexRelationDaoImpl() {
 		super(UserIndexRelation.class);
 	}
+	@Override
 	public UserIndexRelation findUserIndexRelationByBothId(String id,String userId){
 		String jpal = " SELECT p FROM UserIndexRelation p where p.indexResource.id="+id+" and p.user.id="+userId;
 		logger.info(jpal);
@@ -28,6 +29,14 @@ public class UserIndexRelationDaoImpl extends AbstractGenericDao<UserIndexRelati
 		List list=query.getResultList();
 		UserIndexRelation userIndexRelation=(UserIndexRelation)list.get(0);
 		return userIndexRelation;
+	}
+	@Override
+	public List<UserIndexRelation> findUserIndexRelationByIndexResourceId(String id){
+		String jpal = " SELECT p FROM UserIndexRelation p where p.indexResource.id="+id;
+		logger.info(jpal);
+		Query query = super.getEntityManager().createQuery(jpal);
+		List list=query.getResultList();
+		return list;
 	}
 }
  

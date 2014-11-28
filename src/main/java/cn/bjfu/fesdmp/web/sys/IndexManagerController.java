@@ -351,5 +351,20 @@ public class IndexManagerController extends BaseController {
 			result.put(SUCCESS, Boolean.TRUE);	
 			return result;	
 	}
+	@RequestMapping(value = "/checkIfHaveTable", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> checkIfHaveTable(String ids) throws Exception {
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		logger.info("checkIfIsExist method.");
+		logger.info(ids);
+		Map<String, Object> result = new HashMap<String, Object>();
+
+		boolean checkResult=this.indexService.checkIfHaveTable(ids);
+		if (checkResult==true)
+			result.put(SUCCESS, Boolean.TRUE);	
+		else
+			result.put(SUCCESS, Boolean.FALSE);	
+			return result;	
+	}
 }
  

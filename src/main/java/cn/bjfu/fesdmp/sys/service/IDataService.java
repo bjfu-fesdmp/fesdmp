@@ -17,6 +17,7 @@ public interface IDataService {
 	public abstract void modifyData(DataJson data,String tableName);
 	public abstract DataJson findDataById(String id,String tableName);
 	public abstract void deleteData(DataJson data);
+	public abstract void deleteTable(String tableName);
 	public abstract List<DataJson> queryAll(IOrder order);
 	public abstract void queryByCondition(final Object condition, IOrder order, Pagination<DataJson> page);
 	public abstract List<DataJson> queryByCondition(final Object condition, IOrder order,

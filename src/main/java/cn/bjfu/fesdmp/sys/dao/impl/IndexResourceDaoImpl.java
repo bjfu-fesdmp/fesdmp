@@ -174,5 +174,17 @@ public class IndexResourceDaoImpl extends AbstractGenericDao<IndexResource> impl
 			return true;
 		
 	}
+	@Override
+	public boolean checkIfHaveTable(String ids){
+		String jpal = " SELECT p FROM ResourceTable p where p.indexResource.id="+ids;
+		logger.info(jpal);
+		Query query = super.getEntityManager().createQuery(jpal);
+		List list=query.getResultList();
+		if(list.isEmpty())
+			return false;
+		else
+			return true;
+		
+	}
 }
  

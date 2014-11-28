@@ -39,7 +39,7 @@ Ext.define('Bjfu.dataDisplay.view.TableDisplayView',{
 			    	xtype : 'treecolumn',
 			    	flex : 1,
 					sortable : true,
-			        //text : '数据表',
+			        text : '数据表',
 			        dataIndex : 'text'
 			        
 			    }, {
@@ -53,7 +53,79 @@ Ext.define('Bjfu.dataDisplay.view.TableDisplayView',{
 					dataIndex : 'parentId'
 				}
 			],
-			
+			tbar : [{ 
+			        	text: '删除' ,
+			        	icon:Global_Path+'/resources/extjs/images/delete.png',
+			        	scope:this,
+			        	handler : function(o){
+		                	var gird = o.ownerCt.ownerCt;
+					    	var record = gird.getSelectionModel().getSelection();		        	
+							   if(record.length>1||record.length==0)
+						   		{
+							   		Ext.Msg.alert('提示','请选择一条记录！');
+							   		return;
+				        	}else{
+				        		//1.先得到ID的数据(domtId)
+				        		var st = gird.getStore();
+				        		Ext.Array.each(record,function(record,data){
+				        			var name=record.get("text");
+				        			Ext.Ajax.request({
+					      				url : Global_Path+'dataDisplay/CheckIsTable',
+					      				params:{tableName: name},
+					      				success : function(response) {
+					      					var result = Ext.decode(response.responseText);
+					      					if(!result.success){
+					      						Ext.Msg.alert('提示','请选择正确的表');
+					      						return;
+					      					}
+					      					else{
+					      						Ext.Ajax.request({
+					    		      				url : Global_Path+'sysuser/checkFunctionIfForbid',
+					    		      				params:{
+					    		      					tableName:name
+					    		      					},
+					    		      				success : function(response) {
+					    		      					var result = Ext.decode(response.responseText);
+					    		      					if(result.success){
+					    		      						Ext.Msg.alert('提示','您并没有获得该权限');
+					    		      						return;
+					    		      					}
+					    		      					else{
+					    		      						Ext.Msg.confirm("提示","确定删除所选记录吗？",function(btn){
+										        				if(btn=='yes'){
+										        						Ext.Ajax.request({
+										        							url:Global_Path+'dataDisplay/deleteTable',
+																			params:{tableName: name},
+																			method:'POST',
+																			timeout:2000,
+																			success:function(response,opts){
+														                    	var	result =  Ext.decode(response.responseText);
+														                    	if(result.success){
+														                    		Ext.Msg.alert('提示','删除成功');
+														    						window.close();
+														    	 	   			Ext.getCmp('tableDisplayId').store.reload();
+														    	 	   			Ext.getCmp('dataDisplayId').store.reload();
+														                    	}else{
+														                    		Ext.Msg.alert('提示','无法删除');
+														                    		window.close();
+														                    	}
+										        							}
+										        						})
+										        				}
+										        			})
+
+					    		      					}
+					    		      				}
+					    		      			});
+							        			
+						    		}
+				        			}
+				        		});
+				        			
+				        		});
+				        	}    
+			    		}
+			        }],
 			listeners:{
 				scope : this,
 				checkchange :function(node, checked) {

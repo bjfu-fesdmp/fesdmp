@@ -24,5 +24,6 @@ public interface IIndexResourceDao extends IGenericDao<IndexResource> {
 	public abstract boolean checkIndexResourceEnName(String indexResourceEnName);
 	public abstract IndexResource findByEnName(String indexResourceEnName);
 	public abstract boolean checkYear(String year,String indexResoure);
+	public abstract boolean checkIfHaveTable(String ids);
 }
  

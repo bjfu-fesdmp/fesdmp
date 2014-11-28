@@ -2,6 +2,7 @@ package cn.bjfu.fesdmp.web.sys;
 
 import cn.bjfu.fesdmp.domain.sys.IndexResource;
 import cn.bjfu.fesdmp.domain.sys.ResourceGroup;
+import cn.bjfu.fesdmp.domain.sys.User;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.frame.dao.Order;
@@ -14,6 +15,7 @@ import cn.bjfu.fesdmp.sys.service.IResourceGroupService;
 import cn.bjfu.fesdmp.utils.PageInfoBean;
 import cn.bjfu.fesdmp.utils.Pagination;
 import cn.bjfu.fesdmp.web.BaseController;
+import cn.bjfu.fesdmp.web.annotation.MethodRecordLog;
 import cn.bjfu.fesdmp.web.jsonbean.DataSearch;
 import cn.bjfu.fesdmp.web.jsonbean.ExtJSFormResult;
 import cn.bjfu.fesdmp.web.jsonbean.FileUploadBean;
@@ -35,6 +37,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -580,5 +584,45 @@ public class DataDisplayManagerController extends BaseController {
 		logger.info("downloadData method.");
 		String Path = "resources/extjs/Template/Template.xls";
 		return Path;
+	}
+	@RequestMapping(value = "/deleteTable", method = RequestMethod.POST)
+	@MethodRecordLog(moduleName="数据表管理", bussinessType="DATA_OPERATE", operateType = "DELETE", desc="删除数据表") 
+	@ResponseBody
+	public Map<String, Object> deleteTable(String tableName) throws Exception {
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		logger.info("deleteTable method.");
+		logger.info(tableName);
+		Map<String, Object> result = new HashMap<String, Object>();
+		this.dataService.deleteTable(tableName);
+		result.put(SUCCESS, Boolean.TRUE);
+
+		return result;	
+	}
+	@RequestMapping(value = "/CheckIsTable", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> CheckIsTable(String tableName) throws Exception {
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		logger.info("deleteTable method.");
+		logger.info(tableName);
+		Map<String, Object> result = new HashMap<String, Object>();
+		if(tableName!=null){
+			if(tableName.length()>4){
+				if(tableName.charAt(4)=='_'){
+					Pattern pattern = Pattern.compile("[0-9]*");
+					Matcher isNum = pattern.matcher(tableName.substring(0,4));
+					 if( !isNum.matches() ){
+						 result.put(SUCCESS, Boolean.FALSE);	
+					 }
+					 else result.put(SUCCESS, Boolean.TRUE);
+				}
+				else
+					result.put(SUCCESS, Boolean.FALSE);	
+			}
+			else
+				result.put(SUCCESS, Boolean.FALSE);	
+		}
+		else
+			result.put(SUCCESS, Boolean.FALSE);	
+			return result;	
 	}
 }

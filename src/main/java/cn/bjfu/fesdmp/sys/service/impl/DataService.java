@@ -20,6 +20,7 @@ import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.json.DataJson;
 import cn.bjfu.fesdmp.json.TableJson;
 import cn.bjfu.fesdmp.sys.dao.IDataDao;
+import cn.bjfu.fesdmp.sys.dao.IResourceTableDao;
 import cn.bjfu.fesdmp.sys.service.IDataService;
 import cn.bjfu.fesdmp.utils.Pagination;
 import cn.bjfu.fesdmp.web.jsonbean.DataSearch;
@@ -30,7 +31,8 @@ public class DataService implements IDataService {
 
 	@Autowired
 	private IDataDao dataDao;
-	
+	@Autowired
+	private IResourceTableDao resourceTableDao;
 	@Override
 	public void addData(String table,List<DataJson> list) {
 		this.dataDao.dataInsert(table,list);
@@ -40,7 +42,11 @@ public class DataService implements IDataService {
 	public void deleteData(DataJson data) {
 		this.dataDao.delete(data);
 	}
-
+	@Override
+	public void deleteTable(String tableName){
+		this.resourceTableDao.delete(this.resourceTableDao.findTableByIndexEnName(tableName.substring(5)));
+		this.dataDao.deleteTable(tableName);
+	}
 	@Override
 	public void modifyData(DataJson data,String tableName) {
 		this.dataDao.modifyData(data,tableName);

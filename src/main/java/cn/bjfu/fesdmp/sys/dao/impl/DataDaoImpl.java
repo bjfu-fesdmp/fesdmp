@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map; 
 import java.sql.DatabaseMetaData;  
 import java.sql.SQLException;  
+import java.text.SimpleDateFormat;
 import java.util.Properties;  
 
 
@@ -20,6 +21,11 @@ import java.util.Properties;
 
 
 
+
+
+
+
+import javax.xml.crypto.Data;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -219,7 +225,14 @@ public class DataDaoImpl extends AbstractGenericDao<DataJson> implements IDataDa
 	
 		
 	}
-	
+	public void deleteTable(String tableName){
+		String sql=null;
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+		Date date=new Date();
+		String now=sdf.format(date);
+		sql="rename table "+tableName+"  to deleted_"+now+"_"+tableName;
+		jdbcTemplate.update(sql);
+	}
 	
 }
  

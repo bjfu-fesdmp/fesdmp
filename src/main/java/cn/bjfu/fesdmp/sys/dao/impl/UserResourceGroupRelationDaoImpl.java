@@ -8,6 +8,7 @@ import javax.persistence.Query;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
+import cn.bjfu.fesdmp.domain.sys.UserIndexRelation;
 import cn.bjfu.fesdmp.domain.sys.UserResourceGroupRelation;
 import cn.bjfu.fesdmp.sys.dao.IUserResourceGroupRelationDao;
 
@@ -29,7 +30,14 @@ public class UserResourceGroupRelationDaoImpl extends AbstractGenericDao<UserRes
 		UserResourceGroupRelation userResourceGroupRelation=(UserResourceGroupRelation)list.get(0);
 		return userResourceGroupRelation;
 	}
-	
+	@Override
+	public List<UserResourceGroupRelation> findUserResourceGroupByResourceGroupId(String resourceGroupId){
+		String jpal = " SELECT p FROM UserResourceGroupRelation p where p.resourceGroup.id="+resourceGroupId;
+		logger.info(jpal);
+		Query query = super.getEntityManager().createQuery(jpal);
+		List list=query.getResultList();
+		return list;
+	}
 	
 }
  

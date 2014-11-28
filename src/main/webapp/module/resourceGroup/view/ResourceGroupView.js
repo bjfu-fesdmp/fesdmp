@@ -173,10 +173,9 @@ Ext.define('Bjfu.resourceGroup.view.ResourceGroupView',{
 		    														method:'POST',
 		    														timeout:2000,
 		    														success:function(response,opts){
-		    															Ext.Array.each(record,function(data){
-		    																st.remove(data);
-		    															});
-		    													Ext.getCmp('resourceGroupViewId').store.reload();
+		    															Ext.Msg.alert('提示','删除资源组成功');
+		    																Ext.getCmp('resourceGroupViewId').store.reload();
+		    															
 		    														}
 		    													});
 		    											}
