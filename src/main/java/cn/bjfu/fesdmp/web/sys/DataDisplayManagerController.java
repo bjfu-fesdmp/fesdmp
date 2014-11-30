@@ -577,12 +577,12 @@ public class DataDisplayManagerController extends BaseController {
 		return FinalPath;
 	}
 
-	@RequestMapping(value = "/downloadTemplate", method = RequestMethod.POST)
+	@RequestMapping(value = "/downloadTemplate", method = RequestMethod.GET)
 	@ResponseBody
 	public String downloadTemplate() throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-		logger.info("downloadData method.");
-		String Path = "resources/extjs/Template/Template.xls";
+		logger.info("downloadTemplate method.");
+		String Path = "resources/extjs/Template/Template.zip";
 		return Path;
 	}
 	@RequestMapping(value = "/deleteTable", method = RequestMethod.POST)

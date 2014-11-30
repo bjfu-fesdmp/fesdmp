@@ -223,7 +223,6 @@ Ext.define('Bjfu.dataDisplay.view.DataDisplayView',{
 				        	icon:Global_Path+'/resources/extjs/images/bottom2.gif',
 				        	scope:this,
 		                    handler: function(btn) {
-		                    	var ids = [];
 		                    	 Ext.Msg.show({
 		                    		  title:'确认导出',
 		                    		     msg: '您确定导出模板?',
@@ -233,7 +232,6 @@ Ext.define('Bjfu.dataDisplay.view.DataDisplayView',{
 		                    		   if(btn=='yes'){ 
 		                    		             Ext.Ajax.request({
 		                    		             url : Global_Path+'dataDisplay/downloadTemplate',
-		                    		             params:{ids:ids.join(",")},
 		                    		             success:function(res){
 		                    		             var obj =res.responseText.replace(/\"/g, "");
 		                    		             window.location=obj;
@@ -255,7 +253,7 @@ Ext.define('Bjfu.dataDisplay.view.DataDisplayView',{
 		                    		            icon: Ext.MessageBox.QUESTION
 		                    		 });
 		                    		 }
-				        }, {
+				        },{
 					    	text:'批量上传',
 					    	scope:this,
 					    	icon : Global_Path + '/resources/extjs/images/up2.gif',
