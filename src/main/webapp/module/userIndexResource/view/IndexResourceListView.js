@@ -93,6 +93,11 @@ Ext.define('Bjfu.userIndexResource.view.IndexResourceListView',{
 			        dataIndex : 'indexUnit',
 			        width : '15%',
 			        editor : 'textfield'
+			    },{
+			        text : '所属资源组',
+			        dataIndex : 'resourceGroupName',
+			        width : '15%',
+			        editor : 'textfield'
 			    }],
 			tbar : [{
 		          text: '为用户添加指标资源',

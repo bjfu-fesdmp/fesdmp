@@ -110,4 +110,8 @@ public class ResourceGroupService implements IResourceGroupService {
 	public boolean checkResourceGroupName(String resourceGroupName){
 		return this.resourceGroupDao.checkResourceGroupName(resourceGroupName);
 	}
+	@Override
+	public String findResourceGroupNameByIndexResourceId(int indexResourceId){
+		return this.resourceGroupDao.findResourceGroupNameByIndexResourceId(indexResourceId);
+	}
 }

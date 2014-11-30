@@ -12,6 +12,7 @@ public class AddUserJson {
 	private String password;
 	private String checkPwd;
 	private int userGroup;
+	private byte isAdmin;
 	
 	public AddUserJson() {}
 	
@@ -78,6 +79,12 @@ public class AddUserJson {
 	public void setId(Integer id) {
 		this.id = id;
 	}
+	public byte getIsAdmin() {
+		return isAdmin;
+	}
 
+	public void setIsAdmin(byte isAdmin) {
+		this.isAdmin = isAdmin;
+	}
 
 }

@@ -6,6 +6,7 @@ public class IndexResourceJson {
 	private Integer id;
 	private Integer resourceGroupId;
 	private String indexName;
+	private String resourceGroupName;
 	private String indexEnName;
 	private String indexUnit;
 	private String indexMemo;
@@ -38,7 +39,13 @@ public class IndexResourceJson {
 	public void setIndexName(String indexName) {
 		this.indexName = indexName;
 	}
+	public String getResourceGroupName() {
+		return resourceGroupName;
+	}
 
+	public void setResourceGroupName(String resourceGroupName) {
+		this.resourceGroupName = resourceGroupName;
+	}
 	public String getIndexEnName() {
 		return indexEnName;
 	}

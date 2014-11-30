@@ -27,6 +27,9 @@ Ext.define('Bjfu.indexResource.model.IndexResource',{
 	},{
 		name : 'modifyTime', 
     	type : 'string' //修改时间
+	},{
+		name : 'resourceGroupName', 
+    	type : 'string' //所属资源组
 	}
 	]
 });

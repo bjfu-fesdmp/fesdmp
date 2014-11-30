@@ -109,4 +109,16 @@ public class ResourceGroupDaoImpl extends AbstractGenericDao<ResourceGroup> impl
 			return true;
 		
 	}
+	@Override
+	public String findResourceGroupNameByIndexResourceId(int indexResourceId){
+		String jpal = " SELECT p FROM ResourceGroup p,ResourceRelation m where p.id=m.resourceGroup.id and m.indexResource.id="+indexResourceId;
+		logger.info(jpal);
+		Query query = super.getEntityManager().createQuery(jpal);
+		List<ResourceGroup> list=query.getResultList();
+		if(list.isEmpty())
+			return null;
+		else
+			return list.get(0).getGroupName();
+		
+	}
 }

@@ -128,7 +128,7 @@ public class UserManagerController extends BaseController {
 		user.setUserLoginName(addUserJson.getUserLoginName());
 		user.setUserName(addUserJson.getUserName());
 		user.setUserPhone(addUserJson.getUserPhone());
-		user.setIsAdmin((byte)0);
+		user.setIsAdmin(addUserJson.getIsAdmin());
 		user.setUserStatus((byte)1);
 		User buildUser=(User) request.getSession().getAttribute(AppConstants.SESSION_USER);
 		user.setCreater(buildUser);

@@ -124,7 +124,7 @@ Ext.define('Bjfu.user.view.UserView',{
 		        		modal:true,
 		        		resizable:false,
 		        	    border:false,
-		        		width:600,
+		        		width:650,
 		        		height:430,
 		        		layout:'fit',
 		        		items:[addForm]

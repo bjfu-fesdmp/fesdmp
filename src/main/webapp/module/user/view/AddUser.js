@@ -5,7 +5,14 @@ Ext.apply(Ext.form.VTypes, {
 		},
 	passwordText : "确认密码不一致！！！"
 });
-
+var isAdminStore=new Ext.data.Store({
+    extend: 'Ext.data.Store',
+    fields: ['id', 'text'],
+    data : [
+        {"id":"0", "text":"否"},
+        {"id":"1", "text":"是"}
+    ]
+});
 Ext.define('Bjfu.user.view.AddUser',{
 	extend:'Ext.form.Panel',
 	bodyPadding: 5,
@@ -116,7 +123,17 @@ Ext.define('Bjfu.user.view.AddUser',{
     	        allowBlank : false,
 				blankText : "不能为空，请填写",
 				maxLength : 30
-    	    }]
+    	    },{
+    	    	fieldLabel : '超级管理员<font color="red">*</font>',
+    	    	name : 'isAdmin',
+    	    	xtype : 'combo',
+    	    	editable : false,
+		        dataIndex: 'isAdmin',
+		        store : isAdminStore,
+		        displayField : 'text',
+    	        valueField : 'id',
+    	        emptyText : '请选择...'
+		    }]
     	});
     	me.callParent(arguments);
 	},

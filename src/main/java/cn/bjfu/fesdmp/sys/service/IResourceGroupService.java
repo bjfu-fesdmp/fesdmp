@@ -26,5 +26,6 @@ public interface IResourceGroupService {
 			Pagination<ResourceGroup> page, JoinMode joinMode);
 	public abstract List<ResourceGroup> findResourceGroupNotInThisUser(String userId);
 	public abstract boolean checkResourceGroupName(String resourceGroupName);
+	public abstract String findResourceGroupNameByIndexResourceId(int indexResourceId);
 }
  

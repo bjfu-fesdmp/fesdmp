@@ -37,6 +37,7 @@ import cn.bjfu.fesdmp.json.AddIndexResourceForUserJson;
 import cn.bjfu.fesdmp.json.CreateTableJson;
 import cn.bjfu.fesdmp.json.IndexResourceJson;
 import cn.bjfu.fesdmp.sys.service.IIndexResourceService;
+import cn.bjfu.fesdmp.sys.service.IResourceGroupService;
 import cn.bjfu.fesdmp.sys.service.IResourceRelationService;
 import cn.bjfu.fesdmp.utils.PageInfoBean;
 import cn.bjfu.fesdmp.utils.Pagination;
@@ -64,6 +65,8 @@ public class IndexManagerController extends BaseController {
 	private IIndexResourceService indexService;
 	@Autowired
 	private IResourceRelationService resourceRelationService; 
+	@Autowired
+	private IResourceGroupService resourceGroupService; 
 	@RequestMapping(value = "/listView", method = RequestMethod.GET)
 	public String indexResourcePage() {
 		logger.info("indexResourcePage method.");
@@ -222,6 +225,7 @@ public class IndexManagerController extends BaseController {
 			indexResourceJson.setIndexEnName(indexResource.getIndexEnName());
 			indexResourceJson.setIndexUnit(indexResource.getIndexUnit());
 			indexResourceJson.setIndexMemo(indexResource.getIndexMemo());
+			indexResourceJson.setResourceGroupName(this.resourceGroupService.findResourceGroupNameByIndexResourceId(indexResource.getId()));
 			if(indexResource.getCreater()!=null)
 				indexResourceJson.setCreaterId(indexResource.getCreater().getId());
 			indexResourceJson.setCreateTime(indexResource.getCreateTime());
