@@ -148,33 +148,9 @@
 				text : '指标与权限管理',
 				id : 'indexManager',
 				menu: {
-			            items: [
-			                 {
-						       text: '用户指标管理设置',
-						       handler: function () {
-								Ext.getCmp('centerPanel').getLoader().load({
-								autoLoad : true,
-			    				url: Global_Path + "sysuser/userIndexResourceListView",
-		                	 	scripts : true,
-		                	 	loadMask : true,
-		                	 	noCache : true	
-			    				});
-						       	}
-						       }, {
-							     text: '资源组管理员设置',
-								id : 'resourcrGroupManager',
-							     handler: function () {
-									Ext.getCmp('centerPanel').getLoader().load({
-									autoLoad : true,
-				    				url: Global_Path + "sysuser/userResourceGroupListView",
-			                	 	scripts : true,
-			                	 	loadMask : true,
-			                	 	noCache : true	
-				    			});
-							   }
-			               }, {
-				                text: '指标资源管理',
- 								handler:  function () {
+			            items: [{
+									text: '指标资源管理',
+									handler:  function () {
 									Ext.getCmp('centerPanel').getLoader().load({
 									autoLoad : true,	
 									url: Global_Path + "indexresource/listView",
@@ -182,10 +158,32 @@
 									loadMask : true,
 									noCache : true
 									});
-								} 
-				
-					        }
-			            ]
+									} 
+	       						 },{
+							    	text: '资源组管理员设置',
+									id : 'resourcrGroupManager',
+							  		handler: function () {
+									Ext.getCmp('centerPanel').getLoader().load({
+									autoLoad : true,
+				    				url: Global_Path + "sysuser/userResourceGroupListView",
+			                	 	scripts : true,
+			                	 	loadMask : true,
+			                	 	noCache : true	
+				    				});
+							  			 }
+			              		 },{
+				       				text: '用户指标管理设置',
+				       				handler: function () {
+									Ext.getCmp('centerPanel').getLoader().load({
+									autoLoad : true,
+	    							url: Global_Path + "sysuser/userIndexResourceListView",
+                	 				scripts : true,
+                	 				loadMask : true,
+                	 				noCache : true	
+	    							});
+				       					}
+				      				 } 
+			           				 ]
 			        }
 			},' ',{
 				text : '系统管理',

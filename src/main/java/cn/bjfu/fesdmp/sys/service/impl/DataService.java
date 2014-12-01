@@ -39,8 +39,9 @@ public class DataService implements IDataService {
 	}
 
 	@Override
-	public void deleteData(DataJson data) {
-		this.dataDao.delete(data);
+	public void deleteData(String tableName, String[] id) {
+		for(int i=0;i<id.length;i++)
+		this.dataDao.deleteDataById(tableName,id[i]);
 	}
 	@Override
 	public void deleteTable(String tableName){

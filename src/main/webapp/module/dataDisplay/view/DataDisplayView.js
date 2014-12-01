@@ -172,7 +172,66 @@ Ext.define('Bjfu.dataDisplay.view.DataDisplayView',{
 				      			});
 
 				        	}
-				        },{ 
+				        },{
+						       text: '删除',
+						       scope:this, 
+						        icon:Global_Path+'/resources/extjs/images/update.png',
+						          handler : function(o){
+							         var tableName=gridStore.baseParams.tableName;
+						      			Ext.Ajax.request({
+						      				url : Global_Path+'sysuser/checkFunctionIfForbid',
+						      				params:{
+						      					tableName:tableName
+						      					},
+						      				success : function(response) {
+						      					var result = Ext.decode(response.responseText);
+						      					if(result.success){
+						      						Ext.Msg.alert('提示','您并没有获得该权限');
+						      						return;
+						      					}
+						      					else{				        	
+						      						var gird = o.ownerCt.ownerCt;
+											     var record = gird.getSelectionModel().getSelection();
+											     	if(record.length==0)
+											     		{
+											     			Ext.Msg.alert('提示','请至少选择一条记录！');
+											     			return;
+											     		}else{
+											        		//1.先得到ID的数据(domtId)
+											        		var st = gird.getStore();
+											        		var ids = [];
+											        		Ext.Array.each(record,function(data){
+											        			ids.push(data.get('id'));
+											        			Ext.Msg.confirm("提示","确定删除所选记录吗？",function(btn){
+											        				if(btn=='yes'){
+											        						Ext.Ajax.request({
+											        							url:Global_Path+'dataDisplay/deleteData',
+																				params:{ids:ids.join(","),
+																					tableName:tableName},
+																				method:'POST',
+																				timeout:2000,
+																				success:function(response,opts){
+															                    	var	result =  Ext.decode(response.responseText);
+															                    	if(result.success){
+																						Ext.Array.each(record,function(data){
+																							st.remove(data);
+																						});
+															                    		Ext.Msg.alert('提示','删除数据成功');
+															    						window.close();
+																    	 	   			Ext.getCmp('dataDisplayId').store.reload();
+																    	 	   			Ext.getCmp('dataDisplayId').store.loadRawData();
+															                    	}
+											        							}
+											        						})
+											        				}
+											        			})
+											        		});}
+						      					}
+						      				}
+						      			});
+
+						        	}
+						        },{ 
 				        	text: '数据导出' ,
 				        	icon:Global_Path+'/resources/extjs/images/bottom2.gif',
 				        	scope:this,

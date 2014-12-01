@@ -214,6 +214,7 @@ public class DataDisplayManagerController extends BaseController {
 	}
 
 	@RequestMapping(value = "/uploadGroupFile", method = RequestMethod.POST)
+	@MethodRecordLog(moduleName="数据管理", bussinessType="DATA_OPERATE", operateType = "ADD", desc="批量上传数据")
 	@ResponseBody
 	public String uploadGroupFile(MultipartHttpServletRequest request,FileUploadBean uploadItem,
 			BindingResult result, String tableName) throws IOException {
@@ -354,6 +355,7 @@ public class DataDisplayManagerController extends BaseController {
 	}
 	
 	@RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
+	@MethodRecordLog(moduleName="数据管理", bussinessType="DATA_OPERATE", operateType = "ADD", desc="上传数据")
 	@ResponseBody
 	public String create(HttpServletRequest request, FileUploadBean uploadItem,
 			BindingResult result, String tableName) throws IOException {
@@ -496,6 +498,7 @@ public class DataDisplayManagerController extends BaseController {
 	}
 
 	@RequestMapping(value = "/modifyData", method = RequestMethod.POST)
+	@MethodRecordLog(moduleName="数据管理", bussinessType="DATA_OPERATE", operateType = "UPDATE", desc="修改数据")
 	@ResponseBody
 	public Map<String, Object> modifyData(String formData, String tableName)
 			throws Exception {
@@ -509,7 +512,19 @@ public class DataDisplayManagerController extends BaseController {
 		result.put(SUCCESS, Boolean.TRUE);
 		return result;
 	}
-
+	@RequestMapping(value = "/deleteData", method = RequestMethod.POST)
+	@MethodRecordLog(moduleName="数据管理", bussinessType="DATA_OPERATE", operateType = "DELETE", desc="删除数据")
+	@ResponseBody
+	public Map<String, Object> deleteData(String tableName, String ids)
+			throws Exception {
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		logger.info("deleteData method.");
+		String id[]=ids.split(",");
+		this.dataService.deleteData(tableName, id);
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put(SUCCESS, Boolean.TRUE);
+		return result;
+	}
 	@RequestMapping(value = "/downloadData", method = RequestMethod.POST)
 	@ResponseBody
 	public String downloadData(HttpServletRequest request,String ids, String tableName) throws Exception {

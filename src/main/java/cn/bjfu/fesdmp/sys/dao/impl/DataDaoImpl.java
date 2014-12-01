@@ -25,6 +25,7 @@ import java.util.Properties;
 
 
 
+
 import javax.xml.crypto.Data;
 
 import org.apache.log4j.Logger;
@@ -211,7 +212,11 @@ public class DataDaoImpl extends AbstractGenericDao<DataJson> implements IDataDa
 		sql="update "+tableName+" set data='"+data.getData()+"' where id="+data.getId();
 		jdbcTemplate.update(sql);
 	}
-
+	public void deleteDataById(String tableName, String id){
+		String sql=null;
+		sql="delete from "+tableName+" where id="+id;
+		jdbcTemplate.update(sql);
+	}
 	public DataJson findDataById(String id,String tableName){
 		String sql=null;
 		sql="select * from "+tableName+" where id="+id+" order by time asc";
