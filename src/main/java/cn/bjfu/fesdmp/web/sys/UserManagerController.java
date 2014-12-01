@@ -31,6 +31,7 @@ import cn.bjfu.fesdmp.frame.dao.Order;
 import cn.bjfu.fesdmp.json.AddUserJson;
 import cn.bjfu.fesdmp.json.UserJson;
 import cn.bjfu.fesdmp.sys.service.IUserService;
+import cn.bjfu.fesdmp.utils.DESTools;
 import cn.bjfu.fesdmp.utils.PageInfoBean;
 import cn.bjfu.fesdmp.utils.Pagination;
 import cn.bjfu.fesdmp.web.BaseController;
@@ -124,7 +125,8 @@ public class UserManagerController extends BaseController {
 		Date dt=new Date();
 		user.setCreateTime(dt);
 		user.setEmail(addUserJson.getEmail());
-		user.setPassword(addUserJson.getPassword());
+		String desPassword = DESTools.encrypt(addUserJson.getPassword(), DESTools.DES_KEY, DESTools.DES_IV);
+		user.setPassword(desPassword);
 		user.setUserLoginName(addUserJson.getUserLoginName());
 		user.setUserName(addUserJson.getUserName());
 		user.setUserPhone(addUserJson.getUserPhone());

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import cn.bjfu.fesdmp.constant.AppConstants;
 import cn.bjfu.fesdmp.domain.sys.User;
 import cn.bjfu.fesdmp.sys.service.IUserService;
+import cn.bjfu.fesdmp.utils.DESTools;
 
 /**
  * 
@@ -47,7 +48,8 @@ public class HomeController extends BaseController {
 		try{
 		User nowUser=this.userService.findByUserLoginName(user.getUserLoginName());
 		if(nowUser.getUserLoginName()!=null){
-			if(user.getPassword().equals(nowUser.getPassword())){
+			String encodPwd = DESTools.encrypt(user.getPassword(), DESTools.DES_KEY, DESTools.DES_IV);
+			if(encodPwd.equals(nowUser.getPassword())){
 				request.getSession(true).setAttribute(AppConstants.SESSION_USER, nowUser); 
 				return "frame/index";
 			}

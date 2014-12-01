@@ -99,12 +99,10 @@ Ext.define('Bjfu.user.view.AddUser',{
     	        	}
     	        }   
     	    },{
-    	        fieldLabel: '手机号码<font color="red">*</font>', 
-    	        name: 'userPhone',
-        	    allowBlank : false,
+    	        fieldLabel: '手机号码', 
+    	        name: 'userPhone'
     	    },{
-    	        fieldLabel: '邮件<font color="red">*</font>',
-    	        allowBlank : false,
+    	        fieldLabel: '邮件',
     	        name: 'email'
     	    },{
     	        fieldLabel: '登录密码<font color="red">*</font>',
@@ -125,6 +123,7 @@ Ext.define('Bjfu.user.view.AddUser',{
 				maxLength : 30
     	    },{
     	    	fieldLabel : '超级管理员<font color="red">*</font>',
+    	    	allowBlank : false,
     	    	name : 'isAdmin',
     	    	xtype : 'combo',
     	    	editable : false,

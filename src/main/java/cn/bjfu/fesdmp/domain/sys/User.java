@@ -42,12 +42,12 @@ public class User implements Serializable {
 
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
+	@Column(unique = true)
 	private String userName;
 	@Column(unique = true, nullable = false)
 	private String userLoginName;
 	@Column(nullable = false)
 	private String password;
-	@Column(unique = true)
 	private String email;
 	private String userPhone;
 	@OneToOne
