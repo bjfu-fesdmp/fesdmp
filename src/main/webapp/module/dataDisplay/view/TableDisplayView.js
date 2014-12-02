@@ -103,8 +103,9 @@ Ext.define('Bjfu.dataDisplay.view.TableDisplayView',{
 														                    	if(result.success){
 														                    		Ext.Msg.alert('提示','删除成功');
 														    						window.close();
-														    	 	   			Ext.getCmp('tableDisplayId').store.reload();
-														    	 	   			Ext.getCmp('dataDisplayId').store.reload();
+														    	 	   		Ext.getCmp('tableDisplayId').store.reload();
+														    	 	   		Ext.getCmp('dataDisplayId').store.removeAll();
+														    	 	   		
 														                    	}else{
 														                    		Ext.Msg.alert('提示','无法删除');
 														                    		window.close();

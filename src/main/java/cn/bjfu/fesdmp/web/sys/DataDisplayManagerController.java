@@ -608,9 +608,12 @@ public class DataDisplayManagerController extends BaseController {
 		logger.info("deleteTable method.");
 		logger.info(tableName);
 		Map<String, Object> result = new HashMap<String, Object>();
-		this.dataService.deleteTable(tableName);
-		result.put(SUCCESS, Boolean.TRUE);
-
+		if(tableName!=null){
+			this.dataService.deleteTable(tableName);
+			result.put(SUCCESS, Boolean.TRUE);
+			}
+		else
+			result.put(SUCCESS, Boolean.FALSE);
 		return result;	
 	}
 	@RequestMapping(value = "/CheckIsTable", method = RequestMethod.POST)

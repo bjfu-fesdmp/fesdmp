@@ -23,8 +23,8 @@ public class ResourceTableDaoImpl extends AbstractGenericDao<ResourceTable> impl
 		super(ResourceTable.class);
 	}
 	@Override
-	public ResourceTable findTableByIndexEnName(String indexEnName){
-		String jpal = " SELECT p FROM ResourceTable p where p.indexResource.indexEnName='"+indexEnName+"'";
+	public ResourceTable findTableByIndexEnNameAndYear(String indexEnName,String year){
+		String jpal = " SELECT p FROM ResourceTable p where p.indexResource.indexEnName='"+indexEnName+"' and p.year="+year;
 		logger.info(jpal);
 		Query query = super.getEntityManager().createQuery(jpal);
 		List list=query.getResultList();

@@ -45,7 +45,7 @@ public class DataService implements IDataService {
 	}
 	@Override
 	public void deleteTable(String tableName){
-		this.resourceTableDao.delete(this.resourceTableDao.findTableByIndexEnName(tableName.substring(5)));
+		this.resourceTableDao.delete(this.resourceTableDao.findTableByIndexEnNameAndYear(tableName.substring(5),tableName.substring(0,4)));
 		this.dataDao.deleteTable(tableName);
 	}
 	@Override

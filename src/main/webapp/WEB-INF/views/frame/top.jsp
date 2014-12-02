@@ -27,7 +27,9 @@
     Date date=new Date();
     SimpleDateFormat matter=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     String dates=matter.format(date);%>
-    <span style="font-size:14px;">&nbsp;当前用户：<%=nowUser.getUserName() %> 登录时间：&nbsp; <%=dates%></span></td>
+    <span style="font-size:14px;">当前用户：<%=nowUser.getUserName() %></span>
+    <br>
+     <span style="font-size:14px;">&nbsp;&nbsp;登录时间：<%=dates%></span></td>
   </tr>
 </table>
 </body>
