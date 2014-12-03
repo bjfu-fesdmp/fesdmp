@@ -11,7 +11,7 @@ Ext.define('Bjfu.userResourceGroup.view.UserView',{
 	split : true,
 	overflowY : 'scroll', //只显示上下滚动的滚动条
 	overflowX : 'hidden',
-	selType : 'checkboxmodel',	// 单选，复选框
+	//selType : 'checkboxmodel',	// 单选，复选框
 	requires : ['Bjfu.userResourceGroup.model.User'],
 	
 	initComponent : function() {

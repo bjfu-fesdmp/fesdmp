@@ -217,7 +217,6 @@ Ext.define('Bjfu.dataDisplay.view.DataDisplayView',{
 																							st.remove(data);
 																						});
 															                    		Ext.Msg.alert('提示','删除数据成功');
-															    						window.close();
 																    	 	   			Ext.getCmp('dataDisplayId').store.reload();
 																    	 	   			Ext.getCmp('dataDisplayId').store.loadRawData();
 															                    	}

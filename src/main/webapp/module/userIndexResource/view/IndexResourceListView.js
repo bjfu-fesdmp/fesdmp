@@ -11,7 +11,7 @@ Ext.define('Bjfu.userIndexResource.view.IndexResourceListView',{
 	split : true,
 	overflowY : 'scroll', //只显示上下滚动的滚动条
 	overflowX : 'hidden',
-	selType : 'checkboxmodel',	// 单选，复选框
+	//selType : 'checkboxmodel',	// 单选，复选框
 	requires : ['Bjfu.indexResource.model.IndexResource'],
 	
 	initComponent : function() {
@@ -148,7 +148,6 @@ Ext.define('Bjfu.userIndexResource.view.IndexResourceListView',{
 												success:function(response,opts){
 							                    	var	result =  Ext.decode(response.responseText);
 						                    		Ext.Msg.alert('提示','为用户删除指标资源成功');
-						    						window.close();
 							    	 	   			Ext.getCmp('indexResourceListViewId').store.reload();
 							    	 	   			Ext.getCmp('indexResourceListViewId').store.loadRawData();
 							                    	if(result.success){
@@ -157,7 +156,6 @@ Ext.define('Bjfu.userIndexResource.view.IndexResourceListView',{
 														});
 							                    	}else{
 							                    		Ext.Msg.alert('提示','为用户删除指标资源失败');
-							                    		window.close();
 							                    	}
 			        							}
 			        						})

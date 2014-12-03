@@ -18,6 +18,7 @@ public interface IUserService {
 
 	public abstract void addUser(User user);
 	public abstract void modifyUser(AddUserJson addUserJson);
+	public abstract void modifyPassword(AddUserJson addUserJson);
 	public abstract void deleteUser(int id);
 	public abstract List<User> queryAll(IOrder order);
 	public abstract void queryByCondition(final Object condition, IOrder order, Pagination<User> page);

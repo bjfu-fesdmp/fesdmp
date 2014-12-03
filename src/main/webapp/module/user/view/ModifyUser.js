@@ -128,7 +128,7 @@ Ext.define('Bjfu.user.view.ModifyUser',{
 		    	 	   			Ext.getCmp('userViewId').store.reload();
 		    	 	   			Ext.getCmp('userViewId').store.loadRawData();
 		                    	}else{
-		                    		Ext.Msg.alert('修改','添加用户失败');
+		                    		Ext.Msg.alert('修改','修改用户失败');
 		                    		window.close();
 		                    	}
 		                    },

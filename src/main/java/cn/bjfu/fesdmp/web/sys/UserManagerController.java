@@ -154,6 +154,19 @@ public class UserManagerController extends BaseController {
 		result.put(SUCCESS, Boolean.TRUE);
 		return result;
 	}
+	@RequestMapping(value = "/modifyPassword", method = RequestMethod.POST)
+	@MethodRecordLog(moduleName="用户管理", bussinessType="SYS_OPERATE", operateType = "UPDATE", desc="修改密码") 
+	@ResponseBody
+	public Map<String, Object> modifyPassword(String formData) throws Exception {
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		logger.info("modifyPassword method.");
+		AddUserJson addUserJson = mapper.readValue(formData,AddUserJson.class);	
+		addUserJson.setPassword(DESTools.encrypt(addUserJson.getPassword(), DESTools.DES_KEY, DESTools.DES_IV));
+		this.userService.modifyPassword(addUserJson);
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put(SUCCESS, Boolean.TRUE);
+		return result;
+	}
 	@RequestMapping(value = "/deleteUser", method = RequestMethod.POST)
 	@MethodRecordLog(moduleName="用户管理", bussinessType="SYS_OPERATE", operateType = "DELETE", desc="删除用户") 
 	@ResponseBody

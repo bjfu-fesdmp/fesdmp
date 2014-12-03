@@ -15,8 +15,8 @@ import cn.bjfu.fesdmp.json.AddUserJson;
 import cn.bjfu.fesdmp.sys.dao.IIndexResourceDao;
 import cn.bjfu.fesdmp.sys.dao.IUserDao;
 import cn.bjfu.fesdmp.sys.service.IUserService;
+import cn.bjfu.fesdmp.utils.DESTools;
 import cn.bjfu.fesdmp.utils.Pagination;
-
 
 @Service
 @Transactional
@@ -49,6 +49,12 @@ public class UserService implements IUserService {
 		user.setEmail(addUserJson.getEmail());
 		else
 			user.setEmail(null);
+		this.userDao.update(user);
+	}
+	@Override
+	public void modifyPassword(AddUserJson addUserJson){
+		User user = this.userDao.findByKey(addUserJson.getId());
+		user.setPassword(addUserJson.getPassword());
 		this.userDao.update(user);
 	}
 	@Override

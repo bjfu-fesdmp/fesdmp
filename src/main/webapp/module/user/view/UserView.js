@@ -194,11 +194,9 @@ Ext.define('Bjfu.user.view.UserView',{
 																st.remove(data);
 															});
 								                    		Ext.Msg.alert('提示','删除用户成功');
-								    						window.close();
 								    	 	   			Ext.getCmp('userViewId').store.reload();
 								                    	}else{
 								                    		Ext.Msg.alert('提示','该用户是超级管理员无法删除');
-								                    		window.close();
 								                    	}
 				        							}
 				        						})
@@ -207,7 +205,40 @@ Ext.define('Bjfu.user.view.UserView',{
 				        		});
 				        	}    
 			    		}
-			        }, "->", {
+			        },{
+						   text: '重置密码',
+						   scope:this, 
+						   icon:Global_Path+'/resources/extjs/images/update.png',
+						   handler : function(o){
+							   var gird = o.ownerCt.ownerCt;
+							   var record = gird.getSelectionModel().getSelection();
+							   if(record.length>1||record.length==0)
+							   		{
+								   		Ext.Msg.alert('提示','请选择一条记录！');
+								   		return;
+							   		}else{
+						        		var userId = record[0].data.id;
+						        	
+							   			var modifyPswForm = Ext.create('Bjfu.user.view.ModifyPassword',{
+											userId:userId,
+													});
+							   			modifyPswForm.loadRecord(record[0]);
+						        	Ext.create('Ext.window.Window',{
+						        		title:'重置密码界面',
+						        		closable:true,
+						        		closeAction:'destroy',
+						        		modal:true,
+						        		border:false,
+						        		resizable:false,
+						        		width:400,
+						        		height:250,
+						        		layout:'fit',
+						        		items:[modifyPswForm]
+						        	}).show();
+						        	
+						        	}
+						        	}
+						        }, "->", {
 		    	text:'高级查询',
 		    	scope:this,
 		    	icon : Global_Path + '/resources/extjs/images/search.png',
