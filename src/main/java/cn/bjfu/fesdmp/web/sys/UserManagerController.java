@@ -115,7 +115,7 @@ public class UserManagerController extends BaseController {
 	@ResponseBody
 	public Map<String, Object> addUser(HttpServletRequest request,@RequestParam String formData) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-		logger.info("userList method.");
+		logger.info("addUser method.");
 		AddUserJson addUserJson = new AddUserJson();
 		User user = new User();
 		if (!StringUtils.isEmpty(formData)) {
@@ -147,7 +147,7 @@ public class UserManagerController extends BaseController {
 	@ResponseBody
 	public Map<String, Object> modifyUser(String formData) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-		logger.info("modifyUserGroup method.");
+		logger.info("modifyUser method.");
 		AddUserJson addUserJson = mapper.readValue(formData,AddUserJson.class);		
 		this.userService.modifyUser(addUserJson);
 		Map<String, Object> result = new HashMap<String, Object>();
@@ -172,7 +172,7 @@ public class UserManagerController extends BaseController {
 	@ResponseBody
 	public Map<String, Object> deleteUser(String ids) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-		logger.info("deleteUserGroup method.");
+		logger.info("deleteUser method.");
 		logger.info(ids);
 		Map<String, Object> result = new HashMap<String, Object>();
 		User user=this.userService.findByKey(Integer.parseInt(ids));
@@ -229,7 +229,7 @@ public class UserManagerController extends BaseController {
 	@ResponseBody
 	public Map<String, Object> checkIfNotIsTemporaryManager(HttpServletRequest request) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-		logger.info("checkIfHidden method.");
+		logger.info("checkIfNotIsTemporaryManager method.");
 		User user=(User) request.getSession().getAttribute(AppConstants.SESSION_USER);
 		Map<String, Object> result = new HashMap<String, Object>();
 		boolean check=this.userService.checkIfIsTemporaryManager(user.getId());
@@ -243,7 +243,7 @@ public class UserManagerController extends BaseController {
 	@ResponseBody
 	public Map<String, Object> checkFunctionIfForbid(HttpServletRequest request,String tableName) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-		logger.info("checkFunctionIfHidden method.");
+		logger.info("checkFunctionIfForbid method.");
 		User user=(User) request.getSession().getAttribute(AppConstants.SESSION_USER);
 		Map<String, Object> result = new HashMap<String, Object>();
 		if(tableName!=null){

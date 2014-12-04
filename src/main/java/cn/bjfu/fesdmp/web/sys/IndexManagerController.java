@@ -185,7 +185,7 @@ public class IndexManagerController extends BaseController {
 	@ResponseBody
 	public Map<String, Object> addTable(String formData) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-		logger.info("modifyIndexResource method.");
+		logger.info("addTable method.");
 		CreateTableJson createTableJson = mapper.readValue(formData,CreateTableJson.class);
 		this.indexService.addTableByYear(createTableJson);
 		Map<String, Object> result = new HashMap<String, Object>();
@@ -199,7 +199,7 @@ public class IndexManagerController extends BaseController {
 		
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		
-		logger.info("indexResourceList method.");
+		logger.info("indexResourceOfUserList method.");
 		logger.info(pageInfo);
 		IndexResourceSearch indResourceSearch = null;
 		Pagination<IndexResource> page = new Pagination<IndexResource>();
@@ -359,12 +359,25 @@ public class IndexManagerController extends BaseController {
 	@ResponseBody
 	public Map<String, Object> checkIfHaveTable(String ids) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-		logger.info("checkIfIsExist method.");
+		logger.info("checkIfHaveTable method.");
 		logger.info(ids);
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		boolean checkResult=this.indexService.checkIfHaveTable(ids);
 		if (checkResult==true)
+			result.put(SUCCESS, Boolean.TRUE);	
+		else
+			result.put(SUCCESS, Boolean.FALSE);	
+			return result;	
+	}
+	@RequestMapping(value = "/checkSpacee", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> checkSpacee(String indexResourceEnName) throws Exception {
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		logger.info("checkSpacee method.");
+		logger.info(indexResourceEnName);
+		Map<String, Object> result = new HashMap<String, Object>();
+		if (indexResourceEnName.contains(" "))
 			result.put(SUCCESS, Boolean.TRUE);	
 		else
 			result.put(SUCCESS, Boolean.FALSE);	

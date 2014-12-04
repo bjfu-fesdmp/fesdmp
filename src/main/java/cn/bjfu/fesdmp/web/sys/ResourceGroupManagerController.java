@@ -90,7 +90,7 @@ public class ResourceGroupManagerController extends BaseController {
 	@ResponseBody
 	public Map<String, Object> addResourceGroup(HttpServletRequest request,String formData) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-		logger.info("userGroupList method.");
+		logger.info("addResourceGroup method.");
 		ResourceGroup resourceGroup = new ResourceGroup();
 		if (!StringUtils.isEmpty(formData)) {
 			resourceGroup = mapper.readValue(formData,ResourceGroup.class);
@@ -111,23 +111,17 @@ public class ResourceGroupManagerController extends BaseController {
 @ResponseBody
 public String getResourceGroupList(PageInfoBean pageInfo)
 		throws Exception {
-
+	logger.info("getResourceGroupList method.");
 	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-
 	ResourceGroupSearch resourceGroupSearch = null;
-
 	Pagination<ResourceGroup> page = new Pagination<ResourceGroup>();
 	page.setPageSize(pageInfo.getLimit());
 	page.setCurrentPage(pageInfo.getPage());
 	IOrder order = new Order();
 	order.addOrderBy("id", "DESC");
-
 	logger.info(resourceGroupSearch);
-
 	this.resourceGroupService.queryByCondition(resourceGroupSearch, order, page,
 			JoinMode.AND);
-	
-
 	String result=page.getDatas().toString();
 	return result;
 }
@@ -149,7 +143,7 @@ public Map<String, Object> deleteResourceGroup(String id) throws Exception {
 @ResponseBody
 public Map<String, Object> modifyResourceGroup(String formData) throws Exception {
 	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-	logger.info("modifyUserGroup method.");
+	logger.info("modifyResourceGroup method.");
 	ResourceGroup resourceGroup = mapper.readValue(formData,ResourceGroup.class);
 	this.resourceGroupService.modifyResourceGroup(resourceGroup);
 	Map<String, Object> result = new HashMap<String, Object>();
@@ -162,7 +156,7 @@ public Map<String, Object> getAllResourceGroupList()
 		throws Exception {
 
 	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-	logger.info("resourceGroupList method.");
+	logger.info("getAllResourceGroupList method.");
 	IOrder order = new Order();
 	order.addOrderBy("id", "DESC");
 	List<ResourceGroup> resourceGroupList = this.resourceGroupService.queryAll(order);
@@ -211,11 +205,11 @@ public Map<String, Object> checkIfHaveIndexResource(String id)
 
 @RequestMapping(value = "/resourceGroupOfUserList", method = RequestMethod.POST)
 @ResponseBody
-public Map<String, Object> resourceGroupOfUserGroupList(String userId)
+public Map<String, Object> resourceGroupOfUserList(String userId)
 		throws Exception {
 
 	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-	logger.info("resourceGroupList method.");
+	logger.info("resourceGroupOfUserList method.");
 	List<ResourceGroup> resourceGroupList=new ArrayList();
 	if(userId!=null)
 		resourceGroupList=this.resourceGroupService.findResourceGroupByUserId(userId);
@@ -247,7 +241,7 @@ public Map<String, Object> getResourceGroupListNotInThisUser(String userId)
 		throws Exception {
 
 	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-	logger.info("resourceGroupList method.");
+	logger.info("getResourceGroupListNotInThisUser method.");
 	List<ResourceGroup> resourceGroupList=new ArrayList();
 	if(userId!=null)
 	resourceGroupList = this.resourceGroupService.findResourceGroupNotInThisUser(userId);

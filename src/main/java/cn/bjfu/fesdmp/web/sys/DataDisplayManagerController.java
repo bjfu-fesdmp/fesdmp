@@ -79,7 +79,7 @@ public class DataDisplayManagerController extends BaseController {
 	private IIndexResourceService indexResourceService;
 	@RequestMapping(value = "/listView", method = RequestMethod.GET)
 	public String fileUploadPage() {
-		logger.info("fileUploadPage method.");
+		logger.info("listView method.");
 		return "dataDisplay/dataDisplayView";
 	}
 
@@ -218,6 +218,7 @@ public class DataDisplayManagerController extends BaseController {
 	@ResponseBody
 	public String uploadGroupFile(MultipartHttpServletRequest request,FileUploadBean uploadItem,
 			BindingResult result, String tableName) throws IOException {
+		logger.info("uploadGroupFile method.");
 		 List<MultipartFile> multipartFiles = request.getFiles("file");
 		 List<CommonsMultipartFile> files=new ArrayList();
 		 for(int i=0;i<multipartFiles.size();i++){
@@ -359,6 +360,7 @@ public class DataDisplayManagerController extends BaseController {
 	@ResponseBody
 	public String create(HttpServletRequest request, FileUploadBean uploadItem,
 			BindingResult result, String tableName) throws IOException {
+		logger.info("uploadFile method.");
 		ExtJSFormResult extjsFormResult = new ExtJSFormResult();
 		if(tableName!=null){
 			if(tableName.length()>4){
@@ -620,7 +622,7 @@ public class DataDisplayManagerController extends BaseController {
 	@ResponseBody
 	public Map<String, Object> CheckIsTable(String tableName) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-		logger.info("deleteTable method.");
+		logger.info("CheckIsTable method.");
 		logger.info(tableName);
 		Map<String, Object> result = new HashMap<String, Object>();
 		if(tableName!=null){

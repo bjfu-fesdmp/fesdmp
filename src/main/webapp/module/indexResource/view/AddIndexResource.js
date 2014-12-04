@@ -100,6 +100,24 @@ Ext.define('Bjfu.indexResource.view.AddIndexResource',{
 										Ext.Msg.alert('错误', result.__msg);
 									}
 								});
+								Ext.Ajax.request({
+									url : Global_Path+'indexresource/checkSpacee',
+									params : {
+										indexResourceEnName : vv
+									},
+									success : function(response) {
+										var result = Ext.decode(response.responseText);
+										if(result.success){
+												Ext.Msg.alert("提示", "指标英文名不能有空格，请用“_”代替");
+												_this.setValue('');
+												return;
+										}
+									},
+									failure: function(response) {
+										var result = Ext.decode(response.responseText);
+										Ext.Msg.alert('错误', result.__msg);
+									}
+								});
 							}			    
     	        	}
     	        }   
