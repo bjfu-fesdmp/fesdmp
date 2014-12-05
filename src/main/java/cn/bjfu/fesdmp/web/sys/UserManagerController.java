@@ -61,9 +61,9 @@ public class UserManagerController extends BaseController {
 		logger.info("userResourceGroupPage method.");
 		return "userResourceGroup/userResourceGroupView";
 	}
-	@RequestMapping(value = "/userList", method = RequestMethod.POST)
+	@RequestMapping(value = "/allUserList", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> userList(HttpServletRequest request,PageInfoBean pageInfo) throws Exception {
+	public Map<String, Object> allUserList(HttpServletRequest request,PageInfoBean pageInfo) throws Exception {
 		
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		logger.info("userList method.");
@@ -106,7 +106,54 @@ public class UserManagerController extends BaseController {
 		}
 
 		result.put(RESULT, userJsonList);
-//		result.put(RESULT, page.getDatas());
+		result.put(SUCCESS, Boolean.TRUE);
+		return result;
+	}
+	@RequestMapping(value = "/userList", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> userList(HttpServletRequest request,PageInfoBean pageInfo) throws Exception {
+		
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		logger.info("userList method.");
+		logger.info(pageInfo);
+		UserSearch userSearch = null;
+		
+		Pagination<User> page = new Pagination<User>();
+		page.setPageSize(pageInfo.getLimit());
+		page.setCurrentPage(pageInfo.getPage());
+		IOrder order = new Order();
+		order.addOrderBy("id", "DESC");
+		if (!StringUtils.isEmpty(pageInfo.getSearchJson())) {
+			userSearch = mapper.readValue(pageInfo.getSearchJson(), UserSearch.class);
+		}
+		logger.info(userSearch);
+		this.userService.queryByCondition(userSearch,order,page, JoinMode.AND);
+		
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put(PAGE_COUNT, page.getTotalRecord());
+		List<UserJson> userJsonList = new ArrayList<UserJson>();
+		for (int i=0; i<page.getDatas().size(); i++) {
+			User user = page.getDatas().get(i);
+			if(!user.getUserStatus().equals((byte)3)&&!user.getIsAdmin().equals((byte)1)){
+			UserJson userJson = new UserJson();
+			userJson.setId(user.getId());
+			if(user.getEmail()!=null)
+			userJson.setEmail(user.getEmail());
+			if(user.getCreater()!=null)
+			userJson.setCreaterId(user.getCreater().getId());
+			userJson.setCreateTime(user.getCreateTime());
+			userJson.setIsAdmin(user.getIsAdmin());
+			userJson.setUserLoginName(user.getUserLoginName());
+			if(user.getUserName()!=null)
+			userJson.setUserName(user.getUserName());
+			if(user.getUserPhone()!=null)
+			userJson.setUserPhone(user.getUserPhone());
+			userJson.setUserStatus(user.getUserStatus());
+			userJsonList.add(userJson);
+			}
+		}
+
+		result.put(RESULT, userJsonList);
 		result.put(SUCCESS, Boolean.TRUE);
 		return result;
 	}

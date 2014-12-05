@@ -47,7 +47,7 @@ public class HomeController extends BaseController {
 		logger.info(user);
 		try{
 		User nowUser=this.userService.findByUserLoginName(user.getUserLoginName());
-		if(nowUser.getUserLoginName()!=null){
+		if(nowUser.getUserLoginName()!=null&&nowUser.getUserStatus().equals((byte)1)){
 			String encodPwd = DESTools.encrypt(user.getPassword(), DESTools.DES_KEY, DESTools.DES_IV);
 			if(encodPwd.equals(nowUser.getPassword())){
 				request.getSession(true).setAttribute(AppConstants.SESSION_USER, nowUser); 

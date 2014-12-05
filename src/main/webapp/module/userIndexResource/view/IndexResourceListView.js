@@ -113,7 +113,7 @@ Ext.define('Bjfu.userIndexResource.view.IndexResourceListView',{
 		        		modal:true,
 		        		resizable:false,
 		        	    border:false,
-		        		width:300,
+		        		width:450,
 		        		height:230,
 		        		layout:'fit',
 		        		items:[addForm]

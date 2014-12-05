@@ -68,9 +68,6 @@ Ext.define('Bjfu.userIndexResource.view.UserView',{
 			        text : '用户名',
 			        dataIndex : 'userName'
 			    },{
-			        text : '用户登陆名',
-			        dataIndex : 'userLoginName'
-			    },{
 			        text : '邮箱',
 			        width:'30%',
 			        dataIndex : 'email'

@@ -27,7 +27,7 @@ Ext.define('Bjfu.user.view.UserView',{
 	                update : 'POST',
 	                destroy: 'POST'
 				},
-				url : Global_Path+'sysuser/userList',
+				url : Global_Path+'sysuser/allUserList',
 				reader : {
 					type : 'json',
 					root : 'result',
