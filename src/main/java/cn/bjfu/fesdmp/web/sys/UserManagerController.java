@@ -92,7 +92,7 @@ public class UserManagerController extends BaseController {
 			if(user.getEmail()!=null)
 			userJson.setEmail(user.getEmail());
 			if(user.getCreater()!=null)
-			userJson.setCreaterId(user.getCreater().getId());
+			userJson.setCreater(user.getCreater().getUserName());
 			userJson.setCreateTime(user.getCreateTime());
 			userJson.setIsAdmin(user.getIsAdmin());
 			userJson.setUserLoginName(user.getUserLoginName());
@@ -139,16 +139,16 @@ public class UserManagerController extends BaseController {
 			userJson.setId(user.getId());
 			if(user.getEmail()!=null)
 			userJson.setEmail(user.getEmail());
-			if(user.getCreater()!=null)
-			userJson.setCreaterId(user.getCreater().getId());
-			userJson.setCreateTime(user.getCreateTime());
-			userJson.setIsAdmin(user.getIsAdmin());
-			userJson.setUserLoginName(user.getUserLoginName());
+//			if(user.getCreater()!=null)
+//			userJson.setCreaterId(user.getCreater().getId());
+//			userJson.setCreateTime(user.getCreateTime());
+//			userJson.setIsAdmin(user.getIsAdmin());
+//			userJson.setUserLoginName(user.getUserLoginName());
 			if(user.getUserName()!=null)
 			userJson.setUserName(user.getUserName());
 			if(user.getUserPhone()!=null)
 			userJson.setUserPhone(user.getUserPhone());
-			userJson.setUserStatus(user.getUserStatus());
+//			userJson.setUserStatus(user.getUserStatus());
 			userJsonList.add(userJson);
 			}
 		}

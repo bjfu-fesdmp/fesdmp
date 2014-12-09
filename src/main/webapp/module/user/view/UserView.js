@@ -101,8 +101,8 @@ Ext.define('Bjfu.user.view.UserView',{
 //			        }
 //			    },
 			    {
-			        text : '创建者id',
-			        dataIndex : 'createrId',
+			        text : '创建者',
+			        dataIndex : 'creater',
 			        width : '10%'
 			    },{
 			        text : '创建时间',

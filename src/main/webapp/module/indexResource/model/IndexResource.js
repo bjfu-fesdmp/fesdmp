@@ -16,14 +16,14 @@ Ext.define('Bjfu.indexResource.model.IndexResource',{
     	name : 'indexMemo',   					
     	type : 'string' //指标备忘
     },{
-    	name : 'createrId',
-    	type : 'int' //创建人
+    	name : 'creater',
+    	type : 'string' //创建人
     },{
     	name : 'createTime', 
     	type : 'string' //创建时间
 	},{
-		name : 'modifierId', 
-    	type : 'int' //修改人
+		name : 'modifier', 
+    	type : 'string' //修改人
 	},{
 		name : 'modifyTime', 
     	type : 'string' //修改时间

@@ -25,8 +25,8 @@ Ext.define('Bjfu.user.model.User',{
     	name : 'isAdmin',   					
     	type : 'int' //是否是超级管理员
     },{
-		name : 'createrId', 
-    	type : 'int' //创建者id
+		name : 'creater', 
+    	type : 'string' //创建者用户名
 	}
 	]
 });

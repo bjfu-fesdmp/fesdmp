@@ -85,30 +85,30 @@ Ext.define('Bjfu.indexResource.view.IndexResourceListView',{
 			        text : '描述',
 			        sortable : false,
 			        dataIndex : 'indexMemo',
-			        width : '15%',
+			        width : '13%',
 			        editor : 'textfield'
 			    },{
 			        text : '单位',
 			        sortable : false,
 			        dataIndex : 'indexUnit',
-			        width : '15%',
+			        width : '9%',
 			        editor : 'textfield'
 			    },{
 			        text : '添加人',
-			        dataIndex : 'createrId',
-			        width : '8%'
+			        dataIndex : 'creater',
+			        width : '10%'
 			    },{
 			        text : '添加时间',
 			        dataIndex : 'createTime',
-			        width : '15%'
+			        width : '17%'
 			    },{
 			        text : '修改人',
-			        dataIndex : 'modifierId',
-			        width : '8%'
+			        dataIndex : 'modifier',
+			        width : '10%'
 			    },{
 			    	text : '修改时间',
 			    	dataIndex : 'modifyTime',
-			    	width : '15%'
+			    	width : '17%'
 			    }],
 			tbar : [{
 		            text: '新增',

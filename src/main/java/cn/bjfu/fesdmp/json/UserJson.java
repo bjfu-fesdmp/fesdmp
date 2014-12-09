@@ -10,6 +10,7 @@ public class UserJson {
 	private String userLoginName;
 	private String email;
 	private String userPhone;
+	private String creater;
 	private int creater_id;
 	private Date createTime;
 	private Byte userStatus;
@@ -48,7 +49,13 @@ public class UserJson {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+	public String getCreater() {
+		return creater;
+	}
 
+	public void setCreater(String creater) {
+		this.creater = creater;
+	}
 	public String getUserPhone() {
 		return userPhone;
 	}

@@ -10,6 +10,8 @@ public class IndexResourceJson {
 	private String indexEnName;
 	private String indexUnit;
 	private String indexMemo;
+	private String creater;
+	private String modifier;
 	private int creater_id;
 	private Date createTime;
 	private int modifier_id;
@@ -38,6 +40,21 @@ public class IndexResourceJson {
 
 	public void setIndexName(String indexName) {
 		this.indexName = indexName;
+	}
+	public String getCreater() {
+		return creater;
+	}
+
+	public void setCreater(String creater) {
+		this.creater = creater;
+	}	
+	
+	public String getModifier() {
+		return modifier;
+	}
+
+	public void setModifier(String modifier) {
+		this.modifier = modifier;
 	}
 	public String getResourceGroupName() {
 		return resourceGroupName;

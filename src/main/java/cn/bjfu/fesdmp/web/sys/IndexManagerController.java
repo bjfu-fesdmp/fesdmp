@@ -106,10 +106,10 @@ public class IndexManagerController extends BaseController {
 			indexResourceJson.setIndexUnit(indexResource.getIndexUnit());
 			indexResourceJson.setIndexMemo(indexResource.getIndexMemo());
 			if(indexResource.getCreater()!=null)
-				indexResourceJson.setCreaterId(indexResource.getCreater().getId());
+				indexResourceJson.setCreater(indexResource.getCreater().getUserName());
 			indexResourceJson.setCreateTime(indexResource.getCreateTime());
 			if(indexResource.getModifier()!=null)
-				indexResourceJson.setModifierId(indexResource.getModifier().getId());
+				indexResourceJson.setModifier(indexResource.getModifier().getUserName());
 			indexResourceJson.setModifyTime(indexResource.getModifyTime());
 			indexResourceJsonList.add(indexResourceJson);
 		}
