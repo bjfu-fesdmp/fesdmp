@@ -103,6 +103,7 @@ public class IndexManagerController extends BaseController {
 			indexResourceJson.setId(indexResource.getId());
 			indexResourceJson.setIndexName(indexResource.getIndexName());
 			indexResourceJson.setIndexEnName(indexResource.getIndexEnName());
+			indexResourceJson.setStationName(indexResource.getStationName());
 			indexResourceJson.setIndexUnit(indexResource.getIndexUnit());
 			indexResourceJson.setIndexMemo(indexResource.getIndexMemo());
 			if(indexResource.getCreater()!=null)
@@ -132,6 +133,7 @@ public class IndexManagerController extends BaseController {
 			indexResourceJson = mapper.readValue(formData,IndexResourceJson.class);
 			indexResource.setIndexName(indexResourceJson.getIndexName());
 			indexResource.setIndexEnName(indexResourceJson.getIndexEnName());
+			indexResourceJson.setStationName(indexResource.getStationName());
 			indexResource.setIndexMemo(indexResourceJson.getIndexMemo());
 			indexResource.setIndexUnit(indexResourceJson.getIndexUnit());
 			User buildUser=(User) request.getSession().getAttribute(AppConstants.SESSION_USER);
@@ -223,6 +225,7 @@ public class IndexManagerController extends BaseController {
 			indexResourceJson.setId(indexResource.getId());
 			indexResourceJson.setIndexName(indexResource.getIndexName());
 			indexResourceJson.setIndexEnName(indexResource.getIndexEnName());
+			indexResourceJson.setStationName(indexResource.getStationName());
 			indexResourceJson.setIndexUnit(indexResource.getIndexUnit());
 			indexResourceJson.setIndexMemo(indexResource.getIndexMemo());
 			indexResourceJson.setResourceGroupName(this.resourceGroupService.findResourceGroupNameByIndexResourceId(indexResource.getId()));

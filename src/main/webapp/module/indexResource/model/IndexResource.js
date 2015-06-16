@@ -10,6 +10,9 @@ Ext.define('Bjfu.indexResource.model.IndexResource',{
     	name : 'indexEnName',   					
     	type : 'string' //指标英文名
     },{
+    	name : 'stationName',   					
+    	type : 'string' //生态站名
+    },{
     	name : 'indexUnit',   					
     	type : 'string' //指标单位
     },{

@@ -103,8 +103,8 @@ public class DataDisplayManagerController extends BaseController {
 				page.setCurrentPage(pageInfo.getPage());
 
 				IOrder order = new Order();
-				order.addOrderBy("time", "DESC");
-				order.addOrderBy("id", "DESC");
+				//order.addOrderBy("time", "DESC");
+				order.addOrderBy("station", "DESC");
 
 				if (!StringUtils.isEmpty(pageInfo.getSearchJson())) {
 					dataSearch = mapper.readValue(pageInfo.getSearchJson(),
@@ -311,6 +311,7 @@ public class DataDisplayManagerController extends BaseController {
 						dataJson = new DataJson();
 						hssfRow.getCell(0).setCellType(Cell.CELL_TYPE_NUMERIC);
 						hssfRow.getCell(1).setCellType(Cell.CELL_TYPE_STRING);
+						hssfRow.getCell(2).setCellType(Cell.CELL_TYPE_STRING);
 						HSSFCell timeCell = hssfRow.getCell(0);
 						if (timeCell == null) {
 							continue;
@@ -321,6 +322,11 @@ public class DataDisplayManagerController extends BaseController {
 							continue;
 						}
 						dataJson.setData(dataCell.getStringCellValue());
+						HSSFCell stationCell = hssfRow.getCell(2);
+						if (stationCell == null) {
+							continue;
+						}
+						dataJson.setStation(stationCell.getStringCellValue());
 						list.add(dataJson);
 					}
 				}
@@ -340,6 +346,7 @@ public class DataDisplayManagerController extends BaseController {
 						Date date = sdf.parse(info[0]);
 						dataJson = new DataJson();
 						dataJson.setData(info[1]);
+						dataJson.setStation(info[2]);
 						dataJson.setTime(date);
 						list.add(dataJson);
 					} catch (ParseException e) {
@@ -449,6 +456,7 @@ public class DataDisplayManagerController extends BaseController {
 					dataJson = new DataJson();
 					hssfRow.getCell(0).setCellType(Cell.CELL_TYPE_NUMERIC);
 					hssfRow.getCell(1).setCellType(Cell.CELL_TYPE_STRING);
+					hssfRow.getCell(2).setCellType(Cell.CELL_TYPE_STRING);
 					HSSFCell timeCell = hssfRow.getCell(0);
 					if (timeCell == null) {
 						continue;
@@ -459,6 +467,11 @@ public class DataDisplayManagerController extends BaseController {
 						continue;
 					}
 					dataJson.setData(dataCell.getStringCellValue());
+					HSSFCell stationCell = hssfRow.getCell(2);
+					if (stationCell == null) {
+						continue;
+					}
+					dataJson.setStation(stationCell.getStringCellValue());
 					list.add(dataJson);
 				}
 			}
@@ -478,6 +491,7 @@ public class DataDisplayManagerController extends BaseController {
 					Date date = sdf.parse(info[0]);
 					dataJson = new DataJson();
 					dataJson.setData(info[1]);
+					dataJson.setStation(info[2]);
 					dataJson.setTime(date);
 					list.add(dataJson);
 				} catch (ParseException e) {
@@ -570,6 +584,8 @@ public class DataDisplayManagerController extends BaseController {
 		cell.setCellValue("time");
 		cell = row.createCell(1);
 		cell.setCellValue("data");
+		cell = row.createCell(2);
+		cell.setCellValue("station");
 		for (int i = 1; i < list.size() + 1; i++) {
 			row = sheet.createRow(i);// 新增一行
 			cell = row.createCell(0);// 新增一列
@@ -583,6 +599,8 @@ public class DataDisplayManagerController extends BaseController {
 			cell.setCellType(Cell.CELL_TYPE_STRING);
 			cell = row.createCell(1);// 新增一列
 			cell.setCellValue(list.get(i - 1).getData());
+			cell = row.createCell(2);// 新增一列
+			cell.setCellValue(list.get(i - 1).getStation());
 		}
 		wb.write(fos);
 		fos.close();

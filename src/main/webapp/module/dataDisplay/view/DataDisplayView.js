@@ -70,9 +70,13 @@ Ext.define('Bjfu.dataDisplay.view.DataDisplayView',{
 			          		align: 'left',
 			          		width : 60
 			    }), 
-			   {
+			    {
 			        text : '时间',
 			        dataIndex : 'time',
+			        width : '10%'
+			    }, {
+			        text : '站点',
+			        dataIndex : 'station',
 			        width : '10%'
 			    },{
 			        text : '数据值',
@@ -241,6 +245,20 @@ Ext.define('Bjfu.dataDisplay.view.DataDisplayView',{
 		                    	grid.each(function (record) {  
 		                    		ids.push(record.get('id')); 
 		                    	}); 
+		                    	
+				      			Ext.Ajax.request({
+				      				url : Global_Path+'sysuser/checkFunctionIfForbid',
+				      				params:{
+				      					tableName:tableName
+				      					},
+				      				success : function(response) {
+				      					var result = Ext.decode(response.responseText);
+				      					if(result.success){
+				      						Ext.Msg.alert('提示','您并没有获得该权限');
+				      						return;
+				      					}
+				      					else{	
+		                    	
 		                    	 Ext.Msg.show({
 		                    		  title:'确认导出',
 		                    		     msg: '您确定导出数据?',
@@ -275,6 +293,11 @@ Ext.define('Bjfu.dataDisplay.view.DataDisplayView',{
 		                    		     },
 		                    		            icon: Ext.MessageBox.QUESTION
 		                    		 });
+				      					}
+				      				}
+		                    	 
+				      			})
+		                    	 
 		                    		 }
 				        },{ 
 				        	text: '模板下载' ,

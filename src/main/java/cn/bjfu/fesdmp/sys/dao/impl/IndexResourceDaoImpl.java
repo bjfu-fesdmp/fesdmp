@@ -33,7 +33,7 @@ public class IndexResourceDaoImpl extends AbstractGenericDao<IndexResource> impl
 		super(IndexResource.class);
 	}
 	public void createResourceListByTime(String resource,String year){
-		String sql = "CREATE TABLE "+year+"_"+resource+"(id INT AUTO_INCREMENT PRIMARY KEY,time datetime,data VARCHAR(50))";
+		String sql = "CREATE TABLE "+year+"_"+resource+"(id INT AUTO_INCREMENT PRIMARY KEY,time datetime,station VARCHAR(100),data VARCHAR(50))";
 		jdbcTemplate.execute(sql);
 	}
 	

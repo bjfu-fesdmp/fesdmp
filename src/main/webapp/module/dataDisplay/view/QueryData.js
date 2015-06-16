@@ -38,6 +38,11 @@ Ext.define('Bjfu.dataDisplay.view.QueryData',{
 				vtype : 'daterange',
 				editable : false,
 				startDateField : "startTime"
+    	    },{
+    	    	id : 'station',
+    	    	xtype : 'textfield',
+    	        fieldLabel: '生态站名',
+    	        name: 'station'
     	    }],
     	    buttonAlign:'center', 
     	    buttons: [{

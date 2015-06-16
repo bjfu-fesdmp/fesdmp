@@ -95,7 +95,7 @@ public class DataDaoImpl extends AbstractGenericDao<DataJson> implements IDataDa
 		if(tableName!=null)
 		{
 		sql = "select * from "+tableName;	
-		if (condition != null) {
+		if (condition != null&&condition.getStation()=="") {
 		
 			if (condition.getStartTime() != null && condition.getEndTime() != null) {
 				sql += " where time >= '" + DateFormat.getShortDate(condition.getStartTime()) +
@@ -105,7 +105,27 @@ public class DataDaoImpl extends AbstractGenericDao<DataJson> implements IDataDa
 				sql += " where time >=  '" + DateFormat.getShortDate(condition.getStartTime()) + 
 						"' and time <= '" + DateFormat.getShortDate(new Date()) + "'";
 			}
-		
+			
+		}
+		if (condition != null&&condition.getStation()!="") {
+			
+			if (condition.getStartTime() != null && condition.getEndTime() != null) {
+				sql += " where time >= '" + DateFormat.getShortDate(condition.getStartTime()) +
+						"' and  time <= '" + DateFormat.getShortDate(condition.getEndTime()) + "' and station LIKE '"+
+						condition.getStation()+
+						"'";
+			}
+			if (condition.getStartTime() != null && condition.getEndTime() == null) {
+				sql += " where time >=  '" + DateFormat.getShortDate(condition.getStartTime()) + 
+						"' and time <= '" + DateFormat.getShortDate(new Date()) + "' and station LIKE '"+
+						condition.getStation()+
+						"'";
+			}
+			else
+				sql +=" where station LIKE '"+
+				condition.getStation()+
+				"'";
+			
 		}
 		sql=sql+" order by time asc";
 		
@@ -116,6 +136,7 @@ public class DataDaoImpl extends AbstractGenericDao<DataJson> implements IDataDa
 			datajson.setId(Integer.valueOf(result0.get(i).get("id").toString()));
 			datajson.setTime((Date)result0.get(i).get("time"));
 			datajson.setData(result0.get(i).get("data").toString());
+			datajson.setStation(result0.get(i).get("station").toString());
 			datajson.setUnit(unit);
 			result.add(datajson);
 		}	
@@ -197,12 +218,12 @@ public class DataDaoImpl extends AbstractGenericDao<DataJson> implements IDataDa
 		for(int i=0;i<list.size();i++){
 			String sql=null;
 			Date date=list.get(i).getTime();
-			sql = "insert into "+table+" (time,data) values('"+(1900+date.getYear())+
+			sql = "insert into "+table+" (time,data,station) values('"+(1900+date.getYear())+
 					"-"+(1+date.getMonth())+
 					"-"+date.getDate()+
 					" "+date.getHours()+
 					":"+date.getMinutes()+
-					":"+date.getSeconds()+"','"+list.get(i).getData()+"')"	;
+					":"+date.getSeconds()+"','"+list.get(i).getData()+"','"+list.get(i).getStation()+"')";
 			jdbcTemplate.update(sql);		
 		}
 	}

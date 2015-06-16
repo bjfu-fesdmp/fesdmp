@@ -33,7 +33,7 @@ public class DataSearch implements Serializable {
 	private Date startTime;
 	@JsonSerialize(using = CustomDateSerializer.class)
 	private Date endTime;
-	
+	private String station;
 	public DataSearch() {}
 
 	public void setStartTime(Date startTime) {
@@ -51,11 +51,17 @@ public class DataSearch implements Serializable {
 	public Date getEndTime() {
 		return endTime;
 	}
+	public String getStation() {
+		return station;
+	}
 
+	public void setStation(String station) {
+		this.station = station;
+	}
 	@Override
 	public String toString() {
 		return "DataSearch [tartTime=" + startTime + ", endTime="
-				+ endTime + "]";
+				+ endTime +"station="+station+ "]";
 	}
 
 }

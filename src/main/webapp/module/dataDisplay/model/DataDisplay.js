@@ -5,7 +5,11 @@ Ext.define('Bjfu.dataDisplay.model.DataDisplay',{
     	type : 'int' //数据编号
     },{
     	name : 'time',   					
-    	type : 'string' //事件
+    	type : 'string' //时间
+    },
+    {
+    	name : 'station',   					
+    	type : 'string' //站点名
     },{
     	name : 'data',   					
     	type : 'string' //值

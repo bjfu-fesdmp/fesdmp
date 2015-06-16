@@ -108,6 +108,7 @@ public class IndexResourceService implements IIndexResourceService {
 		this.dataDao.modifyTableName(indexResourceNew.getIndexEnName(), indexResource.getIndexEnName());
 		indexResourceNew.setIndexName(indexResource.getIndexName());
 		indexResourceNew.setIndexEnName(indexResource.getIndexEnName());
+		indexResourceNew.setStationName(indexResource.getStationName());
 		indexResourceNew.setIndexUnit(indexResource.getIndexUnit());
 		if(indexResource.getIndexMemo()!=null)
 		indexResourceNew.setIndexMemo(indexResource.getIndexMemo());

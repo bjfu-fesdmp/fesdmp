@@ -21,16 +21,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-/** 
- * ClassName:UserGroup <br/> 
- * Function: 用户组表. <br/> 
- * Reason:   用户组表. <br/> 
- * Date:     2014年7月24日 下午8:25:36 <br/> 
- * @author   LuoYangBjfu 
- * @version   
- * @since    JDK 1.7 
- * @see       
- */
+
 @Entity
 @Table(name = "t_table")
 public class ResourceTable implements Serializable {
@@ -64,7 +55,6 @@ public class ResourceTable implements Serializable {
 		this.year = year;
 	}
 
-
 	public IndexResource getIndexResource() {
 		return indexResource;
 	}
@@ -80,8 +70,7 @@ public class ResourceTable implements Serializable {
 		int result = 1;
 		result = prime * result + ((indexResource == null) ? 0 : indexResource.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result
-				+ ((year == null) ? 0 : year.hashCode());
+		result = prime * result+ ((year == null) ? 0 : year.hashCode());
 		return result;
 	}
 

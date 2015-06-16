@@ -8,6 +8,7 @@ public class IndexResourceJson {
 	private String indexName;
 	private String resourceGroupName;
 	private String indexEnName;
+	private String stationName;
 	private String indexUnit;
 	private String indexMemo;
 	private String creater;
@@ -40,6 +41,14 @@ public class IndexResourceJson {
 
 	public void setIndexName(String indexName) {
 		this.indexName = indexName;
+	}
+	
+	public String getStationName() {
+		return stationName;
+	}
+
+	public void setStationName(String stationName) {
+		this.stationName = stationName;
 	}
 	public String getCreater() {
 		return creater;
