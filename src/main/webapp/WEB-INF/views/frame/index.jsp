@@ -182,7 +182,7 @@
                 	 				noCache : true	
 	    							});
 				       					}
-				      				 } 
+				      				 }
 			           				 ]
 			        }
 			},' ',{
@@ -212,7 +212,18 @@
                 	 					noCache : true	
 	    							});
 				                    }
-				                }
+				                },{
+					       				text: '区域设置',
+					       				handler: function () {
+										Ext.getCmp('centerPanel').getLoader().load({
+										autoLoad : true,
+		    							url: Global_Path + "location/listView",
+	                	 				scripts : true,
+	                	 				loadMask : true,
+	                	 				noCache : true	
+		    							});
+					       					}
+					      				 } 
 			            ]
 			        }
 			},'->',{
