@@ -8,12 +8,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cn.bjfu.fesdmp.domain.sys.LocationResourceGroupRelation;
 import cn.bjfu.fesdmp.domain.sys.ResourceGroup;
 import cn.bjfu.fesdmp.domain.sys.UserIndexRelation;
 import cn.bjfu.fesdmp.domain.sys.UserResourceGroupRelation;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.json.AddResourceGroupForUserJson;
+import cn.bjfu.fesdmp.json.ResourceGroupJson;
+import cn.bjfu.fesdmp.sys.dao.ILocationDao;
+import cn.bjfu.fesdmp.sys.dao.ILocationResourceRelationDao;
 import cn.bjfu.fesdmp.sys.dao.IResourceGroupDao;
 import cn.bjfu.fesdmp.sys.dao.IUserDao;
 import cn.bjfu.fesdmp.sys.dao.IUserResourceGroupRelationDao;
@@ -31,9 +35,24 @@ public class ResourceGroupService implements IResourceGroupService {
 	private IUserDao userDao;
 	@Autowired
 	private IUserResourceGroupRelationDao userResourceGroupRelationDao;
+	@Autowired
+	private ILocationDao locationDao;
+	@Autowired
+	private ILocationResourceRelationDao locationResourceRelationDao;
 	@Override
-	public void addResourceGroup(ResourceGroup resourceGroup) {
+	public void addResourceGroup(ResourceGroupJson resourceGroupJson) {
+		ResourceGroup resourceGroup=new ResourceGroup();
+		LocationResourceGroupRelation locationResourceGroupRelation=new LocationResourceGroupRelation();
+		resourceGroup.setGroupName(resourceGroupJson.getGroupName());
+		resourceGroup.setGroupParentId(Integer.parseInt(resourceGroupJson.getGroupParentId()));
+		if(resourceGroupJson.getMemo()!=null)
+		resourceGroup.setMemo(resourceGroupJson.getMemo());
 		this.resourceGroupDao.insert(resourceGroup);
+		locationResourceGroupRelation.setResourceGroupId(resourceGroup);;
+		locationResourceGroupRelation.setLocation(this.locationDao.findByKey(resourceGroupJson.getLocationId()));
+		
+		this.locationResourceRelationDao.insert(locationResourceGroupRelation);
+
 	}
 
 	@Override
@@ -107,8 +126,8 @@ public class ResourceGroupService implements IResourceGroupService {
 		this.userResourceGroupRelationDao.delete(userResourceGroupRelation);
 	}
 	@Override
-	public boolean checkResourceGroupName(String resourceGroupName){
-		return this.resourceGroupDao.checkResourceGroupName(resourceGroupName);
+	public boolean checkResourceGroupName(String resourceGroupName,int locationId){
+		return this.resourceGroupDao.checkResourceGroupName(resourceGroupName,locationId);
 	}
 	@Override
 	public String findResourceGroupNameByIndexResourceId(int indexResourceId){

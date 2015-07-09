@@ -11,7 +11,9 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
 import cn.bjfu.fesdmp.domain.sys.Location;
+import cn.bjfu.fesdmp.domain.sys.LocationResourceGroupRelation;
 import cn.bjfu.fesdmp.domain.sys.SystemLog;
+import cn.bjfu.fesdmp.domain.sys.UserIndexRelation;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.sys.dao.ILocationDao;
@@ -68,6 +70,15 @@ public class LocationDaoImpl extends AbstractGenericDao<Location> implements ILo
 		else
 			return true;
 		
+	}
+	@Override
+	public int findLocationIdByResourceGroupId(int resourceGroupId){
+		String jpal = " SELECT p FROM LocationResourceGroupRelation p where p.resourceGroup.id='"+resourceGroupId+"'";
+		logger.info(jpal);
+		Query query = super.getEntityManager().createQuery(jpal);
+		List list=query.getResultList();
+		LocationResourceGroupRelation locationResourceGroupRelation=(LocationResourceGroupRelation)list.get(0);
+		return locationResourceGroupRelation.getLocation().getId();
 	}
 }
  

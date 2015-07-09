@@ -18,6 +18,7 @@ public interface ILocationService {
 
 	public abstract void addLocation(Location location);
 	public abstract void deleteLocation(int id);
+	public abstract int findLocationIdByResourceGroupId(int resourceGroupId);
 	public abstract void modifyLocation(Location location);
 	public abstract List<Location> queryAll(IOrder order);
 	public abstract void queryByCondition(final Object condition, IOrder order, Pagination<Location> page);

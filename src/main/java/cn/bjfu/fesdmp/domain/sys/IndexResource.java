@@ -19,12 +19,12 @@ public class IndexResource implements Serializable{
 	private static final long serialVersionUID = 4563893285739204858L;
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	@Column(unique = true, nullable = false)
+	@Column(nullable = false)
 	private String indexName;
-	@Column(unique = true, nullable = false)
+	@Column(nullable = false)
 	private String indexEnName;
-	@Column (nullable = false)
-	private String stationName;
+
+
 	@Column (nullable = false)
 	private String indexUnit;
 	@Column 
@@ -58,13 +58,7 @@ public class IndexResource implements Serializable{
 		this.indexName = indexName;
 	}
 	
-	public String getStationName() {
-		return stationName;
-	}
-	
-	public void setStationName(String stationName) {
-		this.stationName = stationName;
-	}
+
 	
 	public String getIndexEnName() {
 		return indexEnName;
@@ -129,7 +123,6 @@ public class IndexResource implements Serializable{
 				+ ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((indexName == null) ? 0 : indexName.hashCode());
 		result = prime * result + ((indexEnName == null) ? 0 : indexEnName.hashCode());
-		result = prime * result + ((stationName == null) ? 0 : stationName.hashCode());
 		result = prime * result + ((indexUnit == null) ? 0 : indexUnit.hashCode());
 		result = prime * result
 				+ ((indexMemo == null) ? 0 : indexMemo.hashCode());
@@ -168,11 +161,6 @@ public class IndexResource implements Serializable{
 				return false;
 		} else if (!indexEnName.equals(other.indexEnName))
 			return false;
-		if (stationName == null) {
-			if (other.stationName != null)
-				return false;
-		} else if (!stationName.equals(other.stationName))
-			return false;
 		if (indexUnit== null) {
 			if (other.indexUnit != null)
 				return false;
@@ -209,7 +197,7 @@ public class IndexResource implements Serializable{
 	@Override
 	public String toString() {
 		return "IndexResource [id=" + id + ", indexName=" + indexName + ", indexEnName="
-				+ indexEnName +", stationName"+stationName+ ", indexUnit=" + indexUnit + ", indexMemo=" + indexMemo
+				+ indexEnName + ", indexUnit=" + indexUnit + ", indexMemo=" + indexMemo
 				+ ", creater=" + creater + ", createTime=" + createTime
 				+ ", modifier=" + modifier + ", modifyTime=" + modifyTime + "]";
 	}

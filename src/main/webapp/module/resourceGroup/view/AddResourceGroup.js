@@ -17,7 +17,24 @@ Ext.define('resourceGroupList', {
 	}
 });
 
-
+Ext.define('locationList', {
+    extend: 'Ext.data.Store',
+    fields: ['id', 'locationName'],
+	proxy : {
+		type : 'ajax',
+		actionMethods: {
+            create : 'POST',
+            read   : 'POST', // by default GET
+            update : 'POST',
+            destroy: 'POST'
+		},
+		url : Global_Path+'location/getAllLocationList',
+		reader : {
+			type : 'json',
+			root : 'result'
+		}
+	}
+});
 
 
 Ext.define('Bjfu.resourceGroup.view.AddResourceGroup',{
@@ -40,7 +57,26 @@ Ext.define('Bjfu.resourceGroup.view.AddResourceGroup',{
     	    },
 		    defaultType: 'textfield',
     	    items: [{
+    	    	id : 'location',
+    	    	xtype : 'combo',
+    	        fieldLabel : '所属区域<font color="red">*</font>',
+    	        name : 'locationId',
+    	        store : Ext.create('locationList'),
+    	        allowBlank : false,
+    	        editable : false,
+    	        displayField : 'locationName',
+    	        valueField : 'id',
+    	        emptyText : '请选择...',	
+    	        listeners:{
+    	            select : function(combo, record, index) {
+    	            	Ext.getCmp('resourceGroup').setValue("");
+    	            }
+    	    
+    	        }	
+    	        	
+    	        },{
     	        fieldLabel: '资源组名称<font color="red">*</font>',//验重
+    	    	id : 'resourceGroup',
     	        name: 'groupName',
     	        allowBlank : false,
     	        maxLength : 50,
@@ -49,12 +85,14 @@ Ext.define('Bjfu.resourceGroup.view.AddResourceGroup',{
 	    	        'blur' : function(_this, the, e) {
 						var v = _this.getValue();
 						var vv = Ext.String.trim(v);
+						var locationId=Ext.getCmp('location').getValue();
 						_this.setValue(vv);			
 							if (vv.length > 0) {
 								Ext.Ajax.request({
 									url : Global_Path+'resourceGroup/checkResourceGroupName',
 									params : {
-										resourceGroupName : vv
+										resourceGroupName : vv,
+										locationId:locationId
 									},
 									success : function(response) {
 										var result = Ext.decode(response.responseText);

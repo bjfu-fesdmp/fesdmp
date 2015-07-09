@@ -98,8 +98,8 @@ public class ResourceGroupDaoImpl extends AbstractGenericDao<ResourceGroup> impl
 		return list;	
 	}
 	@Override
-	public boolean checkResourceGroupName(String resourceGroupName){
-		String jpal = " SELECT p FROM ResourceGroup p where p.groupName='"+resourceGroupName+"'";
+	public boolean checkResourceGroupName(String resourceGroupName,int locationId){
+		String jpal = " SELECT p FROM ResourceGroup p,LocationResourceGroupRelation m where m.location.id="+locationId+"and p.id=m.resourceGroup.id and p.groupName='"+resourceGroupName+"'";
 		logger.info(jpal);
 		Query query = super.getEntityManager().createQuery(jpal);
 		List list=query.getResultList();

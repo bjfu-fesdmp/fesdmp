@@ -38,6 +38,17 @@ Ext.define('Bjfu.indexResource.view.AddIndexResource',{
     	    },
 		    defaultType: 'textfield',
     	    items: [{
+    	    	id : 'resourceGroup',
+    	    	xtype : 'combo',
+    	        fieldLabel : '所属资源组<font color="red">*</font>',
+    	        name : 'resourceGroupId',
+    	        store : Ext.create('resourceGroupList'),
+    	        allowBlank : false,
+    	        editable : false,
+    	        displayField : 'groupName',
+    	        valueField : 'id',
+    	        emptyText : '请选择...'	
+    	    },{
     	        fieldLabel : '中文名称<font color="red">*</font>',//验重
     	        name: 'indexName',
     	        allowBlank : false,
@@ -46,6 +57,7 @@ Ext.define('Bjfu.indexResource.view.AddIndexResource',{
     	        listeners:{
 	    	        'blur' : function(_this, the, e) {
 						var v = _this.getValue();
+						var resourceGroupId=Ext.getCmp('resourceGroup').getValue();
 						var vv = Ext.String.trim(v);
 						_this.setValue(vv);			
 							if (vv.length > 0) {
@@ -127,17 +139,6 @@ Ext.define('Bjfu.indexResource.view.AddIndexResource',{
     	    	allowBlank : false,
     	    	maxLength : 50,
  				maxLengthText : '长度不能超过50个字符' 
-    	    },{
-    	    	id : 'resourceGroup',
-    	    	xtype : 'combo',
-    	        fieldLabel : '所属资源组<font color="red">*</font>',
-    	        name : 'resourceGroupId',
-    	        store : Ext.create('resourceGroupList'),
-    	        allowBlank : false,
-    	        editable : false,
-    	        displayField : 'groupName',
-    	        valueField : 'id',
-    	        emptyText : '请选择...'	
     	    },{
     	    	fieldLabel : '描述',
     	    	name: 'indexMemo',

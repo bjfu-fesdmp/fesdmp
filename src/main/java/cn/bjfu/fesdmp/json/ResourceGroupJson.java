@@ -5,7 +5,7 @@ public class ResourceGroupJson {
 	private String groupParentId;
 	private String groupName;
 	private String memo;
-	
+	private Integer locationId;
 	public ResourceGroupJson() {}
 	
 	public Integer getId() {
@@ -15,7 +15,13 @@ public class ResourceGroupJson {
 	public void setId(Integer id) {
 		this.id = id;
 	}
+	public Integer getLocationId() {
+		return locationId;
+	}
 
+	public void setLocationId(Integer locationId) {
+		this.locationId = locationId;
+	}
 	public String getGroupParentId() {
 		return groupParentId;
 	}

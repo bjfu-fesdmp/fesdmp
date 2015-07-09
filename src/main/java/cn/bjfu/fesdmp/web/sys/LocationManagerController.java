@@ -11,6 +11,7 @@ package cn.bjfu.fesdmp.web.sys;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -152,6 +153,21 @@ public class LocationManagerController extends BaseController {
 		Location location = mapper.readValue(formData,Location.class);		
 		this.locationService.modifyLocation(location);
 		Map<String, Object> result = new HashMap<String, Object>();
+		result.put(SUCCESS, Boolean.TRUE);
+		return result;
+	}
+	@RequestMapping(value = "/getAllLocationList", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> getAllLocationList()
+			throws Exception {
+
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		logger.info("getAllLocationList method.");
+		IOrder order = new Order();
+		order.addOrderBy("id", "DESC");
+		List<Location> locationList = this.locationService.queryAll(order);
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put(RESULT, locationList);
 		result.put(SUCCESS, Boolean.TRUE);
 		return result;
 	}

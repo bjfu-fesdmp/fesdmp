@@ -7,11 +7,12 @@ import cn.bjfu.fesdmp.domain.sys.ResourceGroup;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.json.AddResourceGroupForUserJson;
+import cn.bjfu.fesdmp.json.ResourceGroupJson;
 import cn.bjfu.fesdmp.utils.Pagination;
 
 public interface IResourceGroupService {
 
-	public abstract void addResourceGroup(ResourceGroup resourceGroup);
+	public abstract void addResourceGroup(ResourceGroupJson resourceGroupJson);
 	public abstract void addResourceGroupForUser(AddResourceGroupForUserJson addResourceGroupForUserJson);
 	public abstract void deleteResourceGroupForUser(String id,String userId);
 	public abstract boolean checkIfHaveIndexResource(int id);
@@ -25,7 +26,7 @@ public interface IResourceGroupService {
 	public abstract List<ResourceGroup> queryByCondition(final Object condition, IOrder order,
 			Pagination<ResourceGroup> page, JoinMode joinMode);
 	public abstract List<ResourceGroup> findResourceGroupNotInThisUser(String userId);
-	public abstract boolean checkResourceGroupName(String resourceGroupName);
+	public abstract boolean checkResourceGroupName(String resourceGroupName,int locationId);
 	public abstract String findResourceGroupNameByIndexResourceId(int indexResourceId);
 }
  

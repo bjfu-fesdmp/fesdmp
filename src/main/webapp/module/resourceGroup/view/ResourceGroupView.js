@@ -101,11 +101,18 @@ Ext.define('Bjfu.resourceGroup.view.ResourceGroupView',{
 							     var record = gird.getSelectionModel().getSelection();
 							     	if(record.length>1||record.length==0)
 							     		{
+							     		
 							     			Ext.Msg.alert('提示','请选择一条记录！');
 							     			return;
 							     		}else{
-					        	
-					        	var modifyForm = Ext.create('Bjfu.resourceGroup.view.ModifyResourceGroup',{
+							     			if(record[0].get('id')>1000000000)
+							     				{
+							     			Ext.Msg.alert('提示','请选择正确的资源组');
+							     			return;
+							     		}
+							     	else
+							     		{
+							     	var modifyForm = Ext.create('Bjfu.resourceGroup.view.ModifyResourceGroup',{
 												});
 					        	modifyForm.loadRecord(record[0]);
 					        	Ext.create('Ext.window.Window',{
@@ -120,7 +127,9 @@ Ext.define('Bjfu.resourceGroup.view.ResourceGroupView',{
 					        		layout:'fit',
 					        		items:[modifyForm]
 					        	}).show();
-	      					}
+	      					
+							     		}
+							     		}
 				        	}
 				        	
 				        },{
@@ -152,7 +161,7 @@ Ext.define('Bjfu.resourceGroup.view.ResourceGroupView',{
 		    			        			id=data.get('id');
 		    			        			if(data.get('leaf')!=true)
 		    			        				{
-		    			        				Ext.Msg.alert('提示','该资源组有子资源组不能删除');
+		    			        				Ext.Msg.alert('提示','区域不能删除');
 		    			        				}
 		    			        			else
 		    			        			{

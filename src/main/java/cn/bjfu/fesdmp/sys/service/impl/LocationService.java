@@ -84,5 +84,9 @@ public class LocationService implements ILocationService {
 		this.locationDao.update(locationnew);
 		
 	}
+	@Override
+	public int findLocationIdByResourceGroupId(int resourceGroupId){
+		return this.locationDao.findLocationIdByResourceGroupId(resourceGroupId);
+	}
 }
  

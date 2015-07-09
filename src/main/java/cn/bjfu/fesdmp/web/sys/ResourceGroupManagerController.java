@@ -21,6 +21,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import cn.bjfu.fesdmp.constant.AppConstants;
+import cn.bjfu.fesdmp.domain.sys.Location;
 import cn.bjfu.fesdmp.domain.sys.ResourceGroup;
 import cn.bjfu.fesdmp.domain.sys.User;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
@@ -29,6 +30,8 @@ import cn.bjfu.fesdmp.frame.dao.Order;
 import cn.bjfu.fesdmp.json.AddResourceGroupForUserJson;
 import cn.bjfu.fesdmp.json.ResourceGroupJson;
 import cn.bjfu.fesdmp.json.ResourceGroupTreeJson;
+import cn.bjfu.fesdmp.json.TreeJson;
+import cn.bjfu.fesdmp.sys.service.ILocationService;
 import cn.bjfu.fesdmp.sys.service.IResourceGroupService;
 import cn.bjfu.fesdmp.utils.PageInfoBean;
 import cn.bjfu.fesdmp.utils.Pagination;
@@ -44,6 +47,9 @@ public class ResourceGroupManagerController extends BaseController {
 	private ObjectMapper mapper = new ObjectMapper();
 	@Autowired
 	private IResourceGroupService resourceGroupService;
+	@Autowired
+	private ILocationService locationService;
+	
 	@RequestMapping(value = "/listView", method = RequestMethod.GET)
 	public String resourceGroupPage() {
 		logger.info("resourceGroupPage method.");
@@ -61,13 +67,27 @@ public class ResourceGroupManagerController extends BaseController {
 		order.addOrderBy("id", "DESC");
 		List<ResourceGroup> resourceGroupList=new ArrayList();
 		if(groupParentId!=null)
-			resourceGroupList = this.resourceGroupService.findResourceGroupByParentIdAndUserId(Integer.parseInt(groupParentId),nowUser.getId());
+			resourceGroupList = this.resourceGroupService.findResourceGroupByParentIdAndUserId(0,nowUser.getId());
 
 		List<ResourceGroupTreeJson> resourceGroupJsonList = new ArrayList<ResourceGroupTreeJson>();
+		List<Location> locationList=new ArrayList<Location>();
+		IOrder order2 = new Order();
+		order2.addOrderBy("id", "DESC");
+		locationList=this.locationService.queryAll(order2);
+		for(int i=0;i<locationList.size();i++){
+			ResourceGroupTreeJson resourceGroupTreeJson=new ResourceGroupTreeJson();
+			resourceGroupTreeJson.setGroupName(locationList.get(i).getLocationName());
+			resourceGroupTreeJson.setGroupParentId(0);
+			resourceGroupTreeJson.setId(locationList.get(i).getId()+1000000000);
+			resourceGroupTreeJson.setMemo(locationList.get(i).getMemo());		
+			resourceGroupJsonList.add(resourceGroupTreeJson);
+		}
+		
 		for(int i=0;i<resourceGroupList.size();i++){
 			ResourceGroupTreeJson resourceGroupTreeJson=new ResourceGroupTreeJson();
 			resourceGroupTreeJson.setGroupName(resourceGroupList.get(i).getGroupName());
-			resourceGroupTreeJson.setGroupParentId(resourceGroupList.get(i).getGroupParentId());
+			
+			resourceGroupTreeJson.setGroupParentId(this.locationService.findLocationIdByResourceGroupId(resourceGroupList.get(i).getId())+1000000000);
 			resourceGroupTreeJson.setId(resourceGroupList.get(i).getId());
 			resourceGroupTreeJson.setMemo(resourceGroupList.get(i).getMemo());
 			if(this.resourceGroupService.ifHaveChild(resourceGroupTreeJson.getId()))
@@ -77,10 +97,27 @@ public class ResourceGroupManagerController extends BaseController {
 			resourceGroupJsonList.add(resourceGroupTreeJson);
 			
 		}
-		
+		List<ResourceGroupTreeJson> newresourceGroupJsonList = new ArrayList();
+
+		if(Integer.parseInt(groupParentId)==0)
+		{
+		for (int i = 0; i < resourceGroupJsonList.size(); i++) {
+			if (resourceGroupJsonList.get(i).getGroupParentId()
+					.equals(0))
+				newresourceGroupJsonList.add(resourceGroupJsonList.get(i));
+		}
+		}
+		else
+		{
+			for (int i = 0; i < resourceGroupJsonList.size(); i++) {
+				if (resourceGroupJsonList.get(i).getGroupParentId()
+						.equals(Integer.parseInt(groupParentId)))
+					newresourceGroupJsonList.add(resourceGroupJsonList.get(i));
+		}
+		}
 		
 		Map<String, Object> result = new HashMap<String, Object>();
-		result.put(RESULT, resourceGroupJsonList);
+		result.put(RESULT, newresourceGroupJsonList);
 		result.put(SUCCESS, Boolean.TRUE);
 		return result;
 	}
@@ -91,15 +128,15 @@ public class ResourceGroupManagerController extends BaseController {
 	public Map<String, Object> addResourceGroup(HttpServletRequest request,String formData) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		logger.info("addResourceGroup method.");
-		ResourceGroup resourceGroup = new ResourceGroup();
+		ResourceGroupJson resourceGroupJson = new ResourceGroupJson();
 		if (!StringUtils.isEmpty(formData)) {
-			resourceGroup = mapper.readValue(formData,ResourceGroup.class);
+			resourceGroupJson = mapper.readValue(formData,ResourceGroupJson.class);
 		}
 		
-		if(resourceGroup.getGroupParentId()==null)
-			resourceGroup.setGroupParentId(0);
-		logger.info(resourceGroup);
-	 	this.resourceGroupService.addResourceGroup(resourceGroup);
+		if(resourceGroupJson.getGroupParentId()==null)
+			resourceGroupJson.setGroupParentId("0");
+		logger.info(resourceGroupJson);
+	 	this.resourceGroupService.addResourceGroup(resourceGroupJson);
 
 		Map<String, Object> result = new HashMap<String, Object>();
 
@@ -283,12 +320,12 @@ public Map<String, Object> deleteResourceGroupForUser(String id,String userId) t
 }
 @RequestMapping(value = "/checkResourceGroupName", method = RequestMethod.POST)
 @ResponseBody
-public Map<String, Object> checkResourceGroupName(String resourceGroupName) throws Exception {
+public Map<String, Object> checkResourceGroupName(String resourceGroupName,int locationId) throws Exception {
 	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 	logger.info("checkResourceGroupName method.");
 	logger.info(resourceGroupName);
 	Map<String, Object> result = new HashMap<String, Object>();
-	boolean checkResult=this.resourceGroupService.checkResourceGroupName(resourceGroupName);
+	boolean checkResult=this.resourceGroupService.checkResourceGroupName(resourceGroupName,locationId);
 	if (checkResult==true)
 		result.put(SUCCESS, Boolean.FALSE);	
 	else
