@@ -125,7 +125,7 @@ public class IndexManagerController extends BaseController {
 	public Map<String, Object> addIndexResource(HttpServletRequest request,String formData) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		logger.info("addIndexResource method.");
-		IndexResourceJson indexResourceJson=new IndexResourceJson();
+		IndexResourceJson indexResourceJson=null;
 		IndexResource indexResource = new IndexResource();
 		int resourceGroupId = 0;
 		if (!StringUtils.isEmpty(formData)) {
@@ -293,12 +293,12 @@ public class IndexManagerController extends BaseController {
 	}
 	@RequestMapping(value = "/checkIndexResourceName", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> checkIndexResourceName(String indexResourceName) throws Exception {
+	public Map<String, Object> checkIndexResourceName(String indexResourceName,int resourceGroupId) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		logger.info("checkIndexResourceName method.");
 		logger.info(indexResourceName);
 		Map<String, Object> result = new HashMap<String, Object>();
-		boolean checkResult=this.indexService.checkIndexResourceName(indexResourceName);
+		boolean checkResult=this.indexService.checkIndexResourceName(indexResourceName,resourceGroupId);
 		if (checkResult==true)
 			result.put(SUCCESS, Boolean.FALSE);	
 		else
@@ -307,12 +307,12 @@ public class IndexManagerController extends BaseController {
 	}
 	@RequestMapping(value = "/checkIndexResourceEnName", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> checkIndexResourceEnName(String indexResourceEnName) throws Exception {
+	public Map<String, Object> checkIndexResourceEnName(String indexResourceEnName,int resourceGroupId) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		logger.info("checkIndexResourceEnName method.");
 		logger.info(indexResourceEnName);
 		Map<String, Object> result = new HashMap<String, Object>();
-		boolean checkResult=this.indexService.checkIndexResourceEnName(indexResourceEnName);
+		boolean checkResult=this.indexService.checkIndexResourceEnName(indexResourceEnName,resourceGroupId);
 		if (checkResult==true)
 			result.put(SUCCESS, Boolean.FALSE);	
 		else

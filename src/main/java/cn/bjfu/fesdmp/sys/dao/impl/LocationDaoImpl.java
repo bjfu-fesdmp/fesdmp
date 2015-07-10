@@ -80,5 +80,14 @@ public class LocationDaoImpl extends AbstractGenericDao<Location> implements ILo
 		LocationResourceGroupRelation locationResourceGroupRelation=(LocationResourceGroupRelation)list.get(0);
 		return locationResourceGroupRelation.getLocation().getId();
 	}
+	@Override
+	public String findLocationNameByResourceGroupId(int resourceGroupId){
+		String jpal = " SELECT p FROM LocationResourceGroupRelation p where p.resourceGroup.id='"+resourceGroupId+"'";
+		logger.info(jpal);
+		Query query = super.getEntityManager().createQuery(jpal);
+		List list=query.getResultList();
+		LocationResourceGroupRelation locationResourceGroupRelation=(LocationResourceGroupRelation)list.get(0);
+		return locationResourceGroupRelation.getLocation().getLocationName();
+	}
 }
  

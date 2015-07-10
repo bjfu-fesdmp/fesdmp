@@ -1,5 +1,4 @@
-Ext.define('resourceGroupList', {
-    extend: 'Ext.data.Store',
+var resourceGroupStore=new Ext.data.Store({
     fields: ['id', 'groupName'],
 	proxy : {
 		type : 'ajax',
@@ -9,14 +8,33 @@ Ext.define('resourceGroupList', {
             update : 'POST',
             destroy: 'POST'
 		},
-		url : Global_Path+'resourceGroup/getAllResourceGroupList',
+		url : Global_Path+'resourceGroup/getResourceGroupInThisLocation',
+		reader : {
+			type : 'json',
+			root : 'result'
+		}
+	},
+	autoLoad:false
+});
+
+Ext.define('locationList', {
+    extend: 'Ext.data.Store',
+    fields: ['id', 'locationName'],
+	proxy : {
+		type : 'ajax',
+		actionMethods: {
+            create : 'POST',
+            read   : 'POST', // by default GET
+            update : 'POST',
+            destroy: 'POST'
+		},
+		url : Global_Path+'location/getAllLocationList',
 		reader : {
 			type : 'json',
 			root : 'result'
 		}
 	}
 });
-
 
 Ext.define('Bjfu.indexResource.view.AddIndexResource',{
 	extend:'Ext.form.Panel',
@@ -37,18 +55,52 @@ Ext.define('Bjfu.indexResource.view.AddIndexResource',{
     	        }
     	    },
 		    defaultType: 'textfield',
-    	    items: [{
+    	    items: [
+    	            
+   {
+    	    	id : 'location',
+    	    	xtype : 'combo',
+    	        fieldLabel : '所属区域<font color="red">*</font>',
+    	        name : 'locationId',
+    	        store : Ext.create('locationList'),
+    	        allowBlank : false,
+    	        editable : false,
+    	        displayField : 'locationName',
+    	        valueField : 'id',
+    	        emptyText : '请选择...',	
+    	        listeners:{
+    	            select : function(combo, record, index) {
+    	            	Ext.getCmp('indexResource').setValue("");
+    	            	Ext.getCmp('resourceGroup').clearValue();
+    	            	var locationId=combo.getValue();
+    	            	resourceGroupStore.load({
+    	               		params: {
+    	               			locationId: locationId,
+    	           			}
+    	            });
+    	            }
+    	        }		
+    	        },
+    	       
+    	        {
     	    	id : 'resourceGroup',
     	    	xtype : 'combo',
     	        fieldLabel : '所属资源组<font color="red">*</font>',
     	        name : 'resourceGroupId',
-    	        store : Ext.create('resourceGroupList'),
+    	        store : resourceGroupStore,
     	        allowBlank : false,
     	        editable : false,
     	        displayField : 'groupName',
     	        valueField : 'id',
-    	        emptyText : '请选择...'	
+    	        emptyText : '请选择...'	,
+    	        queryMode:'local',
+    	        listeners:{
+    	            select : function(combo, record, index) {
+    	            	Ext.getCmp('indexResource').setValue("");
+    	            }
+    	        }	
     	    },{
+    	    	id : 'indexResource',
     	        fieldLabel : '中文名称<font color="red">*</font>',//验重
     	        name: 'indexName',
     	        allowBlank : false,
@@ -64,7 +116,8 @@ Ext.define('Bjfu.indexResource.view.AddIndexResource',{
 								Ext.Ajax.request({
 									url : Global_Path+'indexresource/checkIndexResourceName',
 									params : {
-										indexResourceName : vv
+										indexResourceName : vv,
+										resourceGroupId:resourceGroupId
 									},
 									success : function(response) {
 										var result = Ext.decode(response.responseText);
@@ -91,13 +144,15 @@ Ext.define('Bjfu.indexResource.view.AddIndexResource',{
     	        listeners:{
 	    	        'blur' : function(_this, the, e) {
 						var v = _this.getValue();
+						var resourceGroupId=Ext.getCmp('resourceGroup').getValue();
 						var vv = Ext.String.trim(v);
 						_this.setValue(vv);			
 							if (vv.length > 0) {
 								Ext.Ajax.request({
 									url : Global_Path+'indexresource/checkIndexResourceEnName',
 									params : {
-										indexResourceEnName : vv
+										indexResourceEnName : vv,
+										resourceGroupId:resourceGroupId
 									},
 									success : function(response) {
 										var result = Ext.decode(response.responseText);
@@ -165,12 +220,12 @@ Ext.define('Bjfu.indexResource.view.AddIndexResource',{
 		            var form = this.up('form').getForm();
 		            var window = this.up('window');
 		            if (form.isValid()) {
-		            	var userGroupValues = form.getValues();
+		            	var indexResourceValues = form.getValues();
 		            		Ext.Ajax.request({
 		    	 	   			url:Global_Path+'indexresource/addIndexResource',
 		    	 	   			method:'post',
 		    	 	   			params:{
-		    	 	   					formData:Ext.encode(userGroupValues)
+		    	 	   					formData:Ext.encode(indexResourceValues)
 		    	 	   			},
 		    	 	   		success: function(response) {
 		                    	var	result =  Ext.decode(response.responseText);

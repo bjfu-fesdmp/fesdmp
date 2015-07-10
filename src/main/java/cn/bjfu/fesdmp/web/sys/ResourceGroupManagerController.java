@@ -28,6 +28,7 @@ import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.frame.dao.Order;
 import cn.bjfu.fesdmp.json.AddResourceGroupForUserJson;
+import cn.bjfu.fesdmp.json.LocationResourceGroupForUserJson;
 import cn.bjfu.fesdmp.json.ResourceGroupJson;
 import cn.bjfu.fesdmp.json.ResourceGroupTreeJson;
 import cn.bjfu.fesdmp.json.TreeJson;
@@ -85,8 +86,7 @@ public class ResourceGroupManagerController extends BaseController {
 		
 		for(int i=0;i<resourceGroupList.size();i++){
 			ResourceGroupTreeJson resourceGroupTreeJson=new ResourceGroupTreeJson();
-			resourceGroupTreeJson.setGroupName(resourceGroupList.get(i).getGroupName());
-			
+			resourceGroupTreeJson.setGroupName(resourceGroupList.get(i).getGroupName());		
 			resourceGroupTreeJson.setGroupParentId(this.locationService.findLocationIdByResourceGroupId(resourceGroupList.get(i).getId())+1000000000);
 			resourceGroupTreeJson.setId(resourceGroupList.get(i).getId());
 			resourceGroupTreeJson.setMemo(resourceGroupList.get(i).getMemo());
@@ -250,25 +250,18 @@ public Map<String, Object> resourceGroupOfUserList(String userId)
 	List<ResourceGroup> resourceGroupList=new ArrayList();
 	if(userId!=null)
 		resourceGroupList=this.resourceGroupService.findResourceGroupByUserId(userId);
-
-	List<ResourceGroupTreeJson> resourceGroupJsonList = new ArrayList<ResourceGroupTreeJson>();
+	List<LocationResourceGroupForUserJson> locationResourceGroupForUserJsonList = new ArrayList<LocationResourceGroupForUserJson>();
 	for(int i=0;i<resourceGroupList.size();i++){
-		ResourceGroupTreeJson resourceGroupTreeJson=new ResourceGroupTreeJson();
-		resourceGroupTreeJson.setGroupName(resourceGroupList.get(i).getGroupName());
-		resourceGroupTreeJson.setGroupParentId(resourceGroupList.get(i).getGroupParentId());
-		resourceGroupTreeJson.setId(resourceGroupList.get(i).getId());
-		resourceGroupTreeJson.setMemo(resourceGroupList.get(i).getMemo());
-		if(this.resourceGroupService.ifHaveChild(resourceGroupTreeJson.getId()))
-			resourceGroupTreeJson.setLeaf(false);
-		else
-			resourceGroupTreeJson.setLeaf(true);
-		resourceGroupJsonList.add(resourceGroupTreeJson);
-		
+		LocationResourceGroupForUserJson temp=new LocationResourceGroupForUserJson();
+		temp.setId(resourceGroupList.get(i).getId());
+		temp.setGroupName(resourceGroupList.get(i).getGroupName());
+		if(resourceGroupList.get(i).getMemo()!=null)
+			temp.setMemo(resourceGroupList.get(i).getMemo());
+		temp.setLocation(this.locationService.findLocationNameByResourceGroupId(temp.getId()));
+		locationResourceGroupForUserJsonList.add(temp);
 	}
-	
-	
 	Map<String, Object> result = new HashMap<String, Object>();
-	result.put(RESULT, resourceGroupJsonList);
+	result.put(RESULT, locationResourceGroupForUserJsonList);
 	result.put(SUCCESS, Boolean.TRUE);
 	return result;
 }
@@ -331,5 +324,52 @@ public Map<String, Object> checkResourceGroupName(String resourceGroupName,int l
 	else
 		result.put(SUCCESS, Boolean.TRUE);	
 		return result;	
+}
+@RequestMapping(value = "/getResourceGroupInThisLocation", method = RequestMethod.POST)
+@ResponseBody
+public Map<String, Object> getResourceGroupInThisLocation(String locationId)
+		throws Exception {
+
+	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+	logger.info("getAllResourceGroupList method.");
+	IOrder order = new Order();
+	order.addOrderBy("id", "DESC");
+	List<ResourceGroup> resourceGroupList=new ArrayList();
+	if(locationId!=null)
+		resourceGroupList = this.resourceGroupService.findResourceGroupInThisLocation(Integer.parseInt(locationId));
+	else
+		resourceGroupList = this.resourceGroupService.queryAll(order);
+	Map<String, Object> result = new HashMap<String, Object>();
+	result.put(RESULT, resourceGroupList);
+	result.put(SUCCESS, Boolean.TRUE);
+	return result;
+}
+@RequestMapping(value = "/getResourceGroupListInThisLocationAndNotInThisUser", method = RequestMethod.POST)
+@ResponseBody
+public Map<String, Object> getResourceGroupListInThisLocationAndNotInThisUser(String locationId,String userId)
+		throws Exception {
+
+	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+	logger.info("getResourceGroupListInThisLocationAndNotInThisUser method.");
+	IOrder order = new Order();
+	order.addOrderBy("id", "DESC");
+	List<ResourceGroup> resourceGroupList=new ArrayList();
+	if(!(locationId==""&&userId=="")){
+		List<ResourceGroup> resourceGroupList1=this.resourceGroupService.findResourceGroupInThisLocation(Integer.parseInt(locationId));
+		List<ResourceGroup> resourceGroupList2=this.resourceGroupService.findResourceGroupNotInThisUser(userId);
+		for(int i=0;i<resourceGroupList1.size();i++){
+			for(int j=0;j<resourceGroupList2.size();j++)
+			{
+				if(resourceGroupList1.get(i).getId()==resourceGroupList2.get(j).getId())
+					resourceGroupList.add(resourceGroupList1.get(i));
+			}
+		}
+			
+		
+	}
+	Map<String, Object> result = new HashMap<String, Object>();
+	result.put(RESULT, resourceGroupList);
+	result.put(SUCCESS, Boolean.TRUE);
+	return result;
 }
 }

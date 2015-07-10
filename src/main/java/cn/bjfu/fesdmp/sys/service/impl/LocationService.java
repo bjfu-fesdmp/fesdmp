@@ -88,5 +88,9 @@ public class LocationService implements ILocationService {
 	public int findLocationIdByResourceGroupId(int resourceGroupId){
 		return this.locationDao.findLocationIdByResourceGroupId(resourceGroupId);
 	}
+	@Override
+	public String findLocationNameByResourceGroupId(int resourceGroupId){
+		return this.locationDao.findLocationNameByResourceGroupId(resourceGroupId);
+	}
 }
  

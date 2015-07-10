@@ -149,12 +149,12 @@ public class IndexResourceService implements IIndexResourceService {
 		this.userIndexRelationDao.delete(userIndexRelation);
 	}
 	@Override
-	public boolean checkIndexResourceName(String indexResourceName){
-		return this.indexResourceDao.checkIndexResourceName(indexResourceName);
+	public boolean checkIndexResourceName(String indexResourceName,int resourceGroupId){
+		return this.indexResourceDao.checkIndexResourceName(indexResourceName,resourceGroupId);
 	}
 	@Override
-	public boolean checkIndexResourceEnName(String indexResourceEnName){
-		return this.indexResourceDao.checkIndexResourceEnName(indexResourceEnName);
+	public boolean checkIndexResourceEnName(String indexResourceEnName,int resourceGroupId){
+		return this.indexResourceDao.checkIndexResourceEnName(indexResourceEnName,resourceGroupId);
 	}
 	@Override
 	public boolean checkYear(String year,String indexResoure){

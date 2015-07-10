@@ -96,6 +96,9 @@
 		<welcome-file>index.jsp</welcome-file>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
+	
+
+	
 	<error-page>
 		<error-code>404</error-code>
 		<location>/WEB-INF/view/frame/404.jsp</location>
@@ -104,6 +107,9 @@
         <exception-type>java.lang.Exception</exception-type>
         <location>/WEB-INF/view/frame/exception.jsp</location>
     </error-page>
+    
+    
+    
 	<!-- session outtime 15 min -->
 	<!-- <session-config>
 		<session-timeout>15</session-timeout>

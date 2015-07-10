@@ -71,9 +71,7 @@ Ext.define('Bjfu.resourceGroup.view.AddResourceGroup',{
     	            select : function(combo, record, index) {
     	            	Ext.getCmp('resourceGroup').setValue("");
     	            }
-    	    
-    	        }	
-    	        	
+    	        }		
     	        },{
     	        fieldLabel: '资源组名称<font color="red">*</font>',//验重
     	    	id : 'resourceGroup',

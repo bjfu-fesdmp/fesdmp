@@ -52,7 +52,15 @@ public class ResourceGroupDaoImpl extends AbstractGenericDao<ResourceGroup> impl
 
 	}
 	
-	
+	@Override
+	public List<ResourceGroup> findResourceGroupInThisLocation(int locationId){
+		String jpal = " SELECT p FROM ResourceGroup p,LocationResourceGroupRelation m where p.id=m.resourceGroup.id and m.location.id="+locationId;
+		logger.info(jpal);
+		Query query = super.getEntityManager().createQuery(jpal);
+		List<ResourceGroup> resourceGroupList=query.getResultList();
+		return resourceGroupList;
+
+	}
 	
 	@Override
 	public boolean ifHaveChild(int id){

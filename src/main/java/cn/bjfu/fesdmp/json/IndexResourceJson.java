@@ -3,6 +3,7 @@ package cn.bjfu.fesdmp.json;
 import java.util.Date;
 
 public class IndexResourceJson {
+	private int locationId;
 	private Integer id;
 	private Integer resourceGroupId;
 	private String indexName;
@@ -26,7 +27,13 @@ public class IndexResourceJson {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	
+	public int getLocationId() {
+		return locationId;
+	}
+
+	public void setLocationId(int locationId) {
+		this.locationId = locationId;
+	}
 	public Integer getResourceGroupId() {
 		return resourceGroupId;
 	}

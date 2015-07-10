@@ -82,6 +82,7 @@ public class LogAspect {
             method_param = joinPoint.getArgs(); //获取方法参数   
             object = joinPoint.proceed();  
         } catch (Exception e) {
+        	e.printStackTrace();
         	logger.info("savelog exception");
             throw e;  
         }  

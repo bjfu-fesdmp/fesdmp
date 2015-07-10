@@ -1,3 +1,21 @@
+Ext.define('locationList', {
+    extend: 'Ext.data.Store',
+    fields: ['id', 'locationName'],
+	proxy : {
+		type : 'ajax',
+		actionMethods: {
+            create : 'POST',
+            read   : 'POST', // by default GET
+            update : 'POST',
+            destroy: 'POST'
+		},
+		url : Global_Path+'location/getAllLocationList',
+		reader : {
+			type : 'json',
+			root : 'result'
+		}
+	}
+});
 var resourceGroupListStore=new Ext.data.Store({
     fields: ['id', 'groupName'],
 	proxy : {
@@ -8,7 +26,7 @@ var resourceGroupListStore=new Ext.data.Store({
             update : 'POST',
             destroy: 'POST'
 		},
-		url : Global_Path+'resourceGroup/getResourceGroupListNotInThisUser',
+		url : Global_Path+'resourceGroup/getResourceGroupListInThisLocationAndNotInThisUser',
 		reader : {
 			type : 'json',
 			root : 'result'
@@ -67,16 +85,42 @@ Ext.define('Bjfu.userResourceGroup.view.AddResourceGroupForUser',{
     	        listeners : { //监听该下拉列表的选择事件
     	            select : function(combo, record, index) {
     	            	Ext.getCmp('resourceGroup').clearValue();
+    	            	var locationId=Ext.getCmp('location').getValue();
     	            	var userId=combo.getValue();
     	                resourceGroupListStore.load({
     	               		params: {
-    	               			userId: userId
+    	               			userId: userId,
+    	               			locationId:locationId
     	           			}
     	            });
     	            }
     	    
     	        }
     	    },{
+    	    	id : 'location',
+    	    	xtype : 'combo',
+    	        fieldLabel : '所属区域<font color="red">*</font>',
+    	        name : 'locationId',
+    	        store : Ext.create('locationList'),
+    	        allowBlank : false,
+    	        editable : false,
+    	        displayField : 'locationName',
+    	        valueField : 'id',
+    	        emptyText : '请选择...',	
+    	        listeners:{
+    	            select : function(combo, record, index) {
+    	            	Ext.getCmp('resourceGroup').setValue("");
+    	            	var userId=Ext.getCmp('user').getValue();
+    	            	var locationId=combo.getValue();
+    	                resourceGroupListStore.load({
+    	               		params: {
+    	               			userId: userId,
+    	               			locationId:locationId
+    	           			}
+    	            });
+    	            }
+    	        }		
+    	        },{
     	    	id : 'resourceGroup',
     	    	xtype : 'combo',
     	        fieldLabel : '资源组<font color="red">*</font>',

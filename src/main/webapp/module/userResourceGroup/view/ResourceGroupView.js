@@ -1,20 +1,18 @@
 Ext.define('Bjfu.userResourceGroup.view.ResourceGroupView',{
-	extend : 'Ext.tree.Panel',
+	extend : 'Ext.grid.Panel',
+	alias:'widget.UserView',
 	forceFit : true,
 	layout : 'fit',
     autoScroll: true,
 	layoutConfig : {
 		animate : true
 	},
-	rootVisible: false,
-	displayField:'groupName',
-	requires : ['Bjfu.resourceGroup.model.ResourceGroup'],
+	requires : ['Bjfu.userResourceGroup.model.ResourceGroup'],
 	initComponent : function() {
 		var me = this;
-		var gridStore = Ext.create('Ext.data.TreeStore', {
-			id : 'resourceGroup.tree',
-			model : 'Bjfu.resourceGroup.model.ResourceGroup',
-			nodeParam : 'groupParentId',
+		var gridStore = Ext.create('Ext.data.Store', {
+			model : 'Bjfu.userResourceGroup.model.ResourceGroup',
+			pageSize : 25,
 			proxy : {
 				type : 'ajax',
 				actionMethods: {
@@ -27,16 +25,12 @@ Ext.define('Bjfu.userResourceGroup.view.ResourceGroupView',{
 				reader : {
 					type : 'json',
 					root : 'result',
+					idProperty : 'id',
+					totalProperty : 'pageCount'
 				}
 			},
-			root: {
-				   nodeType: 'async',
-				   id : '0',
-				   expanded: true
-		    },
 			autoLoad : true
 		});
-		
 		Ext.apply(me, {
 			store : gridStore,
 			forceFit:true,
@@ -47,24 +41,17 @@ Ext.define('Bjfu.userResourceGroup.view.ResourceGroupView',{
 			        dataIndex : 'id',
 			        hidden : true
 				},{
-			        text : '父Id',
-			        dataIndex : 'groupParentId',
-			        hidden : true
+			        text : '资源组所在区域',
+			        width:'20%',
+			        dataIndex : 'location'
 			    },{
-			    	xtype : 'treecolumn',
-			    	flex : 1,
-					sortable : true,
 			        text : '资源组名',
-			        width:'40%',
+			        width:'30%',
 			        dataIndex : 'groupName'
 			    },{
 			        text : '资源组描述',
-			        width:'60%',
+			        width:'50%',
 			        dataIndex : 'memo'
-			    },{
-			        text : '叶子',
-			        dataIndex : 'leaf',
-			        hidden : true
 			    }
 			],
 			tbar : [{

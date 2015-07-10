@@ -99,6 +99,9 @@ public class ResourceGroupService implements IResourceGroupService {
 	public List<ResourceGroup> findResourceGroupByUserId(String userId){
 		return this.resourceGroupDao.findResourceGroupByUserId(userId);	
 	}
+	public List<ResourceGroup> findResourceGroupInThisLocation(int locationId){
+		return this.resourceGroupDao.findResourceGroupInThisLocation(locationId);	
+	}
 	public boolean ifHaveChild(int id){
 		return this.resourceGroupDao.ifHaveChild(id);	
 	}

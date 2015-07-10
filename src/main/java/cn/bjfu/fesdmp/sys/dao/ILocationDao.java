@@ -19,5 +19,6 @@ public interface ILocationDao extends IGenericDao<Location> {
 			IOrder order, Pagination<Location> page, JoinMode joinMode);
 	public abstract boolean checkLocationName(String locationName);
 	public abstract int findLocationIdByResourceGroupId(int resourceGroupId);
+	public abstract String findLocationNameByResourceGroupId(int resourceGroupId);
 }
  

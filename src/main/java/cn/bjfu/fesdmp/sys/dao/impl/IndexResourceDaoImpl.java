@@ -128,8 +128,8 @@ public class IndexResourceDaoImpl extends AbstractGenericDao<IndexResource> impl
 		return list;	
 	}
 	@Override
-	public boolean checkIndexResourceEnName(String indexResourceEnName){
-		String jpal = " SELECT p FROM IndexResource p where p.indexEnName='"+indexResourceEnName+"'";
+	public boolean checkIndexResourceEnName(String indexResourceEnName,int resourceGroupId){
+		String jpal = " SELECT p FROM IndexResource p,ResourceRelation m where m.indexResource.id=p.id and m.resourceGroup.id="+resourceGroupId+" and p.indexEnName='"+indexResourceEnName+"'";
 		logger.info(jpal);
 		Query query = super.getEntityManager().createQuery(jpal);
 		List list=query.getResultList();
@@ -140,8 +140,8 @@ public class IndexResourceDaoImpl extends AbstractGenericDao<IndexResource> impl
 		
 	}
 	@Override
-	public boolean checkIndexResourceName(String indexResourceName){
-		String jpal = " SELECT p FROM IndexResource p where p.indexName='"+indexResourceName+"'";
+	public boolean checkIndexResourceName(String indexResourceName,int resourceGroupId){
+		String jpal = " SELECT p FROM IndexResource p,ResourceRelation m where m.indexResource.id=p.id and m.resourceGroup.id="+resourceGroupId+" and p.indexName='"+indexResourceName+"'";
 		logger.info(jpal);
 		Query query = super.getEntityManager().createQuery(jpal);
 		List list=query.getResultList();
