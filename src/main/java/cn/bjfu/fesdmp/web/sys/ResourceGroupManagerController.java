@@ -202,24 +202,29 @@ public Map<String, Object> getAllResourceGroupList()
 	result.put(SUCCESS, Boolean.TRUE);
 	return result;
 }
-@RequestMapping(value = "/getResourceGroupListOfNowUser", method = RequestMethod.POST)
+@RequestMapping(value = "/getResourceGroupListOfNowUserAndLocation", method = RequestMethod.POST)
 @ResponseBody
-public Map<String, Object> getResourceGroupListOfNowUser(HttpServletRequest request)
+public Map<String, Object> getResourceGroupListOfNowUserAndLocation(HttpServletRequest request,String locationId)
 		throws Exception {
 	User nowUser=(User) request.getSession().getAttribute(AppConstants.SESSION_USER);
 	Map<String, Object> result = new HashMap<String, Object>();
 	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 	logger.info("getResourceGroupListOfNowUser method.");
+	
+	if (locationId!=null)
+	{
 	if (nowUser.getIsAdmin().equals((byte)1)){
 	IOrder order = new Order();
 	order.addOrderBy("id", "DESC");
-	List<ResourceGroup> resourceGroupList = this.resourceGroupService.queryAll(order);
+	List<ResourceGroup> resourceGroupList = this.resourceGroupService.findResourceGroupInThisLocation(Integer.parseInt(locationId));
 	result.put(RESULT, resourceGroupList);
 	}
 	else{
-		List<ResourceGroup> resourceGroupList = this.resourceGroupService.findResourceGroupByUserId(nowUser.getId().toString());
+		List<ResourceGroup> resourceGroupList = this.resourceGroupService.findResourceGroupByUserIdAndLocation(nowUser.getId().toString(),Integer.parseInt(locationId));
 		result.put(RESULT, resourceGroupList);
 	}
+	}
+	
 	
 	
 	result.put(SUCCESS, Boolean.TRUE);

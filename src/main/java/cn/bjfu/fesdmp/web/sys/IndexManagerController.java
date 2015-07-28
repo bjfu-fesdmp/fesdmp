@@ -37,6 +37,7 @@ import cn.bjfu.fesdmp.json.AddIndexResourceForUserJson;
 import cn.bjfu.fesdmp.json.CreateTableJson;
 import cn.bjfu.fesdmp.json.IndexResourceJson;
 import cn.bjfu.fesdmp.sys.service.IIndexResourceService;
+import cn.bjfu.fesdmp.sys.service.ILocationService;
 import cn.bjfu.fesdmp.sys.service.IResourceGroupService;
 import cn.bjfu.fesdmp.sys.service.IResourceRelationService;
 import cn.bjfu.fesdmp.utils.PageInfoBean;
@@ -65,6 +66,8 @@ public class IndexManagerController extends BaseController {
 	private IIndexResourceService indexService;
 	@Autowired
 	private IResourceRelationService resourceRelationService; 
+	@Autowired
+	private ILocationService locationService; 
 	@Autowired
 	private IResourceGroupService resourceGroupService; 
 	@RequestMapping(value = "/listView", method = RequestMethod.GET)
@@ -232,6 +235,7 @@ public class IndexManagerController extends BaseController {
 			if(indexResource.getModifier()!=null)
 				indexResourceJson.setModifierId(indexResource.getModifier().getId());
 			indexResourceJson.setModifyTime(indexResource.getModifyTime());
+			indexResourceJson.setLocationName(this.locationService.findLocationNameByResourceGroupId(this.resourceGroupService.findResourceGroupIdByIndexResourceId(indexResource.getId())));
 			indexResourceJsonList.add(indexResourceJson);
 		}
 
@@ -253,7 +257,7 @@ public class IndexManagerController extends BaseController {
 		for(int i=0;i<indexResourceList.size();i++){
 			IndexResource indexResource=new IndexResource();
 			indexResource.setId(indexResourceList.get(i).getId());
-			indexResource.setIndexEnName(indexResourceList.get(i).getIndexEnName());
+			indexResource.setIndexName(indexResourceList.get(i).getIndexName());
 			newIndexResourceList.add(indexResource);
 		}
 		

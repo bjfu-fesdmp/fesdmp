@@ -6,6 +6,7 @@ public class AddIndexResourceForUserJson {
 	private String userId;
 	private String indexResourceId;
 	private String resourceGroupId;
+	private String locationId;
 	public AddIndexResourceForUserJson() {}
 	
 
@@ -32,4 +33,23 @@ public class AddIndexResourceForUserJson {
 	public void setResourceGroupId(String resourceGroupId) {
 		this.resourceGroupId = resourceGroupId;
 	}
+
+
+
+	/**
+	 * @return the locationId
+	 */
+	public String getLocationId() {
+		return locationId;
+	}
+
+
+
+	/**
+	 * @param locationId the locationId to set
+	 */
+	public void setLocationId(String locationId) {
+		this.locationId = locationId;
+	}
+	
 }

@@ -51,7 +51,15 @@ public class ResourceGroupDaoImpl extends AbstractGenericDao<ResourceGroup> impl
 		return resourceGroupList;
 
 	}
-	
+	@Override
+	public List<ResourceGroup> findResourceGroupByUserIdAndLocation(String userId,int locationId){
+		String jpal = " SELECT p FROM ResourceGroup p,UserResourceGroupRelation m,LocationResourceGroupRelation n where p.id=n.resourceGroup.id and n.location.id="+locationId+" and p.id=m.resourceGroup.id and m.user.id="+userId;
+		logger.info(jpal);
+		Query query = super.getEntityManager().createQuery(jpal);
+		List<ResourceGroup> resourceGroupList=query.getResultList();
+		return resourceGroupList;
+
+	}
 	@Override
 	public List<ResourceGroup> findResourceGroupInThisLocation(int locationId){
 		String jpal = " SELECT p FROM ResourceGroup p,LocationResourceGroupRelation m where p.id=m.resourceGroup.id and m.location.id="+locationId;
@@ -127,6 +135,18 @@ public class ResourceGroupDaoImpl extends AbstractGenericDao<ResourceGroup> impl
 			return null;
 		else
 			return list.get(0).getGroupName();
+		
+	}
+	@Override
+	public int findResourceGroupIdByIndexResourceId(int indexResourceId){
+		String jpal = " SELECT p FROM ResourceGroup p,ResourceRelation m where p.id=m.resourceGroup.id and m.indexResource.id="+indexResourceId;
+		logger.info(jpal);
+		Query query = super.getEntityManager().createQuery(jpal);
+		List<ResourceGroup> list=query.getResultList();
+		if(list.isEmpty())
+			return 0;
+		else
+			return list.get(0).getId();
 		
 	}
 }

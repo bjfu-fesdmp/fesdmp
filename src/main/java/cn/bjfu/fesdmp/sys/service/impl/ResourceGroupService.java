@@ -99,6 +99,9 @@ public class ResourceGroupService implements IResourceGroupService {
 	public List<ResourceGroup> findResourceGroupByUserId(String userId){
 		return this.resourceGroupDao.findResourceGroupByUserId(userId);	
 	}
+	public List<ResourceGroup> findResourceGroupByUserIdAndLocation(String userId,int locationId){
+		return this.resourceGroupDao.findResourceGroupByUserIdAndLocation(userId,locationId);	
+	}
 	public List<ResourceGroup> findResourceGroupInThisLocation(int locationId){
 		return this.resourceGroupDao.findResourceGroupInThisLocation(locationId);	
 	}
@@ -135,5 +138,9 @@ public class ResourceGroupService implements IResourceGroupService {
 	@Override
 	public String findResourceGroupNameByIndexResourceId(int indexResourceId){
 		return this.resourceGroupDao.findResourceGroupNameByIndexResourceId(indexResourceId);
+	}
+	@Override
+	public int findResourceGroupIdByIndexResourceId(int indexResourceId){
+		return this.resourceGroupDao.findResourceGroupIdByIndexResourceId(indexResourceId);
 	}
 }

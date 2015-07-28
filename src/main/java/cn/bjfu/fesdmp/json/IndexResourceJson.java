@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class IndexResourceJson {
 	private int locationId;
+	private String locationName;
 	private Integer id;
 	private Integer resourceGroupId;
 	private String indexName;
@@ -134,6 +135,20 @@ public class IndexResourceJson {
 
 	public void setModifyTime(Date modifyTime) {
 		this.modifyTime = modifyTime;
+	}
+
+	/**
+	 * @return the locationName
+	 */
+	public String getLocationName() {
+		return locationName;
+	}
+
+	/**
+	 * @param locationName the locationName to set
+	 */
+	public void setLocationName(String locationName) {
+		this.locationName = locationName;
 	}
 	
 }

@@ -1,5 +1,23 @@
+Ext.define('locationList', {
+    extend: 'Ext.data.Store',
+    fields: ['id', 'locationName'],
+	proxy : {
+		type : 'ajax',
+		actionMethods: {
+            create : 'POST',
+            read   : 'POST', // by default GET
+            update : 'POST',
+            destroy: 'POST'
+		},
+		url : Global_Path+'location/getAllLocationList',
+		reader : {
+			type : 'json',
+			root : 'result'
+		}
+	}
+});
 var indexResourceListStore=new Ext.data.Store({
-    fields: ['id', 'indexEnName'],
+    fields: ['id', 'indexName'],
 	proxy : {
 		type : 'ajax',
 		actionMethods: {
@@ -34,8 +52,7 @@ Ext.define('userList', {
 		}
 	}
 });
-Ext.define('resourceGroupList', {
-    extend: 'Ext.data.Store',
+var resourceGroupListStore=new Ext.data.Store({
     fields: ['id', 'groupName'],
 	proxy : {
 		type : 'ajax',
@@ -45,7 +62,7 @@ Ext.define('resourceGroupList', {
             update : 'POST',
             destroy: 'POST'
 		},
-		url : Global_Path+'resourceGroup/getResourceGroupListOfNowUser',
+		url : Global_Path+'resourceGroup/getResourceGroupListOfNowUserAndLocation',
 		reader : {
 			type : 'json',
 			root : 'result'
@@ -92,16 +109,40 @@ Ext.define('Bjfu.userIndexResource.view.AddIndexResourceForUser',{
     	    
     	        }
     	    },{
+    	    	id : 'location',
+    	    	xtype : 'combo',
+    	        fieldLabel : '所属区域<font color="red">*</font>',
+    	        name : 'locationId',
+    	        store : Ext.create('locationList'),
+    	        allowBlank : false,
+    	        editable : false,
+    	        displayField : 'locationName',
+    	        valueField : 'id',
+    	        emptyText : '请选择...',	
+    	        listeners:{
+    	            select : function(combo, record, index) {
+    	            	Ext.getCmp('indexResource').clearValue();
+    	            	Ext.getCmp('ResourceGroup').clearValue();
+    	            	var locationId=combo.getValue();
+    	                resourceGroupListStore.load({
+    	               		params: {
+    	               			locationId:locationId
+    	           			}
+    	            });
+    	            }
+    	        }		
+    	        },{
     	    	id : 'ResourceGroup',
     	    	xtype : 'combo',
     	        fieldLabel : '资源组<font color="red">*</font>',
     	        name : 'resourceGroupId',
-    	        store : Ext.create('resourceGroupList'),
+    	        store : resourceGroupListStore,
     	        allowBlank : false,
     	        editable : false,
     	        displayField : 'groupName',
     	        valueField : 'id',
     	        emptyText : '请选择...'	,
+    	        queryMode:'local',
     	        listeners : { //监听该下拉列表的选择事件
     	            select : function(combo, record, index) {
     	            	Ext.getCmp('indexResource').clearValue();
@@ -124,7 +165,7 @@ Ext.define('Bjfu.userIndexResource.view.AddIndexResourceForUser',{
     	        store : indexResourceListStore,
     	        allowBlank : false,
     	        editable : false,
-    	        displayField : 'indexEnName',
+    	        displayField : 'indexName',
     	        valueField : 'id',
     	        emptyText : '请选择...'	,
     	        queryMode:'local'

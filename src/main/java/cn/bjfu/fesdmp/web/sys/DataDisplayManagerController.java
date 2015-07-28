@@ -1,6 +1,7 @@
 package cn.bjfu.fesdmp.web.sys;
 
 import cn.bjfu.fesdmp.domain.sys.IndexResource;
+import cn.bjfu.fesdmp.domain.sys.Location;
 import cn.bjfu.fesdmp.domain.sys.ResourceGroup;
 import cn.bjfu.fesdmp.domain.sys.User;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
@@ -11,6 +12,7 @@ import cn.bjfu.fesdmp.json.TableJson;
 import cn.bjfu.fesdmp.json.TreeJson;
 import cn.bjfu.fesdmp.sys.service.IDataService;
 import cn.bjfu.fesdmp.sys.service.IIndexResourceService;
+import cn.bjfu.fesdmp.sys.service.ILocationService;
 import cn.bjfu.fesdmp.sys.service.IResourceGroupService;
 import cn.bjfu.fesdmp.utils.PageInfoBean;
 import cn.bjfu.fesdmp.utils.Pagination;
@@ -74,6 +76,8 @@ public class DataDisplayManagerController extends BaseController {
 	@Autowired
 	private IDataService dataService;
 	@Autowired
+	private ILocationService locationService;
+	@Autowired
 	private IResourceGroupService resourceGroupService;
 	@Autowired
 	private IIndexResourceService indexResourceService;
@@ -134,21 +138,23 @@ public class DataDisplayManagerController extends BaseController {
 		//所有表
 		List<TableJson> tableList = this.dataService.findTable();
 		// 所有的节点列表
-		List<TreeJson> treeList = new ArrayList();
+		List<TreeJson> treeTimeList = new ArrayList();
 		//所有年份节点
+		List<TreeJson> treeOtherList = new ArrayList();
+		//其他节点
 		TreeJson firstYearTree = new TreeJson();
 		firstYearTree.setId(Integer.parseInt(tableList.get(0).getName()
 				.substring(0, 4)));
 		firstYearTree.setParentId(0);
 		firstYearTree.setLeaf(false);
 		firstYearTree.setText(tableList.get(0).getName().substring(0, 4));
-		treeList.add(firstYearTree);
+		treeTimeList.add(firstYearTree);
 		for (int i = 1; i < tableList.size(); i++) {
 			Integer temp = Integer.parseInt(tableList.get(i).getName()
 					.substring(0, 4));
 			boolean exist = false;
-			for (int j = 0; j < treeList.size(); j++) {
-				if (treeList.get(j).getId().equals(temp)) {
+			for (int j = 0; j < treeTimeList.size(); j++) {
+				if (treeTimeList.get(j).getId().equals(temp)) {
 					exist = true;
 					continue;
 				}
@@ -159,52 +165,64 @@ public class DataDisplayManagerController extends BaseController {
 				yearTree.setParentId(0);
 				yearTree.setLeaf(false);
 				yearTree.setId(temp);
-				treeList.add(yearTree);
+				treeTimeList.add(yearTree);
 			}
 		}
 			//所有其他节点
 		IOrder order = new Order();
 		order.addOrderBy("id", "ASC");
+		List<Location> locationList=this.locationService.queryAll(order);
 		List<ResourceGroup> resourceGroupList=this.resourceGroupService.queryAll(order);
-		for (int i = 0; i < treeList.size(); i++) {
-			if(treeList.get(i).getText().getBytes().length==4){
+		for (int i = 0; i < treeTimeList.size(); i++) {
+	//		if(treeList.get(i).getText().getBytes().length==4){
+				Integer temp = treeTimeList.get(i).getId();
+				for(int j=0;j<locationList.size();j++)
+				{
+					TreeJson tempTree = new TreeJson();
+					tempTree.setText(locationList.get(j).getLocationName());
+					Integer tempLocation = temp * 100000 + locationList.get(j).getId();
+					tempTree.setId(tempLocation);
+					tempTree.setParentId(temp);
+					treeOtherList.add(tempTree);
+				}
 				for (int j = 0; j < resourceGroupList.size(); j++){
 					TreeJson tempTree = new TreeJson();
-					List<IndexResource> indexResourceList=this.indexResourceService.queryByResourceGroupId(resourceGroupList.get(j).getId());
-					Integer temp = treeList.get(i).getId();
-					Integer temp0 = temp * 100000 + j;
-					tempTree.setId(temp0);
-					tempTree.setParentId(temp);
+					Integer tempLocation = temp * 100000 + this.locationService.findLocationIdByResourceGroupId(resourceGroupList.get(j).getId());
+					List<IndexResource> indexResourceList=this.indexResourceService.queryByResourceGroupId(resourceGroupList.get(j).getId());			
+					tempTree.setParentId(tempLocation);
+					Integer tempResource = tempLocation * 100000 + j;
+					tempTree.setId(tempResource);
+					
 					tempTree.setText(resourceGroupList.get(j).getGroupName());
 					tempTree.setLeaf(true);
 					for(int m=0;m<tableList.size();m++){
 						for(int n=0;n<indexResourceList.size();n++){
 							if(tableList.get(m).getName().substring(5).equalsIgnoreCase(indexResourceList.get(n).getIndexEnName())&&tableList.get(m).getName().substring(0,4).equals(String.valueOf(temp))){
 								TreeJson newtempTree = new TreeJson();
-								Integer temp00 = temp0 * 100000 + n;
-								newtempTree.setId(temp00);
-								newtempTree.setParentId(temp0);
+								Integer tempIndexResource = tempResource * 100000 + n;
+								newtempTree.setId(tempIndexResource);
+								newtempTree.setParentId(tempResource);
 								newtempTree.setText(tableList.get(m).getName());
 								newtempTree.setLeaf(true);
-								treeList.add(newtempTree);
+								treeOtherList.add(newtempTree);
 								if(tempTree.getLeaf()==true)
 									tempTree.setLeaf(false);
 							}
 						}
 					}
-					treeList.add(tempTree);
+					treeOtherList.add(tempTree);
 				}
-			}
+	//		}
 		}
 		
-		
+		treeOtherList.addAll(treeTimeList);
 		
 		
 		List<TreeJson> newtreeList = new ArrayList();
-		for (int i = 0; i < treeList.size(); i++) {
-			if (treeList.get(i).getParentId()
+		for (int i = 0; i < treeOtherList.size(); i++) {
+			if (treeOtherList.get(i).getParentId()
 					.equals(Integer.parseInt(parentId)))
-				newtreeList.add(treeList.get(i));
+				newtreeList.add(treeOtherList.get(i));
 		}
 
 		Map<String, Object> result = new HashMap<String, Object>();

@@ -12,12 +12,12 @@ Ext.define('Bjfu.userIndexResource.view.IndexResourceListView',{
 	overflowY : 'scroll', //只显示上下滚动的滚动条
 	overflowX : 'hidden',
 	//selType : 'checkboxmodel',	// 单选，复选框
-	requires : ['Bjfu.indexResource.model.IndexResource'],
+	requires : ['Bjfu.userIndexResource.model.IndexResource'],
 	
 	initComponent : function() {
 		var me = this;
 		var gridStore = Ext.create('Ext.data.Store', {
-			model : 'Bjfu.indexResource.model.IndexResource',
+			model : 'Bjfu.userIndexResource.model.IndexResource',
 			pageSize : 25,
 			proxy : {
 				type : 'ajax',
@@ -63,8 +63,19 @@ Ext.define('Bjfu.userIndexResource.view.IndexResourceListView',{
 				Ext.create('Ext.grid.RowNumberer',{
 			          		header : '序号',
 			          		align: 'left',
-			          		width : 60
-			    }), 
+			          		width : 60,
+					        hidden : true
+			    }),{
+			        text : '所属区域',
+			        dataIndex : 'locationName',
+			        width : '15%',
+			        editor : 'textfield'
+			    },{
+			        text : '所属资源组',
+			        dataIndex : 'resourceGroupName',
+			        width : '15%',
+			        editor : 'textfield'
+			    }, 
 			    {
 			        text : '中文名称',
 			        dataIndex : 'indexName',
@@ -82,20 +93,9 @@ Ext.define('Bjfu.userIndexResource.view.IndexResourceListView',{
 		                allowBlank: false
 		            }
 			    } ,{
-			        text : '描述',
-			        sortable : false,
-			        dataIndex : 'indexMemo',
-			        width : '15%',
-			        editor : 'textfield'
-			    },{
 			        text : '单位',
 			        sortable : false,
 			        dataIndex : 'indexUnit',
-			        width : '15%',
-			        editor : 'textfield'
-			    },{
-			        text : '所属资源组',
-			        dataIndex : 'resourceGroupName',
 			        width : '15%',
 			        editor : 'textfield'
 			    }],
