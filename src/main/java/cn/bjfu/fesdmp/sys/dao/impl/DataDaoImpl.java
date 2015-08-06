@@ -247,6 +247,7 @@ public class DataDaoImpl extends AbstractGenericDao<DataJson> implements IDataDa
 			datajson.setId(Integer.valueOf(result0.get(0).get("id").toString()));
 			datajson.setTime((Date)result0.get(0).get("time"));
 			datajson.setData(result0.get(0).get("data").toString());
+			datajson.setStation(result0.get(0).get("station").toString());
 			return datajson;
 	
 		

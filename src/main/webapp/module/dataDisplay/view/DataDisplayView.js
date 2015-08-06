@@ -179,7 +179,7 @@ Ext.define('Bjfu.dataDisplay.view.DataDisplayView',{
 				        },{
 						       text: '删除',
 						       scope:this, 
-						        icon:Global_Path+'/resources/extjs/images/update.png',
+						        icon:Global_Path+'/resources/extjs/images/delete.png',
 						          handler : function(o){
 							         var tableName=gridStore.baseParams.tableName;
 						      			Ext.Ajax.request({

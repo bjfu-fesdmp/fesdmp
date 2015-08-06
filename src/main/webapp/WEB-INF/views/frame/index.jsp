@@ -141,7 +141,21 @@
     								});
 								}
                 
-			                }
+			                },
+			{
+				                 
+				                    text: '数据聚类',
+									handler : function() {
+										Ext.getCmp('centerPanel').getLoader().load({
+											autoLoad : true,
+	    									url: Global_Path + "dataClustering/listView",
+	            	 						scripts : true,
+	            	 						loadMask : true,
+	            	 						noCache : true	
+	    								});
+									}
+	                
+				                }
 			            ]
 			        }
 			},' ',{
