@@ -1,4 +1,4 @@
-Ext.define('Bjfu.dataClustering.view.KMeans',{
+Ext.define('Bjfu.dataClustering.view.KMedoids',{
 		extend:'Ext.form.Panel',
         bodyPadding: 10,  
     	border:false,
@@ -16,7 +16,7 @@ Ext.define('Bjfu.dataClustering.view.KMeans',{
     					update : 'POST',
     					destroy : 'POST'
     				},
-    				url : Global_Path + 'dataClustering/kmeans',
+    				url : Global_Path + 'dataClustering/kmedoids',
     				reader : {
     					type : 'json',
     					root : 'result',

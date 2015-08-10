@@ -38,6 +38,11 @@ Ext.define('Bjfu.dataClustering.view.QueryData',{
 				vtype : 'daterange',
 				editable : false,
 				startDateField : "startTime"
+    	    },{
+    	    	id : 'station',
+    	    	xtype : 'textfield',
+    	        fieldLabel: '生态站名',
+    	        name: 'station'
     	    }],
     	    buttonAlign:'center', 
     	    buttons: [{
@@ -54,7 +59,8 @@ Ext.define('Bjfu.dataClustering.view.QueryData',{
     			            var searchJson = JSON.stringify(this.up('form').getForm().getValues());
     			            Ext.getCmp("dataClusteringId").getStore().loadPage(1, {
     			               		params: {
-    			           				searchJson: searchJson
+    			           				searchJson: searchJson,
+    			           				tableName:me.tableName
     			           			}
     			            });
     			            this.up('window').close();
@@ -65,4 +71,3 @@ Ext.define('Bjfu.dataClustering.view.QueryData',{
 	}
 	
 });
-

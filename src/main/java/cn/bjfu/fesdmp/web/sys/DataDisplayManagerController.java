@@ -52,6 +52,8 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -467,10 +469,14 @@ public class DataDisplayManagerController extends BaseController {
 				}
 				// 循环行Row
 				for (int rowNum = 1; rowNum <= hssfSheet.getLastRowNum(); rowNum++) {
+					try{
 					HSSFRow hssfRow = hssfSheet.getRow(rowNum);
 					if (hssfRow == null) {
 						continue;
 					}
+					
+					if(hssfRow.getCell(0)!=null||hssfRow.getCell(1)!=null||hssfRow.getCell(2)!=null)
+					{
 					dataJson = new DataJson();
 					hssfRow.getCell(0).setCellType(Cell.CELL_TYPE_NUMERIC);
 					hssfRow.getCell(1).setCellType(Cell.CELL_TYPE_STRING);
@@ -491,8 +497,16 @@ public class DataDisplayManagerController extends BaseController {
 					}
 					dataJson.setStation(stationCell.getStringCellValue());
 					list.add(dataJson);
+					}
 				}
-			}
+				catch(Exception e){
+					
+				}
+				}
+				
+				
+				}
+
 			dataService.addData(newTableName, list);
 		} else {
 			BufferedReader input = new BufferedReader(new FileReader(savePath
