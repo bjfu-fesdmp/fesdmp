@@ -1,7 +1,9 @@
 package cn.bjfu.fesdmp.web.sys;
 
+import cn.bjfu.fesdmp.algorithm.GetDayAve;
 import cn.bjfu.fesdmp.algorithm.Kmeans;
 import cn.bjfu.fesdmp.algorithm.Kmedoids;
+import cn.bjfu.fesdmp.json.AveDataJson;
 import cn.bjfu.fesdmp.json.ChartDataJson;
 import cn.bjfu.fesdmp.json.DataJson;
 import cn.bjfu.fesdmp.json.StatisticsBean;
@@ -10,6 +12,7 @@ import cn.bjfu.fesdmp.sys.service.IIndexResourceService;
 import cn.bjfu.fesdmp.sys.service.ILocationService;
 import cn.bjfu.fesdmp.sys.service.IResourceGroupService;
 import cn.bjfu.fesdmp.web.BaseController;
+import cn.bjfu.fesdmp.algorithm.GetMonthAve;
 
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -134,14 +137,15 @@ public class DataClusteringManagerController extends BaseController {
 			result.put(SUCCESS, Boolean.TRUE);	
 			return result;	
 	}
-//返回当前页面所有数据
-@RequestMapping(value = "/allData", method = RequestMethod.POST)
+//返回日平均数据
+@RequestMapping(value = "/dayAve", method = RequestMethod.POST)
 @ResponseBody
-public Map<String, Object> allData(HttpServletRequest request,String ids, String tableName) throws Exception {
+public Map<String, Object> dayAve(HttpServletRequest request,String ids, String tableName) throws Exception {
 	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-	logger.info("kmeans method.");
+	logger.info("dayAve method.");
 	Map<String, Object> result = new HashMap<String, Object>();
 	List<ChartDataJson> list = new ArrayList<ChartDataJson>();
+	List<AveDataJson> newList = new ArrayList<AveDataJson>();
 	if(tableName!=null){
 		if(tableName.length()>4){
 			if(tableName.charAt(4)=='_'){
@@ -156,9 +160,12 @@ public Map<String, Object> allData(HttpServletRequest request,String ids, String
 		chartDataJson.setData(Double.parseDouble(dataJson.getData()));
 		list.add(chartDataJson);
 	}
+	GetDayAve dayAve=new GetDayAve(list);
+	newList =dayAve.comput();
+	
 	}
 	}
-	result.put(RESULT, list);
+	result.put(RESULT, newList);
 	result.put(SUCCESS, Boolean.TRUE);
 	return result;
 			}
@@ -171,7 +178,7 @@ public Map<String, Object> allData(HttpServletRequest request,String ids, String
 @ResponseBody
 public Map<String, Object> kmedoids(HttpServletRequest request,String ids, String tableName,String num) throws Exception {
 	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-	logger.info("kmeans method.");
+	logger.info("kmedoids method.");
 	Map<String, Object> result = new HashMap<String, Object>();
 	if(tableName!=null){
 		if(tableName.length()>4){
@@ -230,6 +237,64 @@ public Map<String, Object> kmedoids(HttpServletRequest request,String ids, Strin
 	else
 		result.put(SUCCESS, Boolean.FALSE);	
 	
+	return result;
+}
+//返回月平均数据
+@RequestMapping(value = "/monthAve", method = RequestMethod.POST)
+@ResponseBody
+public Map<String, Object> monthAve(HttpServletRequest request,String ids, String tableName) throws Exception {
+	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+	logger.info("monthAve method.");
+	Map<String, Object> result = new HashMap<String, Object>();
+	List<ChartDataJson> list = new ArrayList<ChartDataJson>();
+	List<AveDataJson> monthList = new ArrayList<AveDataJson>();
+	if(tableName!=null){
+		if(tableName.length()>4){
+			if(tableName.charAt(4)=='_'){
+	String newTableName = tableName.substring(0, 4) + "_"
+			+ tableName.substring(5);
+	String id[] = ids.split(",");
+	for (int i = 0; i < id.length; i++) {
+		DataJson dataJson = new DataJson();
+		ChartDataJson chartDataJson = new ChartDataJson();
+		dataJson = this.dataService.findDataById(id[i], newTableName);
+		chartDataJson.setTime(dataJson.getTime());
+		chartDataJson.setData(Double.parseDouble(dataJson.getData()));
+		list.add(chartDataJson);
+	}
+
+	GetMonthAve January=new GetMonthAve(list,1);
+	monthList.add(January.comput());
+	GetMonthAve Feburary=new GetMonthAve(list,2);
+	monthList.add(Feburary.comput());
+	GetMonthAve March=new GetMonthAve(list,3);
+	monthList.add(March.comput());
+	GetMonthAve April=new GetMonthAve(list,4);
+	monthList.add(April.comput());
+	GetMonthAve May=new GetMonthAve(list,5);
+	monthList.add(May.comput());
+	GetMonthAve June=new GetMonthAve(list,6);
+	monthList.add(June.comput());
+	GetMonthAve July=new GetMonthAve(list,7);
+	monthList.add(July.comput());
+	GetMonthAve August=new GetMonthAve(list,8);
+	monthList.add(August.comput());
+	GetMonthAve September=new GetMonthAve(list,9);
+	monthList.add(September.comput());
+	GetMonthAve October=new GetMonthAve(list,10);
+	monthList.add(October.comput());
+	GetMonthAve November=new GetMonthAve(list,11);
+	monthList.add(November.comput());
+	GetMonthAve December=new GetMonthAve(list,12);
+	monthList.add(December.comput());
+	}
+	}
+	result.put(RESULT, monthList);
+	result.put(SUCCESS, Boolean.TRUE);
+	return result;
+			}
+	else
+		result.put(SUCCESS, Boolean.FALSE);	
 	return result;
 }
 }
