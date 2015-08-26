@@ -144,7 +144,7 @@
 			                },
 			{
 				                 
-				                    text: '数据聚类',
+				                    text: '数据聚类(单表)',
 									handler : function() {
 										Ext.getCmp('centerPanel').getLoader().load({
 											autoLoad : true,
@@ -155,7 +155,21 @@
 	    								});
 									}
 	                
-				                }
+				                },
+				{
+					                 
+					                    text: '数据聚类(联表)',
+										handler : function() {
+											Ext.getCmp('centerPanel').getLoader().load({
+												autoLoad : true,
+		    									url: Global_Path + "dataClustering/unionListView",
+		            	 						scripts : true,
+		            	 						loadMask : true,
+		            	 						noCache : true	
+		    								});
+										}
+		                
+					                }
 			            ]
 			        }
 			},' ',{

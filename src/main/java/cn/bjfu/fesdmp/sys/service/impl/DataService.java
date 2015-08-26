@@ -83,10 +83,19 @@ public class DataService implements IDataService {
 			IOrder order, Pagination<DataJson> page, JoinMode joinMode) {
 		return this.dataDao.findByCondtinWithOperationTime(tableName,condition, order, page, joinMode);
 	}
-	
+	@Override
+	public List<DataJson> queryUnionByCondtinWithOperationTime(String tableName,DataSearch condition,
+			IOrder order, Pagination<DataJson> page, JoinMode joinMode) {
+		return this.dataDao.findUnionByCondtinWithOperationTime(tableName,condition, order, page, joinMode);
+	}
 	@Override
 	public List<TableJson> findTable(){
 		return this.dataDao.findTable();
+	};
+	
+	@Override
+	public boolean checkIfHasTable(String tableName){
+		return this.dataDao.checkIfHasTable(tableName);
 	};
 }
  

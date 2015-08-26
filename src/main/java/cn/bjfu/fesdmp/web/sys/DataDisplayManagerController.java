@@ -3,6 +3,7 @@ package cn.bjfu.fesdmp.web.sys;
 import cn.bjfu.fesdmp.domain.sys.IndexResource;
 import cn.bjfu.fesdmp.domain.sys.Location;
 import cn.bjfu.fesdmp.domain.sys.ResourceGroup;
+import cn.bjfu.fesdmp.domain.sys.SystemLog;
 import cn.bjfu.fesdmp.domain.sys.User;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
@@ -98,6 +99,7 @@ public class DataDisplayManagerController extends BaseController {
 		logger.info("dataDisplayList method.");
 		logger.info(pageInfo);
 		DataSearch dataSearch = null;
+		
 		Map<String, Object> result = new HashMap<String, Object>();
 		if(tableName!=null){
 		if(tableName.length()>4){
@@ -120,6 +122,8 @@ public class DataDisplayManagerController extends BaseController {
 				logger.info(dataSearch);
 				this.dataService.queryByCondtinWithOperationTime(newTableName,
 						dataSearch, order, page, JoinMode.AND);
+				List<DataJson> lll=this.dataService.queryByCondtinWithOperationTime(newTableName,
+						dataSearch, order, page, JoinMode.AND);
 				result.put(PAGE_COUNT, page.getTotalRecord());
 				result.put(RESULT, page.getDatas());
 		
@@ -129,7 +133,44 @@ public class DataDisplayManagerController extends BaseController {
 		result.put(SUCCESS, Boolean.TRUE);
 		return result;
 	}
+	@RequestMapping(value = "/unionDataDisplayList", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> unionDataDisplayList(PageInfoBean pageInfo,
+			String tableName) throws Exception {
 
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		logger.info("unionDataDisplayList method.");
+		logger.info(pageInfo);
+		DataSearch dataSearch = null;
+		Map<String, Object> result = new HashMap<String, Object>();
+	
+		if(tableName!=null){
+		if(this.dataService.checkIfHasTable(tableName)){
+				Pagination<DataJson> page = new Pagination<DataJson>();
+				page.setPageSize(pageInfo.getLimit());
+				page.setCurrentPage(pageInfo.getPage());
+
+				IOrder order = new Order();
+				order.addOrderBy("time", "DESC");
+				order.addOrderBy("station", "DESC");
+
+				if (!StringUtils.isEmpty(pageInfo.getSearchJson())) {
+					dataSearch = mapper.readValue(pageInfo.getSearchJson(),
+							DataSearch.class);
+				}
+
+				logger.info(dataSearch);
+				this.dataService.queryUnionByCondtinWithOperationTime(tableName,
+						dataSearch, order, page, JoinMode.AND);
+				result.put(PAGE_COUNT, page.getTotalRecord());
+				result.put(RESULT, page.getDatas());
+		
+			
+		}
+	}	
+		result.put(SUCCESS, Boolean.TRUE);
+		return result;
+	}
 	@RequestMapping(value = "/tableList", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> tableList(String parentId) throws Exception {
@@ -232,7 +273,72 @@ public class DataDisplayManagerController extends BaseController {
 		result.put(SUCCESS, Boolean.TRUE);
 		return result;
 	}
+	@RequestMapping(value = "/unionTableList", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> unionTableList(String parentId) throws Exception {
 
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+
+		logger.info("tableList method.");
+		// 所有的节点列表
+		List<TreeJson> treeOtherList = new ArrayList();
+
+			//所有其他节点
+		IOrder order = new Order();
+		order.addOrderBy("id", "ASC");
+		List<Location> locationList=this.locationService.queryAll(order);
+		List<ResourceGroup> resourceGroupList=this.resourceGroupService.queryAll(order);
+
+	//		if(treeList.get(i).getText().getBytes().length==4){
+				for(int j=0;j<locationList.size();j++)
+				{
+					TreeJson tempTree = new TreeJson();
+					tempTree.setText(locationList.get(j).getLocationName());
+					tempTree.setParentId(0);
+					Integer tempLocation = locationList.get(j).getId();
+					tempTree.setId(tempLocation);
+					treeOtherList.add(tempTree);
+				}
+				for (int j = 0; j < resourceGroupList.size(); j++){
+					TreeJson tempTree = new TreeJson();
+					Integer tempLocation = this.locationService.findLocationIdByResourceGroupId(resourceGroupList.get(j).getId());
+					List<IndexResource> indexResourceList=this.indexResourceService.queryByResourceGroupId(resourceGroupList.get(j).getId());			
+					tempTree.setParentId(tempLocation);
+					Integer tempResource = tempLocation * 100000 + j;
+					tempTree.setId(tempResource);
+					
+					tempTree.setText(resourceGroupList.get(j).getGroupName());
+					tempTree.setLeaf(true);
+						for(int n=0;n<indexResourceList.size();n++){
+								TreeJson newtempTree = new TreeJson();
+								Integer tempIndexResource = tempResource * 100000 + n;
+								newtempTree.setId(tempIndexResource);
+								newtempTree.setParentId(tempResource);
+								newtempTree.setText(indexResourceList.get(n).getIndexEnName());
+								newtempTree.setLeaf(true);
+								treeOtherList.add(newtempTree);
+								if(tempTree.getLeaf()==true)
+									tempTree.setLeaf(false);
+							
+						}
+					treeOtherList.add(tempTree);
+				}
+	//		}
+		
+		
+		
+		List<TreeJson> newtreeList = new ArrayList();
+		for (int i = 0; i < treeOtherList.size(); i++) {
+			if (treeOtherList.get(i).getParentId()
+					.equals(Integer.parseInt(parentId)))
+				newtreeList.add(treeOtherList.get(i));
+		}
+
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put(RESULT, newtreeList);
+		result.put(SUCCESS, Boolean.TRUE);
+		return result;
+	}
 	@RequestMapping(value = "/uploadGroupFile", method = RequestMethod.POST)
 	@MethodRecordLog(moduleName="数据管理", bussinessType="DATA_OPERATE", operateType = "ADD", desc="批量上传数据")
 	@ResponseBody

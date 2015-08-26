@@ -11,6 +11,7 @@ package cn.bjfu.fesdmp.web.sys;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -89,6 +90,7 @@ public class LogManagerController extends BaseController {
 		logger.info(logSearch);
 		
 		this.systemLogService.queryByCondtinWithOperationTime(logSearch, order, page, JoinMode.AND);
+		
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put(PAGE_COUNT, page.getTotalRecord());
 		result.put(RESULT, page.getDatas());

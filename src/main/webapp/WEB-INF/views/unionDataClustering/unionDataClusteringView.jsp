@@ -2,31 +2,31 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>数据聚类(单表)</title>
+	<title>数据聚类(联表)</title>
 </head>
 <body>
-<div id ="dataClusteringPanel"></div>
+<div id ="unionDataClusteringPanel"></div>
 	<script type="text/javascript">
 		Ext.onReady(function() {
-			 Ext.Loader.setPath('Bjfu.dataClustering', Global_Path + 'module/dataClustering');
+			 Ext.Loader.setPath('Bjfu.unionDataClustering', Global_Path + 'module/unionDataClustering');
 	  	 	 Ext.Loader.setConfig({
 		    	enabled: true,
 		    	paths: {
-		    		'Bjfu.dataClustering.view.DataDisplayView': Global_Path + 'module/dataClustering/view/DataDisplayView.js',
-		    		'Bjfu.dataClustering.view.TableDisplayView': Global_Path + 'module/dataClustering/view/TableDisplayView.js',
-		    		'Bjfu.dataClustering.view.QueryData': Global_Path + 'module/dataClustering/view/QueryData.js',
-		    		'Bjfu.dataClustering.view.KMeans': Global_Path + 'module/dataClustering/view/KMeans.js'
+		    		'Bjfu.unionDataClustering.view.DataDisplayView': Global_Path + 'module/unionDataClustering/view/DataDisplayView.js',
+		    		'Bjfu.unionDataClustering.view.TableDisplayView': Global_Path + 'module/unionDataClustering/view/TableDisplayView.js',
+		    		'Bjfu.unionDataClustering.view.QueryData': Global_Path + 'module/unionDataClustering/view/QueryData.js',
+		    		'Bjfu.unionDataClustering.view.KMeans': Global_Path + 'module/unionDataClustering/view/KMeans.js'
 		    	}
 			 });
 		  	 	
-			var dataClusteringView = Ext.create('Bjfu.dataClustering.view.DataDisplayView',{
-									id :'dataClusteringId',
+			var unionDataClusteringView = Ext.create('Bjfu.unionDataClustering.view.DataDisplayView',{
+									id :'unionDataClusteringId',
 									region:"center",
 									width:'80%',
 									autoShow : true,
 									height:400
 								});	
-			var tableDisplayView = Ext.create('Bjfu.dataClustering.view.TableDisplayView',{
+			var tableDisplayView = Ext.create('Bjfu.unionDataClustering.view.TableDisplayView',{
 				id :'tableDisplayId',
 				title:'数据表',
 				region:"west",
@@ -44,8 +44,8 @@
 				width:'100%',
 				height:'100%',
 				layout:'border',
-				items:[tableDisplayView,dataClusteringView],
-				renderTo:'dataClusteringPanel',
+				items:[tableDisplayView,unionDataClusteringView],
+				renderTo:'unionDataClusteringPanel',
 				listeners : {
 					'boxready' : function(){
 				 		this.updateBox(Ext.getCmp('centerPanel').getSize());

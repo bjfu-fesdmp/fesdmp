@@ -4,7 +4,7 @@
 Ext.define('Bjfu.dataClustering.view.DataDisplayView',{
 	extend : 'Ext.grid.Panel',
 	id:'dataClusteringView',
-	alias:'widget.DataDisplayView',
+	alias:'widget.DataClusteringView',
 	forceFit : true,
 	layout : 'fit',
     autoScroll: true,

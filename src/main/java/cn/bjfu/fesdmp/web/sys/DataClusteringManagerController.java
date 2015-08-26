@@ -56,6 +56,13 @@ public class DataClusteringManagerController extends BaseController {
 		logger.info("listView method.");
 		return "dataClustering/dataClusteringView";
 	}
+	
+	@RequestMapping(value = "/unionListView", method = RequestMethod.GET)
+	public String unionLileUploadPage() {
+		logger.info("listView method.");
+		return "unionDataClustering/unionDataClusteringView";
+	}
+	
 	@RequestMapping(value = "/kmeans", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> kmeans(HttpServletRequest request,String ids, String tableName,String num) throws Exception {

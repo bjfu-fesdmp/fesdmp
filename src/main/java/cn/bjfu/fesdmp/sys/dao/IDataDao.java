@@ -11,6 +11,7 @@ package cn.bjfu.fesdmp.sys.dao;
 
 import java.util.List;
 
+import cn.bjfu.fesdmp.domain.sys.ResourceTable;
 import cn.bjfu.fesdmp.domain.sys.SystemLog;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
@@ -26,6 +27,8 @@ public interface IDataDao extends IGenericDao<DataJson> {
 
 	public abstract List<DataJson> findByCondtinWithOperationTime(String tableName,final DataSearch condition, 
 			IOrder order, Pagination<DataJson> page, JoinMode joinMode);
+	public abstract List<DataJson> findUnionByCondtinWithOperationTime(String tableName,final DataSearch condition, 
+			IOrder order, Pagination<DataJson> page, JoinMode joinMode);
 	public abstract List<TableJson> findTable();
 	public abstract void dataInsert(String table,List<DataJson> list);
 	public abstract void modifyData(DataJson data,String tableName);
@@ -33,5 +36,7 @@ public interface IDataDao extends IGenericDao<DataJson> {
 	public abstract void deleteTable(String tableName);
 	public abstract void modifyTableName(String oldName,String newName);
 	public abstract DataJson findDataById(String id,String tableName);
+	public abstract boolean checkIfHasTable(String tableName);
+	public abstract List<ResourceTable> findTableByEnName(String tableName);
 }
  
