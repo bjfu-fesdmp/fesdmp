@@ -313,4 +313,24 @@ public class UserManagerController extends BaseController {
 			result.put(SUCCESS, Boolean.TRUE);	
 					return result;	
 	}
+	@RequestMapping(value = "/checkUnionFunctionIfForbid", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> checkUnionFunctionIfForbid(HttpServletRequest request,String tableName) throws Exception {
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		logger.info("checkFunctionIfForbid method.");
+		User user=(User) request.getSession().getAttribute(AppConstants.SESSION_USER);
+		Map<String, Object> result = new HashMap<String, Object>();
+		if(tableName!=null){
+					if(user.getIsAdmin().equals((byte)1))
+						result.put(SUCCESS, Boolean.FALSE);	
+					else if(this.userService.checkIfHaveAuthority(user.getId(),tableName))
+						result.put(SUCCESS, Boolean.FALSE);
+					else
+						result.put(SUCCESS, Boolean.TRUE);
+
+		}
+		else
+			result.put(SUCCESS, Boolean.TRUE);	
+					return result;	
+	}
 }

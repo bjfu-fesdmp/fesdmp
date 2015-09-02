@@ -124,6 +124,8 @@ public class DataDisplayManagerController extends BaseController {
 						dataSearch, order, page, JoinMode.AND);
 				List<DataJson> lll=this.dataService.queryByCondtinWithOperationTime(newTableName,
 						dataSearch, order, page, JoinMode.AND);
+
+				
 				result.put(PAGE_COUNT, page.getTotalRecord());
 				result.put(RESULT, page.getDatas());
 		

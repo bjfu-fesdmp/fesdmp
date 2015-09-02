@@ -16,7 +16,7 @@ Ext.define('Bjfu.unionDataClustering.view.KMedoids',{
     					update : 'POST',
     					destroy : 'POST'
     				},
-    				url : Global_Path + 'dataClustering/kmedoids',
+    				url : Global_Path + 'dataClustering/unionKmedoids',
     				reader : {
     					type : 'json',
     					root : 'result',

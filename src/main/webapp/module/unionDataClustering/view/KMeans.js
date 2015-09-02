@@ -16,7 +16,7 @@ Ext.define('Bjfu.unionDataClustering.view.KMeans',{
     					update : 'POST',
     					destroy : 'POST'
     				},
-    				url : Global_Path + 'dataClustering/kmeans',
+    				url : Global_Path + 'dataClustering/unionKmeans',
     				reader : {
     					type : 'json',
     					root : 'result',

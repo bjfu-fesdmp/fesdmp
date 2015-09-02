@@ -104,10 +104,10 @@ Ext.define('Bjfu.unionDataClustering.view.DataDisplayView',{
                 	var ids = [];
                 	
                 	grid.each(function (record) {  
-                		ids.push(record.get('id')); 
+                		ids.push(record.get('data')); 
                 	}); 
 		      			Ext.Ajax.request({
-		      				url : Global_Path+'sysuser/checkFunctionIfForbid',
+		      				url : Global_Path+'sysuser/checkUnionFunctionIfForbid',
 		      				params:{
 		      					tableName:tableName
 		      					},
@@ -135,6 +135,8 @@ Ext.define('Bjfu.unionDataClustering.view.DataDisplayView',{
 		      			        		layout:'fit',
 		      			        		items:[KMeansForm]
 		      			        	}).show();
+		      			        	
+		      			        	
 		      					}
 		      				}
 		      			});
@@ -151,10 +153,10 @@ Ext.define('Bjfu.unionDataClustering.view.DataDisplayView',{
 	                	var ids = [];
 	                	
 	                	grid.each(function (record) {  
-	                		ids.push(record.get('id')); 
+	                		ids.push(record.get('data')); 
 	                	}); 
 			      			Ext.Ajax.request({
-			      				url : Global_Path+'sysuser/checkFunctionIfForbid',
+			      				url : Global_Path+'sysuser/checkUnionFunctionIfForbid',
 			      				params:{
 			      					tableName:tableName
 			      					},
