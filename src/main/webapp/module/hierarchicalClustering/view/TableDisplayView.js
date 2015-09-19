@@ -1,13 +1,13 @@
-Ext.define('Bjfu.dataClustering.view.TableDisplayView',{
+Ext.define('Bjfu.hierarchicalClustering.view.TableDisplayView',{
 	extend:'Ext.tree.Panel',
 	rootVisible: false,
 	displayField:'text',
-	requires : ['Bjfu.dataClustering.model.TableDisplay'],
+	requires : ['Bjfu.hierarchicalClustering.model.TableDisplay'],
 	initComponent : function() {
 		var me = this;
 		var gridStore = Ext.create('Ext.data.TreeStore', {
 			id : 'table.tree',
-			model : 'Bjfu.dataClustering.model.TableDisplay',
+			model : 'Bjfu.hierarchicalClustering.model.TableDisplay',
 			nodeParam : 'parentId',
 			proxy : {
 				type : 'ajax',
@@ -17,7 +17,7 @@ Ext.define('Bjfu.dataClustering.view.TableDisplayView',{
 	                update : 'POST',
 	                destroy: 'POST'
 				},
-				url : Global_Path+'dataDisplay/tableList',
+				url : Global_Path+'dataDisplay/hierarchicalClusteringTableList',
 				reader : {
 					type : 'json',
 					root : 'result'
@@ -67,12 +67,11 @@ Ext.define('Bjfu.dataClustering.view.TableDisplayView',{
 				},
 	        	'itemclick' : function(view, record, item, index, e){
 	        		var name=record.get("id");
-	        		
-	        		 Ext.getCmp("dataClusteringId").getStore().baseParams= {
+	        		 Ext.getCmp("allTableDisplayId").getStore().baseParams= {
 	               			tableName: name,
 	               			searchJson: ''
 	           			};
-		            Ext.getCmp("dataClusteringId").getStore().loadPage(1, {
+		            Ext.getCmp("allTableDisplayId").getStore().loadPage(1, {
 	               		params: {
 	               			tableName: name,
 	               			searchJson: ''

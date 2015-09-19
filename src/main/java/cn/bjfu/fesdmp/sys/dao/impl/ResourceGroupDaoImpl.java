@@ -149,4 +149,5 @@ public class ResourceGroupDaoImpl extends AbstractGenericDao<ResourceGroup> impl
 			return list.get(0).getId();
 		
 	}
+
 }

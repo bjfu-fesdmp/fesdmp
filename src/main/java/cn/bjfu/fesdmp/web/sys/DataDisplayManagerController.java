@@ -8,6 +8,7 @@ import cn.bjfu.fesdmp.domain.sys.User;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.frame.dao.Order;
+import cn.bjfu.fesdmp.json.AllTableJson;
 import cn.bjfu.fesdmp.json.DataJson;
 import cn.bjfu.fesdmp.json.TableJson;
 import cn.bjfu.fesdmp.json.TreeJson;
@@ -102,10 +103,9 @@ public class DataDisplayManagerController extends BaseController {
 		
 		Map<String, Object> result = new HashMap<String, Object>();
 		if(tableName!=null){
-		if(tableName.length()>4){
-			if(tableName.charAt(4)=='_'){
+		if(tableName.length()==16){
 				String newTableName = tableName.substring(0, 4) + "_"
-				+ tableName.substring(5);
+				+ Integer.parseInt(tableName.substring(14));
 				Pagination<DataJson> page = new Pagination<DataJson>();
 				page.setPageSize(pageInfo.getLimit());
 				page.setCurrentPage(pageInfo.getPage());
@@ -129,7 +129,7 @@ public class DataDisplayManagerController extends BaseController {
 				result.put(PAGE_COUNT, page.getTotalRecord());
 				result.put(RESULT, page.getDatas());
 		
-			}
+			
 		}
 	}	
 		result.put(SUCCESS, Boolean.TRUE);
@@ -195,11 +195,11 @@ public class DataDisplayManagerController extends BaseController {
 		firstYearTree.setText(tableList.get(0).getName().substring(0, 4));
 		treeTimeList.add(firstYearTree);
 		for (int i = 1; i < tableList.size(); i++) {
-			Integer temp = Integer.parseInt(tableList.get(i).getName()
+			long temp = Integer.parseInt(tableList.get(i).getName()
 					.substring(0, 4));
 			boolean exist = false;
 			for (int j = 0; j < treeTimeList.size(); j++) {
-				if (treeTimeList.get(j).getId().equals(temp)) {
+				if (treeTimeList.get(j).getId()==temp) {
 					exist = true;
 					continue;
 				}
@@ -220,34 +220,34 @@ public class DataDisplayManagerController extends BaseController {
 		List<ResourceGroup> resourceGroupList=this.resourceGroupService.queryAll(order);
 		for (int i = 0; i < treeTimeList.size(); i++) {
 	//		if(treeList.get(i).getText().getBytes().length==4){
-				Integer temp = treeTimeList.get(i).getId();
+			long temp = treeTimeList.get(i).getId();
 				for(int j=0;j<locationList.size();j++)
 				{
 					TreeJson tempTree = new TreeJson();
 					tempTree.setText(locationList.get(j).getLocationName());
-					Integer tempLocation = temp * 100000 + locationList.get(j).getId();
+					long tempLocation = temp * 1000 + locationList.get(j).getId();
 					tempTree.setId(tempLocation);
 					tempTree.setParentId(temp);
 					treeOtherList.add(tempTree);
 				}
 				for (int j = 0; j < resourceGroupList.size(); j++){
 					TreeJson tempTree = new TreeJson();
-					Integer tempLocation = temp * 100000 + this.locationService.findLocationIdByResourceGroupId(resourceGroupList.get(j).getId());
+					long tempLocation = temp * 1000 + this.locationService.findLocationIdByResourceGroupId(resourceGroupList.get(j).getId());
 					List<IndexResource> indexResourceList=this.indexResourceService.queryByResourceGroupId(resourceGroupList.get(j).getId());			
 					tempTree.setParentId(tempLocation);
-					Integer tempResource = tempLocation * 100000 + j;
+					long tempResource = tempLocation * 10000 + j;
 					tempTree.setId(tempResource);
 					
 					tempTree.setText(resourceGroupList.get(j).getGroupName());
 					tempTree.setLeaf(true);
 					for(int m=0;m<tableList.size();m++){
 						for(int n=0;n<indexResourceList.size();n++){
-							if(tableList.get(m).getName().substring(5).equalsIgnoreCase(indexResourceList.get(n).getIndexEnName())&&tableList.get(m).getName().substring(0,4).equals(String.valueOf(temp))){
+							if(tableList.get(m).getName().substring(5).equalsIgnoreCase(indexResourceList.get(n).getId().toString())&&tableList.get(m).getName().substring(0,4).equals(String.valueOf(temp))){
 								TreeJson newtempTree = new TreeJson();
-								Integer tempIndexResource = tempResource * 100000 + n;
+								long tempIndexResource = tempResource * 100000 + indexResourceList.get(n).getId();
 								newtempTree.setId(tempIndexResource);
 								newtempTree.setParentId(tempResource);
-								newtempTree.setText(tableList.get(m).getName());
+								newtempTree.setText(this.indexResourceService.findByKey(Integer.parseInt(tableList.get(m).getName().substring(5))).getIndexName());
 								newtempTree.setLeaf(true);
 								treeOtherList.add(newtempTree);
 								if(tempTree.getLeaf()==true)
@@ -265,13 +265,125 @@ public class DataDisplayManagerController extends BaseController {
 		
 		List<TreeJson> newtreeList = new ArrayList();
 		for (int i = 0; i < treeOtherList.size(); i++) {
-			if (treeOtherList.get(i).getParentId()
-					.equals(Integer.parseInt(parentId)))
+			if (treeOtherList.get(i).getParentId()==Long.parseLong(parentId))
 				newtreeList.add(treeOtherList.get(i));
 		}
 
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put(RESULT, newtreeList);
+		result.put(SUCCESS, Boolean.TRUE);
+		return result;
+	}
+	@RequestMapping(value = "/hierarchicalClusteringTableList", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> hierarchicalClusteringTableList(String parentId) throws Exception {
+
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+
+		logger.info("hierarchicalClusteringTableList method.");
+		//所有表
+		List<TableJson> tableList = this.dataService.findTable();
+		// 所有的节点列表
+		List<TreeJson> treeTimeList = new ArrayList();
+		//所有年份节点
+		List<TreeJson> treeOtherList = new ArrayList();
+		//其他节点
+		TreeJson firstYearTree = new TreeJson();
+		firstYearTree.setId(Integer.parseInt(tableList.get(0).getName()
+				.substring(0, 4)));
+		firstYearTree.setParentId(0);
+		firstYearTree.setLeaf(false);
+		firstYearTree.setText(tableList.get(0).getName().substring(0, 4));
+		treeTimeList.add(firstYearTree);
+		for (int i = 1; i < tableList.size(); i++) {
+			long temp = Integer.parseInt(tableList.get(i).getName()
+					.substring(0, 4));
+			boolean exist = false;
+			for (int j = 0; j < treeTimeList.size(); j++) {
+				if (treeTimeList.get(j).getId()==temp) {
+					exist = true;
+					continue;
+				}
+			}
+			if (exist == false) {
+				TreeJson yearTree = new TreeJson();
+				yearTree.setText(tableList.get(i).getName().substring(0, 4));
+				yearTree.setParentId(0);
+				yearTree.setLeaf(false);
+				yearTree.setId(temp);
+				treeTimeList.add(yearTree);
+			}
+		}
+			//所有其他节点
+		IOrder order = new Order();
+		order.addOrderBy("id", "ASC");
+		List<Location> locationList=this.locationService.queryAll(order);
+		List<ResourceGroup> resourceGroupList=this.resourceGroupService.queryAll(order);
+		for (int i = 0; i < treeTimeList.size(); i++) {
+	//		if(treeList.get(i).getText().getBytes().length==4){
+			long temp = treeTimeList.get(i).getId();
+				for(int j=0;j<locationList.size();j++)
+				{
+					TreeJson tempTree = new TreeJson();
+					tempTree.setText(locationList.get(j).getLocationName());
+					long tempLocation = temp * 1000 + locationList.get(j).getId();
+					tempTree.setId(tempLocation);
+					tempTree.setParentId(temp);
+					treeOtherList.add(tempTree);
+				}
+				for (int j = 0; j < resourceGroupList.size(); j++){
+					TreeJson tempTree = new TreeJson();
+					long tempLocation = temp * 1000 + this.locationService.findLocationIdByResourceGroupId(resourceGroupList.get(j).getId());		
+					tempTree.setParentId(tempLocation);
+					long tempResource = tempLocation * 10000 + j+1;
+					tempTree.setId(tempResource);
+					
+					tempTree.setText(temp+"_"+resourceGroupList.get(j).getGroupName());
+					tempTree.setLeaf(true);
+					
+					treeOtherList.add(tempTree);
+				}
+	//		}
+		}
+		
+		treeOtherList.addAll(treeTimeList);
+		
+		
+		List<TreeJson> newtreeList = new ArrayList();
+		for (int i = 0; i < treeOtherList.size(); i++) {
+			if (treeOtherList.get(i).getParentId()==Integer.parseInt(parentId))
+				newtreeList.add(treeOtherList.get(i));
+		}
+
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put(RESULT, newtreeList);
+		result.put(SUCCESS, Boolean.TRUE);
+		return result;
+	}
+	@RequestMapping(value = "/hierarchicalClusteringAllTableList", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> hierarchicalClusteringAllTableList(String tableName) throws Exception {
+
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		logger.info("hierarchicalClusteringAllTableList method.");
+		List<AllTableJson> newList = new ArrayList();
+		if(tableName!=null){
+		if(tableName.length()==11){
+				String year=tableName.substring(0,4);
+				String resourceGroupId=tableName.substring(7,11);
+				List<IndexResource> indexResourceList=this.indexResourceService.queryByResourceGroupId(Integer.parseInt(resourceGroupId));			
+				for(int i=0;i<indexResourceList.size();i++){
+					AllTableJson table=new AllTableJson();
+					if(this.dataService.findTableByYearAndIndexResource(year,indexResourceList.get(i).getId()).getName()!=null){
+					table.setText(indexResourceList.get(i).getIndexName());
+					table.setId(indexResourceList.get(i).getId());
+					newList.add(table);
+					}
+				}
+		}		
+	}
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put(RESULT, newList);
 		result.put(SUCCESS, Boolean.TRUE);
 		return result;
 	}
@@ -331,8 +443,7 @@ public class DataDisplayManagerController extends BaseController {
 		
 		List<TreeJson> newtreeList = new ArrayList();
 		for (int i = 0; i < treeOtherList.size(); i++) {
-			if (treeOtherList.get(i).getParentId()
-					.equals(Integer.parseInt(parentId)))
+			if (treeOtherList.get(i).getParentId()==Integer.parseInt(parentId))
 				newtreeList.add(treeOtherList.get(i));
 		}
 
@@ -341,6 +452,7 @@ public class DataDisplayManagerController extends BaseController {
 		result.put(SUCCESS, Boolean.TRUE);
 		return result;
 	}
+	
 	@RequestMapping(value = "/uploadGroupFile", method = RequestMethod.POST)
 	@MethodRecordLog(moduleName="数据管理", bussinessType="DATA_OPERATE", operateType = "ADD", desc="批量上传数据")
 	@ResponseBody
@@ -358,15 +470,12 @@ public class DataDisplayManagerController extends BaseController {
 			extjsFormResult.setSuccess(false);
 			return extjsFormResult.toString();
 		}
-		if(tableName.length()<=4){
-			extjsFormResult.setSuccess(false);
-			return extjsFormResult.toString();
-		}
-		if(tableName.charAt(4)!='_'){
+		if(tableName.length()!=16){
 			extjsFormResult.setSuccess(false);
 			return extjsFormResult.toString();	
 		}
-		String newTableName = tableName.substring(0, 4) + "_"+ tableName.substring(5);
+		String newTableName = tableName.substring(0, 4) + "_"
+				+ Integer.parseInt(tableName.substring(14));
 		if (result.hasErrors()) {
 			for (ObjectError error : result.getAllErrors()) {
 				System.err.println("Error: " + error.getCode() + " - "+ error.getDefaultMessage());
@@ -498,10 +607,9 @@ public class DataDisplayManagerController extends BaseController {
 		logger.info("uploadFile method.");
 		ExtJSFormResult extjsFormResult = new ExtJSFormResult();
 		if(tableName!=null){
-			if(tableName.length()>4){
-				if(tableName.charAt(4)=='_'){
-		String newTableName = tableName.substring(0, 4) + "_"
-				+ tableName.substring(5);
+			if(tableName.length()==16){
+					String newTableName = tableName.substring(0, 4) + "_"
+							+ Integer.parseInt(tableName.substring(14));
 		if (result.hasErrors()) {
 			for (ObjectError error : result.getAllErrors()) {
 				System.err.println("Error: " + error.getCode() + " - "
@@ -641,9 +749,6 @@ public class DataDisplayManagerController extends BaseController {
 			dataService.addData(newTableName, list);
 		}
 			extjsFormResult.setSuccess(true);
-		}
-		else
-			extjsFormResult.setSuccess(false);
 		}
 		else
 			extjsFormResult.setSuccess(false);

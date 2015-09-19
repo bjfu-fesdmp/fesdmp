@@ -100,13 +100,16 @@ public class UserService implements IUserService {
 		return this.userDao.checkUserLoginName(userLoginName);
 	}
 	@Override
-	public boolean checkIfHaveAuthority(int userId,String indexResourceEnName){
-		if(this.userDao.checkIfIsTemporaryManager(userId,this.indexResourceDao.findByEnName(indexResourceEnName).getId()))
+	public boolean checkIfHaveAuthority(int userId,int indexResourceId){
+		if(this.userDao.checkIfIsTemporaryManager(userId,indexResourceId))
 			return true;
 		else
-			return this.userDao.checkIfHaveAuthority(userId,this.indexResourceDao.findByEnName(indexResourceEnName).getId());
+			return this.userDao.checkIfHaveAuthority(userId,indexResourceId);
 	}
 	@Override
+	public boolean checkIfIsTemporaryManager(int userId,int resourceId){
+		return this.userDao.checkIfIsTemporaryManager(userId,resourceId);
+	}
 	public boolean checkIfIsTemporaryManager(int userId){
 		return this.userDao.checkIfIsTemporaryManager(userId);
 	}

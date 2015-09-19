@@ -32,6 +32,7 @@ import java.util.Properties;
 
 
 
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -382,6 +383,23 @@ public class DataDaoImpl extends AbstractGenericDao<DataJson> implements IDataDa
 			return false;
 		else
 			return true;
+		
+	}
+	@Override
+	public TableJson findTableByYearAndIndexResource(String year,int id){
+		String jpal = " SELECT p FROM ResourceTable p where p.year="+year+" and p.indexResource.id="+id;
+		logger.info(jpal);
+		TableJson tableJson=new TableJson();
+		Query query = super.getEntityManager().createQuery(jpal);
+		List<ResourceTable> list=query.getResultList();
+		ResourceTable resourceTable=new ResourceTable();
+		if(list.size()!=0){
+			resourceTable=list.get(0);
+		String name=year+"_"+resourceTable.getIndexResource().getIndexEnName();
+		tableJson.setName(name);
+		}
+		return tableJson;
+		
 		
 	}
 }

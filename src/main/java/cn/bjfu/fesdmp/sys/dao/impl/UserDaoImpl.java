@@ -70,8 +70,8 @@ public class UserDaoImpl extends AbstractGenericDao<User> implements IUserDao {
 		
 	}
 	@Override
-	public boolean checkIfIsTemporaryManager(int userId,int indexResourceId){
-		String jpal = " SELECT p FROM UserResourceGroupRelation p,ResourceRelation m where p.user.id="+userId+"and p.resourceGroup.id=m.resourceGroup.id and m.indexResource.id="+indexResourceId;
+	public boolean checkIfIsTemporaryManager(int userId){
+		String jpal = " SELECT p FROM UserResourceGroupRelation p where p.user.id="+userId;
 		logger.info(jpal);
 		Query query = super.getEntityManager().createQuery(jpal);
 		List list=query.getResultList();
@@ -82,8 +82,8 @@ public class UserDaoImpl extends AbstractGenericDao<User> implements IUserDao {
 		
 	}
 	@Override
-	public boolean checkIfIsTemporaryManager(int userId){
-		String jpal = " SELECT p FROM UserResourceGroupRelation p where p.user.id="+userId;
+	public boolean checkIfIsTemporaryManager(int userId,int resourceId){
+		String jpal = " SELECT p FROM UserResourceGroupRelation p where p.user.id="+userId+" and p.resourceGroup.id="+resourceId;
 		logger.info(jpal);
 		Query query = super.getEntityManager().createQuery(jpal);
 		List list=query.getResultList();

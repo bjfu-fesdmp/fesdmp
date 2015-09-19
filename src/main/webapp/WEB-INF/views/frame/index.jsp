@@ -169,7 +169,21 @@
 		    								});
 										}
 		                
-					                }
+					                },
+					{
+						                 
+						                    text: '层次聚类',
+											handler : function() {
+												Ext.getCmp('centerPanel').getLoader().load({
+													autoLoad : true,
+			    									url: Global_Path + "dataClustering/hierarchicalClusteringListView",
+			            	 						scripts : true,
+			            	 						loadMask : true,
+			            	 						noCache : true	
+			    								});
+											}
+			                
+						                }
 			            ]
 			        }
 			},' ',{

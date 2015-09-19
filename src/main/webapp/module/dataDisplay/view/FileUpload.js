@@ -5,7 +5,6 @@ Ext.define('Bjfu.dataDisplay.view.FileUpload',{
     	tableName:null,
     	initComponent: function() {
         	var me = this;
-        	
         	Ext.apply(me, {
         		items: [{
                     xtype: 'filefield',  

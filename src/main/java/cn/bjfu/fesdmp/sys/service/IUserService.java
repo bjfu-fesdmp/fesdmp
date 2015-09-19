@@ -28,7 +28,8 @@ public interface IUserService {
 	public abstract User findByUserLoginName(String userLoginName);
 	public abstract boolean checkUserName(String userName);
 	public abstract boolean checkUserLoginName(String userLoginName);
-	public abstract boolean checkIfHaveAuthority(int userId,String indexResourceName);
+	public abstract boolean checkIfHaveAuthority(int userId,int indexResourceId);
+	public abstract boolean checkIfIsTemporaryManager(int userId,int resourceId);
 	public abstract boolean checkIfIsTemporaryManager(int userId);
 }
  

@@ -92,7 +92,10 @@ public class DataService implements IDataService {
 	public List<TableJson> findTable(){
 		return this.dataDao.findTable();
 	};
-	
+	@Override
+	public TableJson findTableByYearAndIndexResource(String year,int id){
+		return this.dataDao.findTableByYearAndIndexResource(year,id);
+	};
 	@Override
 	public boolean checkIfHasTable(String tableName){
 		return this.dataDao.checkIfHasTable(tableName);

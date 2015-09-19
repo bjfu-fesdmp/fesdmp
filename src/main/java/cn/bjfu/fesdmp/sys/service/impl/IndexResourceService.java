@@ -58,10 +58,10 @@ public class IndexResourceService implements IIndexResourceService {
 	@Override
 	public void addTableByYear(CreateTableJson createTableJson){
 		ResourceTable resourceTable=new ResourceTable();
-		IndexResource indexResource=this.indexResourceDao.findByEnName(createTableJson.getIndexEnName());
+		IndexResource indexResource=this.indexResourceDao.findById(createTableJson.getId());
 		resourceTable.setIndexResource(indexResource);
 		resourceTable.setYear(Integer.valueOf(createTableJson.getYear()));
-		this.indexResourceDao.createResourceListByTime(createTableJson.getIndexEnName(), createTableJson.getYear());
+		this.indexResourceDao.createResourceListByTime(createTableJson.getId(), createTableJson.getYear());
 		this.resourceTableDao.insert(resourceTable);
 	}
 

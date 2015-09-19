@@ -18,6 +18,12 @@ Ext.define('Bjfu.indexResource.view.AddTable',{
     	    },
 		    defaultType: 'textfield',
     	    items: [{
+        	    fieldLabel : 'id<font color="red">*</font>', 
+        	    id :'id',
+    	        name: 'id',
+    	        allowBlank : false,
+    	        hidden:true
+    	    	},{
         	    fieldLabel : '指标英文名<font color="red">*</font>', 
         	    id :'indexEnName',
     	        name: 'indexEnName',

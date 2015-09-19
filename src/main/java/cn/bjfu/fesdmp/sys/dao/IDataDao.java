@@ -30,6 +30,7 @@ public interface IDataDao extends IGenericDao<DataJson> {
 	public abstract List<DataJson> findUnionByCondtinWithOperationTime(String tableName,final DataSearch condition, 
 			IOrder order, Pagination<DataJson> page, JoinMode joinMode);
 	public abstract List<TableJson> findTable();
+	public abstract TableJson findTableByYearAndIndexResource(String year,int id);
 	public abstract void dataInsert(String table,List<DataJson> list);
 	public abstract void modifyData(DataJson data,String tableName);
 	public abstract void deleteDataById(String tableName, String id);

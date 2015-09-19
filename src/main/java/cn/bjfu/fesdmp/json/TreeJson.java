@@ -5,8 +5,8 @@ import java.util.List;
 
 
 public class TreeJson {
-	private Integer id;
-	private Integer parentId;
+	private long id;
+	private long parentId;
 	private String text;
 	private boolean leaf;
 	public TreeJson() {}
@@ -18,17 +18,17 @@ public class TreeJson {
 	public void setText(String text) {
 		this.text = text;
 	}
-	public Integer  getId() {
+	public long  getId() {
 		return id;
 	}
-	public void setId(Integer  id) {
+	public void setId(long  id) {
 		this.id = id;
 	}
-	public Integer getParentId() {
+	public long getParentId() {
 		return parentId;
 	}
 
-	public void setParentId(Integer parentId) {
+	public void setParentId(long parentId) {
 		this.parentId = parentId;
 	}
 	public boolean getLeaf() {

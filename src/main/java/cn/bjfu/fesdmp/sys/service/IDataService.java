@@ -23,10 +23,11 @@ public interface IDataService {
 	public abstract void queryByCondition(final Object condition, IOrder order, Pagination<DataJson> page);
 	public abstract List<DataJson> queryByCondition(final Object condition, IOrder order,
 			Pagination<DataJson> page, JoinMode joinMode);
-	public List<DataJson> queryByCondtinWithOperationTime(String tableName,DataSearch condition,
+	public abstract List<DataJson> queryByCondtinWithOperationTime(String tableName,DataSearch condition,
 			IOrder order, Pagination<DataJson> page, JoinMode joinMode);
-	public List<DataJson> queryUnionByCondtinWithOperationTime(String tableName,DataSearch condition,
+	public abstract List<DataJson> queryUnionByCondtinWithOperationTime(String tableName,DataSearch condition,
 			IOrder order, Pagination<DataJson> page, JoinMode joinMode);
-	public List<TableJson> findTable();
+	public abstract List<TableJson> findTable();
+	public abstract TableJson findTableByYearAndIndexResource(String year,int id);
 }
  

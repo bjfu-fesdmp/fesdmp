@@ -3,9 +3,11 @@ package cn.bjfu.fesdmp.web.sys;
 import cn.bjfu.fesdmp.algorithm.GetDayAve;
 import cn.bjfu.fesdmp.algorithm.Kmeans;
 import cn.bjfu.fesdmp.algorithm.Kmedoids;
+import cn.bjfu.fesdmp.json.AllTableJson;
 import cn.bjfu.fesdmp.json.AveDataJson;
 import cn.bjfu.fesdmp.json.ChartDataJson;
 import cn.bjfu.fesdmp.json.DataJson;
+import cn.bjfu.fesdmp.json.HierarchicalClusteringTableJson;
 import cn.bjfu.fesdmp.json.StatisticsBean;
 import cn.bjfu.fesdmp.sys.service.IDataService;
 import cn.bjfu.fesdmp.sys.service.IIndexResourceService;
@@ -13,6 +15,7 @@ import cn.bjfu.fesdmp.sys.service.ILocationService;
 import cn.bjfu.fesdmp.sys.service.IResourceGroupService;
 import cn.bjfu.fesdmp.web.BaseController;
 import cn.bjfu.fesdmp.algorithm.GetMonthAve;
+import cn.bjfu.fesdmp.domain.sys.IndexResource;
 
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -59,10 +62,13 @@ public class DataClusteringManagerController extends BaseController {
 	
 	@RequestMapping(value = "/unionListView", method = RequestMethod.GET)
 	public String unionLileUploadPage() {
-		logger.info("listView method.");
 		return "unionDataClustering/unionDataClusteringView";
 	}
-	
+	@RequestMapping(value = "/hierarchicalClusteringListView", method = RequestMethod.GET)
+	public String hierarchicalClusteringUploadPage() {
+		logger.info("hierarchicalClusteringListView method.");
+		return "hierarchicalClustering/hierarchicalClusteringListView";
+	}
 	@RequestMapping(value = "/kmeans", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> kmeans(HttpServletRequest request,String ids, String tableName,String num) throws Exception {
@@ -70,10 +76,9 @@ public class DataClusteringManagerController extends BaseController {
 		logger.info("kmeans method.");
 		Map<String, Object> result = new HashMap<String, Object>();
 		if(tableName!=null){
-			if(tableName.length()>4){
-				if(tableName.charAt(4)=='_'){
-		String newTableName = tableName.substring(0, 4) + "_"
-				+ tableName.substring(5);
+			if(tableName.length()==16){
+				String newTableName = tableName.substring(0, 4) + "_"
+						+ Integer.parseInt(tableName.substring(14));
 		List<DataJson> list = new ArrayList<DataJson>();
 
 		String id[] = ids.split(",");
@@ -120,7 +125,7 @@ public class DataClusteringManagerController extends BaseController {
 		result.put(RESULT, list1);
 		result.put(SUCCESS, Boolean.TRUE);
 		return result;
-				}
+				
 			}
 			}
 		else
@@ -217,10 +222,9 @@ public Map<String, Object> dayAve(HttpServletRequest request,String ids, String 
 	List<ChartDataJson> list = new ArrayList<ChartDataJson>();
 	List<AveDataJson> newList = new ArrayList<AveDataJson>();
 	if(tableName!=null){
-		if(tableName.length()>4){
-			if(tableName.charAt(4)=='_'){
-	String newTableName = tableName.substring(0, 4) + "_"
-			+ tableName.substring(5);
+		if(tableName.length()==16){
+			String newTableName = tableName.substring(0, 4) + "_"
+					+ Integer.parseInt(tableName.substring(14));
 	String id[] = ids.split(",");
 	for (int i = 0; i < id.length; i++) {
 		DataJson dataJson = new DataJson();
@@ -233,7 +237,7 @@ public Map<String, Object> dayAve(HttpServletRequest request,String ids, String 
 	GetDayAve dayAve=new GetDayAve(list);
 	newList =dayAve.comput();
 	
-	}
+	
 	}
 	result.put(RESULT, newList);
 	result.put(SUCCESS, Boolean.TRUE);
@@ -251,10 +255,9 @@ public Map<String, Object> kmedoids(HttpServletRequest request,String ids, Strin
 	logger.info("kmedoids method.");
 	Map<String, Object> result = new HashMap<String, Object>();
 	if(tableName!=null){
-		if(tableName.length()>4){
-			if(tableName.charAt(4)=='_'){
-	String newTableName = tableName.substring(0, 4) + "_"
-			+ tableName.substring(5);
+		if(tableName.length()==16){
+			String newTableName = tableName.substring(0, 4) + "_"
+					+ Integer.parseInt(tableName.substring(14));
 	List<DataJson> list = new ArrayList<DataJson>();
 
 	String id[] = ids.split(",");
@@ -301,7 +304,7 @@ public Map<String, Object> kmedoids(HttpServletRequest request,String ids, Strin
 	result.put(RESULT, list1);
 	result.put(SUCCESS, Boolean.TRUE);
 	return result;
-			}
+			
 		}
 		}
 	else
@@ -381,10 +384,9 @@ public Map<String, Object> monthAve(HttpServletRequest request,String ids, Strin
 	List<ChartDataJson> list = new ArrayList<ChartDataJson>();
 	List<AveDataJson> monthList = new ArrayList<AveDataJson>();
 	if(tableName!=null){
-		if(tableName.length()>4){
-			if(tableName.charAt(4)=='_'){
-	String newTableName = tableName.substring(0, 4) + "_"
-			+ tableName.substring(5);
+		if(tableName.length()==16){
+			String newTableName = tableName.substring(0, 4) + "_"
+					+ Integer.parseInt(tableName.substring(14));
 	String id[] = ids.split(",");
 	for (int i = 0; i < id.length; i++) {
 		DataJson dataJson = new DataJson();
@@ -419,7 +421,7 @@ public Map<String, Object> monthAve(HttpServletRequest request,String ids, Strin
 	monthList.add(November.comput());
 	GetMonthAve December=new GetMonthAve(list,12);
 	monthList.add(December.comput());
-	}
+	
 	}
 	result.put(RESULT, monthList);
 	result.put(SUCCESS, Boolean.TRUE);
@@ -427,6 +429,53 @@ public Map<String, Object> monthAve(HttpServletRequest request,String ids, Strin
 			}
 	else
 		result.put(SUCCESS, Boolean.FALSE);	
+	return result;
+}
+//返回日平均数据
+@RequestMapping(value = "/tableSelect", method = RequestMethod.POST)
+@ResponseBody
+public Map<String, Object> tableSelect(HttpServletRequest request,String ids,String tableName) throws Exception {
+	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+	logger.info("tableCombine method.");
+	String id[]=ids.split(",");
+	List<String> table=new ArrayList<String>();
+	String year=tableName.substring(0, 4);
+	for(int i=0;i<id.length;i++){
+		String tempTableName=year+"_"+id[i];
+		table.add(tempTableName);
+	}
+	Map<String, Object> result = new HashMap<String, Object>();
+
+		result.put(RESULT, table);
+		result.put(SUCCESS, Boolean.TRUE);	
+	return result;
+}
+@RequestMapping(value = "/hierarchicalClusteringTableList", method = RequestMethod.POST)
+@ResponseBody
+public Map<String, Object> hierarchicalClusteringTableList(String allTable)
+		throws Exception {
+
+	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+	logger.info("hierarchicalClusteringTableList method.");
+
+	String tables[]=allTable.split(",");
+	List<HierarchicalClusteringTableJson> table=new ArrayList<HierarchicalClusteringTableJson>();
+	for(int i=0;i<tables.length;i++){
+		HierarchicalClusteringTableJson temp=new HierarchicalClusteringTableJson();
+		temp.setId(tables[i]);
+		temp.setTableName(this.indexResourceService.findByKey(Integer.parseInt(tables[i].substring(5))).getIndexName());
+		table.add(temp);
+	}
+	
+	
+	
+	
+	
+	
+	
+	Map<String, Object> result = new HashMap<String, Object>();
+	result.put(RESULT, table);
+	result.put(SUCCESS, Boolean.TRUE);
 	return result;
 }
 }

@@ -294,11 +294,10 @@ public class UserManagerController extends BaseController {
 		User user=(User) request.getSession().getAttribute(AppConstants.SESSION_USER);
 		Map<String, Object> result = new HashMap<String, Object>();
 		if(tableName!=null){
-			if(tableName.length()>4){
-				if(tableName.charAt(4)=='_'){
+			if(tableName.length()==16){
 					if(user.getIsAdmin().equals((byte)1))
 						result.put(SUCCESS, Boolean.FALSE);	
-					else if(this.userService.checkIfHaveAuthority(user.getId(),tableName.substring(5)))
+					else if(this.userService.checkIfHaveAuthority(user.getId(),Integer.parseInt(tableName.substring(14))))
 						result.put(SUCCESS, Boolean.FALSE);
 					else
 						result.put(SUCCESS, Boolean.TRUE);
@@ -308,9 +307,30 @@ public class UserManagerController extends BaseController {
 			}
 			else
 				result.put(SUCCESS, Boolean.TRUE);	
-		}
-		else
-			result.put(SUCCESS, Boolean.TRUE);	
+					return result;	
+	}
+	@RequestMapping(value = "/checkhierarchicalClusteringFunctionIfForbid", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> checkhierarchicalClusteringFunctionIfForbid(HttpServletRequest request,String tableName) throws Exception {
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		logger.info("checkFunctionIfForbid method.");
+		User user=(User) request.getSession().getAttribute(AppConstants.SESSION_USER);
+		Map<String, Object> result = new HashMap<String, Object>();
+		if(tableName!=null){
+			if(tableName.length()==11){
+					if(user.getIsAdmin().equals((byte)1))
+						result.put(SUCCESS, Boolean.FALSE);	
+					//待修改
+					else if(this.userService.checkIfIsTemporaryManager(user.getId(),Integer.parseInt(tableName.substring(7))))
+						result.put(SUCCESS, Boolean.FALSE);
+					else
+						result.put(SUCCESS, Boolean.TRUE);
+				}
+				else
+					result.put(SUCCESS, Boolean.TRUE);
+			}
+			else
+				result.put(SUCCESS, Boolean.TRUE);	
 					return result;	
 	}
 	@RequestMapping(value = "/checkUnionFunctionIfForbid", method = RequestMethod.POST)
@@ -323,7 +343,7 @@ public class UserManagerController extends BaseController {
 		if(tableName!=null){
 					if(user.getIsAdmin().equals((byte)1))
 						result.put(SUCCESS, Boolean.FALSE);	
-					else if(this.userService.checkIfHaveAuthority(user.getId(),tableName))
+					else if(this.userService.checkIfHaveAuthority(user.getId(),Integer.parseInt(tableName.substring(14))))
 						result.put(SUCCESS, Boolean.FALSE);
 					else
 						result.put(SUCCESS, Boolean.TRUE);
