@@ -3,10 +3,12 @@ package cn.bjfu.fesdmp.web.sys;
 import cn.bjfu.fesdmp.algorithm.GetDayAve;
 import cn.bjfu.fesdmp.algorithm.Kmeans;
 import cn.bjfu.fesdmp.algorithm.Kmedoids;
+import cn.bjfu.fesdmp.json.AddUserJson;
 import cn.bjfu.fesdmp.json.AllTableJson;
 import cn.bjfu.fesdmp.json.AveDataJson;
 import cn.bjfu.fesdmp.json.ChartDataJson;
 import cn.bjfu.fesdmp.json.DataJson;
+import cn.bjfu.fesdmp.json.HierarchicalClusteringJson;
 import cn.bjfu.fesdmp.json.HierarchicalClusteringTableJson;
 import cn.bjfu.fesdmp.json.StatisticsBean;
 import cn.bjfu.fesdmp.sys.service.IDataService;
@@ -15,7 +17,9 @@ import cn.bjfu.fesdmp.sys.service.ILocationService;
 import cn.bjfu.fesdmp.sys.service.IResourceGroupService;
 import cn.bjfu.fesdmp.web.BaseController;
 import cn.bjfu.fesdmp.algorithm.GetMonthAve;
+import cn.bjfu.fesdmp.constant.AppConstants;
 import cn.bjfu.fesdmp.domain.sys.IndexResource;
+import cn.bjfu.fesdmp.domain.sys.User;
 
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -31,6 +35,7 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -458,24 +463,63 @@ public Map<String, Object> hierarchicalClusteringTableList(String allTable)
 	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 	logger.info("hierarchicalClusteringTableList method.");
 
-	String tables[]=allTable.split(",");
 	List<HierarchicalClusteringTableJson> table=new ArrayList<HierarchicalClusteringTableJson>();
+
+	String tables[]=allTable.split(",");
 	for(int i=0;i<tables.length;i++){
 		HierarchicalClusteringTableJson temp=new HierarchicalClusteringTableJson();
 		temp.setId(tables[i]);
 		temp.setTableName(this.indexResourceService.findByKey(Integer.parseInt(tables[i].substring(5))).getIndexName());
 		table.add(temp);
 	}
-	
-	
-	
-	
-	
-	
-	
+
 	Map<String, Object> result = new HashMap<String, Object>();
 	result.put(RESULT, table);
 	result.put(SUCCESS, Boolean.TRUE);
 	return result;
+}
+@RequestMapping(value = "/hierarchicalClustering", method = RequestMethod.POST)
+@ResponseBody
+public Map<String, Object> hierarchicalClustering(HttpServletRequest request,String allTable, String searchJson) throws Exception {
+	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+	logger.info("hierarchicalClustering method.");
+	Map<String, Object> result = new HashMap<String, Object>();
+	String tables[]=allTable.split(",");
+	HierarchicalClusteringJson hierarchicalClusteringJson = new HierarchicalClusteringJson();
+	if (!StringUtils.isEmpty(searchJson)) {
+		hierarchicalClusteringJson = mapper.readValue(searchJson,HierarchicalClusteringJson.class);
+	}
+//	result.put(RESULT, newList);
+	result.put(SUCCESS, Boolean.TRUE);
+	
+
+		//result.put(SUCCESS, Boolean.FALSE);	
+	return result;
+}	@RequestMapping(value = "/checkThresHlod", method = RequestMethod.POST)
+@ResponseBody
+public Map<String, Object> checkThresHlod(HttpServletRequest request,String thresHlod) throws Exception {
+	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+	logger.info("checkThresHlod method.");
+	User user=(User) request.getSession().getAttribute(AppConstants.SESSION_USER);
+	Map<String, Object> result = new HashMap<String, Object>();
+	boolean k=true;
+	   for(int i=thresHlod.length();--i>=0;){
+		      int chr=thresHlod.charAt(i);
+		      if(chr<48 || chr>57){
+		        k=false;
+		        break;
+		      }
+		   }
+	   if(k==true){
+		   if(Integer.parseInt(thresHlod)<2)
+			   k=false;
+	   }
+	   
+	   		if(k==true)
+	   			result.put(SUCCESS, Boolean.TRUE);	
+	   		else
+	   			result.put(SUCCESS, Boolean.FALSE);	
+	
+				return result;	
 }
 }

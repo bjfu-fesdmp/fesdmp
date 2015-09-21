@@ -66,39 +66,84 @@ Ext.define('Bjfu.hierarchicalClustering.view.hierarchicalClustering',{
 				startDateField : "startTime"
     	    }
 ,{
-    	    	id : 'hierarchicalClusteringTable',
+    	    	id : 'hierarchicalClusteringCenter',
     	    	xtype : 'combo',
-    	        fieldLabel : '数据表<font color="red">*</font>',
-    	        name : 'hierarchicalClusteringTableId',
+    	        fieldLabel : '聚类中心<font color="red">*</font>',
+    	        name : 'hierarchicalClusteringCenterId',
     	        store : hierarchicalClusteringTableListStore,
     	        allowBlank : false,
     	        editable : false,
     	        displayField : 'tableName',
     	        valueField : 'id',
     	        emptyText : '请选择...'	,
-    	      //  queryMode:'local',
+    	        queryMode:'local'
+    	    },{
+    	        fieldLabel: '阈值', 
+    	        allowBlank : false,
+    	        name: 'thresHlod',
+    	        listeners:{
+	    	        'blur' : function(_this, the, e) {
+						var v = _this.getValue();
+						var vv = Ext.String.trim(v);
+						_this.setValue(vv);			
+							if (vv.length > 0) {
+								Ext.Ajax.request({
+									url : Global_Path+'dataClustering/checkThresHlod',
+									params : {
+										thresHlod : vv
+									},
+									success : function(response) {
+										var result = Ext.decode(response.responseText);
+										if(!result.success){
+												Ext.Msg.alert("提示", "请输入正确的数字");
+												_this.setValue('');
+												return;
+										}
+									},
+									failure: function(response) {
+										var result = Ext.decode(response.responseText);
+										Ext.Msg.alert('错误', result.__msg);
+									}
+								});
+							}			    
+    	        	}
+    	        } 
     	    }],
     	    buttonAlign:'center', 
     	    buttons: [{
     			        text: '重置',
     			        handler: function() {
-
-    			    		
     			            this.up('form').getForm().reset();
     			        }
     			    },{
-    			        text: '查询',
+    			        text: '开始层次聚类',
     			        formBind: true,
     			        disabled: true,
     			        handler: function() {
     			          	var form = this.up('form').getForm();
     			            var searchJson = JSON.stringify(this.up('form').getForm().getValues());
-    			            Ext.getCmp("dataClusteringId").getStore().loadPage(1, {
-    			               		params: {
-    			           				searchJson: searchJson,
-    			           				tableName:me.tableName
-    			           			}
-    			            });
+    			            Ext.Ajax.request({
+		    	 	   			url:Global_Path+'dataClustering/hierarchicalClustering',
+		    	 	   			method:'post',
+		    	 	   			params:{
+		    	 	   			searchJson:searchJson,
+		    	 	   			allTable:me.allTable
+		    	 	   			},
+		    	 	   		success: function(response) {
+		                    	var	result =  Ext.decode(response.responseText);
+		                    	if(result.success){
+		                    		Ext.Msg.alert('提示','111');
+		    						window.close();
+		    	 	   			Ext.getCmp('userViewId').store.reload();
+		                    	}else{
+		                    		Ext.Msg.alert('提示','222');
+		                    		window.close();
+		                    	}
+		                    },
+		                    failure: function(form, action) {
+		                        Ext.Msg.alert('Failed', action.result.msg);
+		                    }
+		    	 	   		});
     			            this.up('window').close();
     			        }
     			    }]

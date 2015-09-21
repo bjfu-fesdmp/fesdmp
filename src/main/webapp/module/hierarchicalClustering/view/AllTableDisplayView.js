@@ -94,6 +94,7 @@ Ext.define('Bjfu.hierarchicalClustering.view.AllTableDisplayView',{
 											                    	var	result =  Ext.decode(response.responseText);
 											                    	if(result.success){
 											                    		var allTable=result.result;
+											                    		
 											        		      		var hierarchicalClusteringForm = Ext.create('Bjfu.hierarchicalClustering.view.hierarchicalClustering',{
 											        		      			allTable:allTable
 											        		        	});
@@ -115,18 +116,6 @@ Ext.define('Bjfu.hierarchicalClustering.view.AllTableDisplayView',{
 											        							}
 											        						}
 											        			       	}).show();
-											                    		
-											                    		
-											                    		
-											                    		
-											                    		
-											                    		
-											                    		
-											                    		
-											                    		
-											                    		
-											                    		
-											                    		
 											                    		
 											                    	}
 											                    	else
