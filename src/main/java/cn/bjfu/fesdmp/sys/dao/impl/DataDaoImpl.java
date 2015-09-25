@@ -361,8 +361,6 @@ public class DataDaoImpl extends AbstractGenericDao<DataJson> implements IDataDa
 			datajson.setData(result0.get(0).get("data").toString());
 			datajson.setStation(result0.get(0).get("station").toString());
 			return datajson;
-	
-		
 	}
 	@Override
 	public void deleteTable(String tableName){
@@ -401,6 +399,32 @@ public class DataDaoImpl extends AbstractGenericDao<DataJson> implements IDataDa
 		return tableJson;
 		
 		
+	}
+	public DataJson[] findData(String tableName,Date startTime,Date endTime){
+		String sql=null;
+		sql="select * from "+tableName;
+			
+			if (startTime != null && endTime != null) {
+				sql += " where time >= '" + DateFormat.getShortDate(startTime) +
+						"' and  time <= '" + DateFormat.getShortDate(endTime) + "'";
+			}
+			if (startTime != null && endTime == null) {
+				sql += " where time >=  '" + DateFormat.getShortDate(startTime) + 
+						"' and time <= '" + DateFormat.getShortDate(new Date()) + "'";
+			}
+		sql=sql+" order by time asc";
+		List<Map<String, Object>> result0 =jdbcTemplate.queryForList(sql);
+			DataJson allDatajson[]=new DataJson[result0.size()];
+			for(int i=0;i<result0.size();i++)
+			{
+			DataJson tempDatajson=new DataJson();
+			tempDatajson.setId(Integer.valueOf(result0.get(i).get("id").toString()));
+			tempDatajson.setTime((Date)result0.get(i).get("time"));
+			tempDatajson.setData(result0.get(i).get("data").toString());
+			tempDatajson.setStation(result0.get(i).get("station").toString());
+			allDatajson[i]=tempDatajson;
+			}
+			return allDatajson;
 	}
 }
  

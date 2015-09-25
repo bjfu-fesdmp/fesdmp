@@ -19,8 +19,8 @@
 		    	}
 			 });
 		  	 	
-			var dataClusteringView = Ext.create('Bjfu.hierarchicalClustering.view.DataDisplayView',{
-									id :'dataClusteringId',
+			var dataDisplayView = Ext.create('Bjfu.hierarchicalClustering.view.DataDisplayView',{
+									id :'dataDisplayId',
 									region:"east",
 									width:'60%',
 									autoShow : true,
@@ -53,7 +53,7 @@
 				width:'100%',
 				height:'100%',
 				layout:'border',
-				items:[tableDisplayView,allTableDisplayView,dataClusteringView],
+				items:[tableDisplayView,allTableDisplayView,dataDisplayView],
 				renderTo:'hierarchicalClusteringPanel',
 				listeners : {
 					'boxready' : function(){

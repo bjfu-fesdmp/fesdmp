@@ -9,6 +9,7 @@
   
 package cn.bjfu.fesdmp.sys.dao;  
 
+import java.util.Date;
 import java.util.List;
 
 import cn.bjfu.fesdmp.domain.sys.ResourceTable;
@@ -39,5 +40,6 @@ public interface IDataDao extends IGenericDao<DataJson> {
 	public abstract DataJson findDataById(String id,String tableName);
 	public abstract boolean checkIfHasTable(String tableName);
 	public abstract List<ResourceTable> findTableByEnName(String tableName);
+	public abstract DataJson[] findData(String tableName,Date startTime,Date endTime);
 }
  

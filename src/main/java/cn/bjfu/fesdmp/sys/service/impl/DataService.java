@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.json.DataJson;
+import cn.bjfu.fesdmp.json.HierarchicalClusteringJson;
 import cn.bjfu.fesdmp.json.TableJson;
 import cn.bjfu.fesdmp.sys.dao.IDataDao;
 import cn.bjfu.fesdmp.sys.dao.IResourceTableDao;
@@ -100,5 +101,113 @@ public class DataService implements IDataService {
 	public boolean checkIfHasTable(String tableName){
 		return this.dataDao.checkIfHasTable(tableName);
 	};
+	@Override
+	public DataJson[] timeCoordination(HierarchicalClusteringJson hierarchicalClusteringJson,String table){
+		DataJson[] standard=this.dataDao.findData(hierarchicalClusteringJson.getHierarchicalClusteringCenterId(), hierarchicalClusteringJson.getStartTime(), hierarchicalClusteringJson.getEndTime());
+		DataJson[] modify=this.dataDao.findData(table, hierarchicalClusteringJson.getStartTime(), hierarchicalClusteringJson.getEndTime());
+		DataJson[] newModify=standard;
+		
+		
+		
+		int start=0;
+		int pointerS=0;
+		int pointerM=0;
+
+		//防止存在modify第一个的时间要比standard前几个都晚
+		while(standard[pointerS].getTime().getTime()<modify[pointerM].getTime().getTime()){
+			start++;
+			pointerS++;
+		}
+		
+		
+//		if(pointerS>0){
+//			for(int i=0;i<pointerS;i++)
+//			{
+//				newModify[i].setData(modify[0].getData());
+//			}
+//		}
+		
+		while(pointerS!=standard.length&&pointerM!=modify.length){
+			if(standard[pointerS].getTime().getTime()==modify[pointerM].getTime().getTime()){
+				newModify[pointerS].setData(modify[pointerM].getData());
+				pointerS++;
+				pointerM++;
+			}
+			else if(standard[pointerS].getTime().getTime()>modify[pointerM].getTime().getTime()){
+				for(int i=pointerM;i<modify.length;i++){
+					if((standard[pointerS].getTime().getTime()>modify[pointerM].getTime().getTime()))
+					{
+						pointerM++;
+					}
+					else
+						break;
+				}
+				if(standard[pointerS].getTime().getTime()==modify[pointerM].getTime().getTime()){
+					newModify[pointerS].setData(modify[pointerM].getData());
+					pointerS++;
+					pointerM++;
+				}
+				else{
+					Double a=Double.parseDouble(modify[pointerM].getData());
+					Double b=Double.parseDouble(modify[pointerM-1].getData());
+					Long timeA=modify[pointerM].getTime().getTime();
+					Long timeB=modify[pointerM-1].getTime().getTime();
+					Long timeC=standard[pointerS].getTime().getTime();
+					Double res=((a*(timeA-timeC)+b*(timeC-timeB))/(timeA-timeB));
+					newModify[pointerS].setData(String.format("%.2f",res));
+					pointerS++;
+				}
+			}
+			else{
+				for(int i=pointerM;i>0;i--){
+					if((standard[pointerS].getTime().getTime()<modify[pointerM].getTime().getTime()))
+					{
+						pointerM--;
+					}
+					else
+						break;
+				}
+				if(standard[pointerS].getTime().getTime()==modify[pointerM].getTime().getTime()){
+					newModify[pointerS].setData(modify[pointerM].getData());
+					pointerS++;
+					pointerM++;
+				}
+				else{
+
+					Double a=Double.parseDouble(modify[pointerM+1].getData());
+					Double b=Double.parseDouble(modify[pointerM].getData());
+					Long timeA=modify[pointerM+1].getTime().getTime();
+					Long timeB=modify[pointerM].getTime().getTime();
+					Long timeC=standard[pointerS].getTime().getTime();
+					Double res=((a*(timeA-timeC)+b*(timeC-timeB))/(timeA-timeB));
+					newModify[pointerS].setData(String.format("%.2f",res));
+					pointerS++;
+				}
+				
+			}
+		}	
+//		//防止存在modify最后一个的时间要比standard最后几个都早
+//		if(pointerS!=standard.length){
+//			for(int i=pointerS;i<standard.length;i++)
+//			{
+//				newModify[i].setData(modify[pointerM-1].getData());
+//			}
+//		}
+		DataJson[] result=new DataJson[pointerS-start];
+		for(int i=0;i<pointerS-start;i++)
+		{
+			result[i]=newModify[i+start];
+		}
+		
+		
+		
+			return result;	
+		
+	};
+	@Override
+	public DataJson[] findData(HierarchicalClusteringJson hierarchicalClusteringJson){
+		return this.dataDao.findData(hierarchicalClusteringJson.getHierarchicalClusteringCenterId(),hierarchicalClusteringJson.getStartTime(),hierarchicalClusteringJson.getEndTime());
+	};
 }
+
  

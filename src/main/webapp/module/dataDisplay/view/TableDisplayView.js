@@ -68,7 +68,7 @@ Ext.define('Bjfu.dataDisplay.view.TableDisplayView',{
 				        		//1.先得到ID的数据(domtId)
 				        		var st = gird.getStore();
 				        		Ext.Array.each(record,function(record,data){
-				        			var name=record.get("text");
+				        			var name=record.get("id");
 				        			Ext.Ajax.request({
 					      				url : Global_Path+'dataDisplay/CheckIsTable',
 					      				params:{tableName: name},

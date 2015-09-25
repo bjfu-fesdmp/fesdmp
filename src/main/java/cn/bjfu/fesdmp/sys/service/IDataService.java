@@ -7,6 +7,7 @@ import java.util.List;
 import cn.bjfu.fesdmp.frame.dao.IOrder;
 import cn.bjfu.fesdmp.frame.dao.JoinMode;
 import cn.bjfu.fesdmp.json.DataJson;
+import cn.bjfu.fesdmp.json.HierarchicalClusteringJson;
 import cn.bjfu.fesdmp.json.TableJson;
 import cn.bjfu.fesdmp.utils.Pagination;
 import cn.bjfu.fesdmp.web.jsonbean.DataSearch;
@@ -29,5 +30,7 @@ public interface IDataService {
 			IOrder order, Pagination<DataJson> page, JoinMode joinMode);
 	public abstract List<TableJson> findTable();
 	public abstract TableJson findTableByYearAndIndexResource(String year,int id);
+	public abstract DataJson[] timeCoordination(HierarchicalClusteringJson hierarchicalClusteringJson,String table);
+	public abstract DataJson[] findData(HierarchicalClusteringJson hierarchicalClusteringJson);
 }
  

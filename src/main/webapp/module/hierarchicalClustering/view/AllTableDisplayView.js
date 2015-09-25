@@ -147,17 +147,17 @@ Ext.define('Bjfu.hierarchicalClustering.view.AllTableDisplayView',{
 					}
 				},
 	        	'itemclick' : function(view, record, item, index, e){
-	        		var name=record.get("text");
-
+	        		var yearLocResId=gridStore.baseParams.tableName;
+	        		var indexResourceId=record.get("id");
 					
-	        		 Ext.getCmp("dataClusteringId").getStore().baseParams= {
-	               			tableName: name,
-	               			searchJson: ''
+	        		 Ext.getCmp("dataDisplayId").getStore().baseParams= {
+	        			 yearLocResId: yearLocResId,
+	        			 indexResourceId:indexResourceId
 	           			};
-		            Ext.getCmp("dataClusteringId").getStore().loadPage(1, {
+		            Ext.getCmp("dataDisplayId").getStore().loadPage(1, {
 	               		params: {
-	               			tableName: name,
-	               			searchJson: ''
+	               			yearLocResId: yearLocResId,
+	               			indexResourceId:indexResourceId
 	           			}
 	            });
 	        	}

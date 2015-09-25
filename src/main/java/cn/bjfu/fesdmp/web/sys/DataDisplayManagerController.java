@@ -105,7 +105,51 @@ public class DataDisplayManagerController extends BaseController {
 		if(tableName!=null){
 		if(tableName.length()==16){
 				String newTableName = tableName.substring(0, 4) + "_"
-				+ Integer.parseInt(tableName.substring(14));
+				+ Integer.parseInt(tableName.substring(13));
+				Pagination<DataJson> page = new Pagination<DataJson>();
+				page.setPageSize(pageInfo.getLimit());
+				page.setCurrentPage(pageInfo.getPage());
+
+				IOrder order = new Order();
+				//order.addOrderBy("time", "DESC");
+				order.addOrderBy("station", "DESC");
+
+				if (!StringUtils.isEmpty(pageInfo.getSearchJson())) {
+					dataSearch = mapper.readValue(pageInfo.getSearchJson(),
+							DataSearch.class);
+				}
+
+				logger.info(dataSearch);
+				this.dataService.queryByCondtinWithOperationTime(newTableName,
+						dataSearch, order, page, JoinMode.AND);
+				List<DataJson> lll=this.dataService.queryByCondtinWithOperationTime(newTableName,
+						dataSearch, order, page, JoinMode.AND);
+
+				
+				result.put(PAGE_COUNT, page.getTotalRecord());
+				result.put(RESULT, page.getDatas());
+		
+			
+		}
+	}	
+		result.put(SUCCESS, Boolean.TRUE);
+		return result;
+	}
+	@RequestMapping(value = "/hierarchicalClusteringDataDisplayList", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> hierarchicalClusteringDataDisplayList(PageInfoBean pageInfo,
+			String yearLocResId,String indexResourceId) throws Exception {
+
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		logger.info("hierarchicalClusteringDataDisplayList method.");
+		logger.info(pageInfo);
+		DataSearch dataSearch = null;
+		
+		Map<String, Object> result = new HashMap<String, Object>();
+		if(yearLocResId!=null){
+		if(yearLocResId.length()==11){
+				String newTableName = yearLocResId.substring(0, 4) + "_"
+				+ indexResourceId;
 				Pagination<DataJson> page = new Pagination<DataJson>();
 				page.setPageSize(pageInfo.getLimit());
 				page.setCurrentPage(pageInfo.getPage());
@@ -781,7 +825,9 @@ public class DataDisplayManagerController extends BaseController {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		logger.info("deleteData method.");
 		String id[]=ids.split(",");
-		this.dataService.deleteData(tableName, id);
+		String realTableName=tableName.substring(0, 4) + "_"
+				+ Integer.parseInt(tableName.substring(12));
+		this.dataService.deleteData(realTableName, id);
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put(SUCCESS, Boolean.TRUE);
 		return result;
@@ -874,7 +920,9 @@ public class DataDisplayManagerController extends BaseController {
 		logger.info(tableName);
 		Map<String, Object> result = new HashMap<String, Object>();
 		if(tableName!=null){
-			this.dataService.deleteTable(tableName);
+			String realTableName=tableName.substring(0, 4) + "_"
+					+ Integer.parseInt(tableName.substring(12));
+			this.dataService.deleteTable(realTableName);
 			result.put(SUCCESS, Boolean.TRUE);
 			}
 		else
@@ -889,20 +937,10 @@ public class DataDisplayManagerController extends BaseController {
 		logger.info(tableName);
 		Map<String, Object> result = new HashMap<String, Object>();
 		if(tableName!=null){
-			if(tableName.length()>4){
-				if(tableName.charAt(4)=='_'){
-					Pattern pattern = Pattern.compile("[0-9]*");
-					Matcher isNum = pattern.matcher(tableName.substring(0,4));
-					 if( !isNum.matches() ){
-						 result.put(SUCCESS, Boolean.FALSE);	
-					 }
-					 else result.put(SUCCESS, Boolean.TRUE);
-				}
+			if(tableName.length()==16)
+					result.put(SUCCESS, Boolean.TRUE);
 				else
 					result.put(SUCCESS, Boolean.FALSE);	
-			}
-			else
-				result.put(SUCCESS, Boolean.FALSE);	
 		}
 		else
 			result.put(SUCCESS, Boolean.FALSE);	

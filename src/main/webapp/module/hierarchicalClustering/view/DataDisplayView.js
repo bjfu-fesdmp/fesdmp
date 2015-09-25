@@ -1,6 +1,6 @@
 Ext.define('Bjfu.hierarchicalClustering.view.DataDisplayView',{
 	extend : 'Ext.grid.Panel',
-	id:'hierarchicalClusteringView',
+	id:'dataDisplayId',
 	alias:'widget.DataClusteringView',
 	forceFit : true,
 	layout : 'fit',
@@ -28,7 +28,7 @@ Ext.define('Bjfu.hierarchicalClustering.view.DataDisplayView',{
 	                update : 'POST',
 	                destroy: 'POST'
 				},
-				url : Global_Path+'dataDisplay/dataDisplayList',
+				url : Global_Path+'dataDisplay/hierarchicalClusteringDataDisplayList',
 				reader : {
 					type : 'json',
 					root : 'result',
@@ -88,7 +88,7 @@ Ext.define('Bjfu.hierarchicalClustering.view.DataDisplayView',{
 			        width : '10%'
 			    }
 			],
-			tbar : ["->", {
+			/*tbar : ["->", {
 		    	text:'高级查询',
 		    	scope:this,
 		    	icon : Global_Path + '/resources/extjs/images/search.png',
@@ -118,6 +118,7 @@ Ext.define('Bjfu.hierarchicalClustering.view.DataDisplayView',{
 			       	}).show();
 		       }
 			}],
+			*/
 			loadMask:true
 		});
 		me.callParent(arguments);
