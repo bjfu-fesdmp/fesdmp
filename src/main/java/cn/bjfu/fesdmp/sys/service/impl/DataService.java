@@ -120,12 +120,12 @@ public class DataService implements IDataService {
 		}
 		
 		
-//		if(pointerS>0){
-//			for(int i=0;i<pointerS;i++)
-//			{
-//				newModify[i].setData(modify[0].getData());
-//			}
-//		}
+		if(pointerS>0){
+			for(int i=0;i<pointerS;i++)
+			{
+				newModify[i].setData(null);
+			}
+		}
 		
 		while(pointerS!=standard.length&&pointerM!=modify.length){
 			if(standard[pointerS].getTime().getTime()==modify[pointerM].getTime().getTime()){
@@ -186,22 +186,17 @@ public class DataService implements IDataService {
 				
 			}
 		}	
-//		//防止存在modify最后一个的时间要比standard最后几个都早
-//		if(pointerS!=standard.length){
-//			for(int i=pointerS;i<standard.length;i++)
-//			{
-//				newModify[i].setData(modify[pointerM-1].getData());
-//			}
-//		}
-		DataJson[] result=new DataJson[pointerS-start];
-		for(int i=0;i<pointerS-start;i++)
-		{
-			result[i]=newModify[i+start];
+		//防止存在modify最后一个的时间要比standard最后几个都早
+		if(pointerS!=standard.length){
+			for(int i=pointerS;i<standard.length;i++)
+			{
+				newModify[i].setData(null);
+			}
 		}
 		
 		
 		
-			return result;	
+			return newModify;	
 		
 	};
 	@Override

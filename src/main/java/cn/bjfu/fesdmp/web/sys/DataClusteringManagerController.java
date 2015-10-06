@@ -1,6 +1,7 @@
 package cn.bjfu.fesdmp.web.sys;
 
 import cn.bjfu.fesdmp.algorithm.GetDayAve;
+import cn.bjfu.fesdmp.algorithm.HierarchicalClustering;
 import cn.bjfu.fesdmp.algorithm.Kmeans;
 import cn.bjfu.fesdmp.algorithm.Kmedoids;
 import cn.bjfu.fesdmp.json.AddUserJson;
@@ -505,6 +506,14 @@ public Map<String, Object> hierarchicalClustering(HttpServletRequest request,Str
 		else
 			dataJson[i]=this.dataService.findData(hierarchicalClusteringJson);
 	}
+	int Threshold=Integer.parseInt(hierarchicalClusteringJson.getThresHlod());//设定阈值
+	
+	HierarchicalClustering hierarchicalClustering=new HierarchicalClustering(dataJson,Threshold);
+	
+	
+	String finalResult=hierarchicalClustering.comput();
+	
+	
 	
 	
 	
