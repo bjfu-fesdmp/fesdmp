@@ -106,29 +106,25 @@ public class HierarchicalClustering {
 			/*	 
 			  获取数据行数
 			  */
-			Alert[] alert=new Alert[N]; //存放所有警报的数组
+			Alert[] alert=new Alert[N]; //存放所有基本事件的数组
 			for(int i=0;i<N;i++)
 				alert[i]=new Alert(Treenum);
 				alert[0]=new Alert(Treenum);
 									//将dataJson中的时间数据存入alert中
-				for(int j=0;j<Treenum;j++)
+				for(int j=0;j<N;j++)
 				{
-				alert[0].setElement(new Node(String.valueOf(dataJson[0][j].getTime().getTime())), j);
+				alert[j].setElement(new Node(String.valueOf(dataJson[0][j].getTime().getTime())), 0);
+				alert[j].setAnum(Treenum);
+				alert[j].staticNum=j;							//每条警报的固定编号
+				alert[j].setAlertNum(1);
+				alert[j].setOrder(j, 0);
 				}
-				alert[0].setAnum(Treenum);
-				alert[0].staticNum=0;							//每条警报的固定编号
-				alert[0].setAlertNum(1);
-				alert[0].setOrder(0, 0);
-			for(int i=1;i<N;i++)	//将dataJson中的其他数据存入alert中
+			for(int i=0;i<N;i++)	//将dataJson中的其他数据存入alert中
 			{	
-				for(int j=0;j<Treenum;j++)
+				for(int j=1;j<Treenum;j++)
 				{
-				alert[i].setElement(new Node(dataJson[i-1][j].getData()), j);
+				alert[i].setElement(new Node(dataJson[j-1][i].getData()),j);
 				}
-				alert[i].setAnum(Treenum);
-				alert[i].staticNum=i;							//每条警报的固定编号
-				alert[i].setAlertNum(1);
-				alert[i].setOrder(i, 0);
 			}
 			Node finalNode[]=new Node[Treenum];						//存储最终的结果
 			Node Pointer[]=new Node[Treenum+1];						//所有树的指针
@@ -137,10 +133,82 @@ public class HierarchicalClustering {
 			Pointer[0]=luo;
 			yang.father=luo;
 			luo.son=yang;
-			Date startDate=new Date(Long.parseLong(alert[0].getElement(0).data));	//构建第一棵树(时间)
-			String year=String.valueOf(startDate.getYear()+1900);													//将所有基本事件按照第个节点树（时间）排序
 			
-			  		
+			
+			Date startDate=new Date(Long.parseLong(alert[0].getElement(0).data));	//构建第一棵树(时间)
+			Date endDate=new Date(Long.parseLong(alert[N-1].getElement(0).data));
+			String whichYear=String.valueOf(startDate.getYear()+1900);													//将所有基本事件按照第个节点树（时间）排序
+			Node year=new Node(whichYear);//第一棵树分为5层，分别为年份；月份；天；小时与具体的时间
+			List<Node> month=new ArrayList();
+			List<Node> day=new ArrayList();
+			List<Node> hour=new ArrayList();
+			List<Node> concreteTime=new ArrayList<Node>();
+			int concreteTimePointer=0;
+			int hourPointer=0;
+			int dayPointer=0;
+			int monthPointer=0;
+			concreteTime.add(concreteTimePointer,new Node(String.valueOf(startDate.getTime())));//第一棵树
+			hour.add(hourPointer, new Node(String.valueOf(startDate.getHours())));		
+			day.add(dayPointer, new Node(String.valueOf(startDate.getDate())));		
+			month.add(monthPointer, new Node(String.valueOf(startDate.getMonth()+1)));
+			concreteTime.get(concreteTimePointer).father=hour.get(hourPointer);
+			hour.get(hourPointer).father=day.get(dayPointer);
+			day.get(dayPointer).father=month.get(monthPointer);
+			month.get(monthPointer).father=year;
+			year.son=month.get(monthPointer);
+			month.get(monthPointer).son=day.get(dayPointer);
+			day.get(dayPointer).son=hour.get(hourPointer);
+			hour.get(hourPointer).son=concreteTime.get(concreteTimePointer);
+			concreteTimePointer++;
+			hourPointer++;
+			dayPointer++;
+			monthPointer++;
+			for(int i=1;i<Treenum;i++){
+				Date lastDate=new Date(Long.parseLong(alert[i-1].getElement(0).data));
+				Date currentDate=new Date(Long.parseLong(alert[i].getElement(0).data));
+				concreteTime.add(concreteTimePointer, new Node(String.valueOf(currentDate.getTime())));
+				if(currentDate.getMonth()!=lastDate.getMonth()){				//月份变了的情况
+					month.add(monthPointer, new Node(String.valueOf(currentDate.getMonth()+1)));		
+					day.add(dayPointer, new Node(String.valueOf(currentDate.getDate())));	
+					hour.add(hourPointer, new Node(String.valueOf(currentDate.getHours())));
+					concreteTime.get(concreteTimePointer).father=hour.get(hourPointer);
+					hour.get(hourPointer).father=day.get(dayPointer);
+					day.get(dayPointer).father=month.get(monthPointer);
+					month.get(monthPointer).father=year;
+					month.get(monthPointer).son=day.get(dayPointer);
+					day.get(dayPointer).son=hour.get(hourPointer);
+					hour.get(hourPointer).son=concreteTime.get(concreteTimePointer);
+					month.get(monthPointer-1).brother=month.get(monthPointer);
+					concreteTimePointer++;
+					hourPointer++;
+					dayPointer++;
+					monthPointer++;
+				}else if(currentDate.getDate()!=lastDate.getDate()){			//月份没变日期变了的情况
+					day.add(dayPointer, new Node(String.valueOf(currentDate.getDate())));	
+					hour.add(hourPointer, new Node(String.valueOf(currentDate.getHours())));
+					concreteTime.get(concreteTimePointer).father=hour.get(hourPointer);
+					hour.get(hourPointer).father=day.get(dayPointer);
+					day.get(dayPointer).father=month.get(monthPointer-1);
+					day.get(dayPointer).son=hour.get(hourPointer);
+					hour.get(hourPointer).son=concreteTime.get(concreteTimePointer);
+					day.get(dayPointer-1).brother=day.get(dayPointer);
+					concreteTimePointer++;
+					hourPointer++;
+					dayPointer++;
+				}else if(currentDate.getHours()!=lastDate.getHours()){			//月份日期没变小时变了的情况
+					hour.add(hourPointer, new Node(String.valueOf(currentDate.getHours())));
+					concreteTime.get(concreteTimePointer).father=hour.get(hourPointer);
+					hour.get(hourPointer).father=day.get(dayPointer-1);
+					hour.get(hourPointer).son=concreteTime.get(concreteTimePointer);
+					hour.get(hourPointer-1).brother=hour.get(hourPointer);
+					concreteTimePointer++;
+					hourPointer++;
+				}else{
+					concreteTime.get(concreteTimePointer).father=hour.get(hourPointer-1);
+					concreteTime.get(concreteTimePointer-1).brother=concreteTime.get(concreteTimePointer);
+					concreteTimePointer++;
+				}
+			}
 			
 
 			
