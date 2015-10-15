@@ -132,11 +132,11 @@ Ext.define('Bjfu.hierarchicalClustering.view.hierarchicalClustering',{
 		    	 	   		success: function(response) {
 		                    	var	result =  Ext.decode(response.responseText);
 		                    	if(result.success){
-		                    		Ext.Msg.alert('提示','111');
+		                    		Ext.Msg.alert('聚类结果',result.result);
 		    						window.close();
 		    	 	   			Ext.getCmp('userViewId').store.reload();
 		                    	}else{
-		                    		Ext.Msg.alert('提示','222');
+		                    		Ext.Msg.alert('提示','发生错误');
 		                    		window.close();
 		                    	}
 		                    },

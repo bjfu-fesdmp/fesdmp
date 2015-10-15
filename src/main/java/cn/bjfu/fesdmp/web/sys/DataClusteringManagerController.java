@@ -518,7 +518,7 @@ public Map<String, Object> hierarchicalClustering(HttpServletRequest request,Str
 	
 	
 	
-//	result.put(RESULT, newList);
+	result.put(RESULT, finalResult);
 	result.put(SUCCESS, Boolean.TRUE);
 	
 
