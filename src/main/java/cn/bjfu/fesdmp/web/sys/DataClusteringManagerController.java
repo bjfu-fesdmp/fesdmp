@@ -498,17 +498,22 @@ public Map<String, Object> hierarchicalClustering(HttpServletRequest request,Str
 		}
 	}
 	DataJson dataJson[][]=new DataJson[tables.length][];
+	String tableName[]=new String[tables.length];
+	for(int i=0;i<tables.length;i++){
+	tableName[i]=this.indexResourceService.findByKey(Integer.parseInt(tables[i].substring(5))).getIndexName();
+	}
 	for(int i=0;i<tables.length;i++){
 		if(i!=hierarchicalClusteringCenter){
 			DataJson temp[]=this.dataService.timeCoordination(hierarchicalClusteringJson,tables[i]);
 			dataJson[i]=temp;
+		
 		}
 		else
 			dataJson[i]=this.dataService.findData(hierarchicalClusteringJson);
 	}
 	int Threshold=Integer.parseInt(hierarchicalClusteringJson.getThresHlod());//设定阈值
 	
-	HierarchicalClustering hierarchicalClustering=new HierarchicalClustering(dataJson,Threshold);
+	HierarchicalClustering hierarchicalClustering=new HierarchicalClustering(dataJson,Threshold,tableName);
 	
 	
 	String finalResult=hierarchicalClustering.comput();

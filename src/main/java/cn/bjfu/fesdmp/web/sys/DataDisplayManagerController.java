@@ -810,7 +810,7 @@ public class DataDisplayManagerController extends BaseController {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		logger.info("modifyData method.");
 		String newTableName = tableName.substring(0, 4) + "_"
-				+ tableName.substring(5);
+				+ Integer.parseInt(tableName.substring(12));
 		DataJson data = mapper.readValue(formData, DataJson.class);
 		this.dataService.modifyData(data, newTableName);
 		Map<String, Object> result = new HashMap<String, Object>();

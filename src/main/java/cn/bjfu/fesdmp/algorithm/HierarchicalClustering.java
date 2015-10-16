@@ -15,13 +15,15 @@ public class HierarchicalClustering {
 	private int middleNumber=2;//中间层节点数
 	private int leafNumber=2;//每个中间层的叶子数
 	private DataJson dataJson[][];
+	private String tableName[];
 	public float finalAveDis=3.4e38f;
 	public int finalNodeNum=0;
 	public HierarchicalClustering() {
 	}
-	public HierarchicalClustering(DataJson dataJson[][],int threshold) {
+	public HierarchicalClustering(DataJson dataJson[][],int threshold,String tableName[]) {
 		this.threshold = threshold;
 		this.dataJson=dataJson;
+		this.tableName=tableName;
 	}
 	public static void spell(Alert alert[],int k,int Treenum){					//将警报名以第k个为起始按照顺序拼起来
 		for(int i=0;i<alert.length;i++){															
@@ -285,7 +287,7 @@ public class HierarchicalClustering {
 				nonRecrutQuickSort(alert);
 				int middleTierPointer=0;
 				int leafTierPointer=0;
-				root[rootPointer]=new Node("数据"+i);
+				root[rootPointer]=new Node(tableName[i-1]);
 				middleTier[i-1][middleTierPointer]=new Node(stringLimit[i-1][0]+"-"+stringLimit[i-1][2]);
 				root[rootPointer].son=middleTier[i-1][middleTierPointer];
 				middleTier[i-1][middleTierPointer].father=root[rootPointer];
@@ -543,11 +545,14 @@ public class HierarchicalClustering {
 		finalReault=finalReault+"]，";
 		finalReault=finalReault+"共包含"+finalNodeNum+"条基本事件，平均距离为"+finalAveDis/Treenum;
 		finalReault=finalReault+"，";
-		finalReault=finalReault+"所花时间"+(end-start)*0.001+"秒";
-	
+		finalReault=finalReault+"所花时间"+(end-start)*0.001+"秒 , ";
+		finalReault=finalReault+"注： cover中的每个数据分别代表[时间 , ";
+		for(int i=0;i<Treenum-2;i++){
+			finalReault=finalReault+tableName[i]+" , ";
+			}
+		finalReault=finalReault+tableName[Treenum-2];
 			
-			
-			
+		finalReault=finalReault+"]";
 			
 			
 			
