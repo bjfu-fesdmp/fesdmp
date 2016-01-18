@@ -116,7 +116,7 @@ Ext.define('Bjfu.hierarchicalClustering.view.hierarchicalClustering',{
     			            this.up('form').getForm().reset();
     			        }
     			    },{
-    			        text: '开始层次聚类',
+    			        text: '开始层次聚类(单机)',
     			        formBind: true,
     			        disabled: true,
     			        handler: function() {
@@ -124,6 +124,37 @@ Ext.define('Bjfu.hierarchicalClustering.view.hierarchicalClustering',{
     			            var searchJson = JSON.stringify(this.up('form').getForm().getValues());
     			            Ext.Ajax.request({
 		    	 	   			url:Global_Path+'dataClustering/hierarchicalClustering',
+		    	 	   			method:'post',
+		    	 	   			params:{
+		    	 	   			searchJson:searchJson,
+		    	 	   			allTable:me.allTable
+		    	 	   			},
+		    	 	   		success: function(response) {
+		                    	var	result =  Ext.decode(response.responseText);
+		                    	if(result.success){
+		                    		Ext.Msg.alert('聚类结果',result.result);
+		    						window.close();
+		    	 	   			Ext.getCmp('userViewId').store.reload();
+		                    	}else{
+		                    		Ext.Msg.alert('提示','发生错误');
+		                    		window.close();
+		                    	}
+		                    },
+		                    failure: function(form, action) {
+		                        Ext.Msg.alert('Failed', action.result.msg);
+		                    }
+		    	 	   		});
+    			            this.up('window').close();
+    			        }
+    			    },{
+    			        text: '开始层次聚类(集群)',
+    			        formBind: true,
+    			        disabled: true,
+    			        handler: function() {
+    			          	var form = this.up('form').getForm();
+    			            var searchJson = JSON.stringify(this.up('form').getForm().getValues());
+    			            Ext.Ajax.request({
+		    	 	   			url:Global_Path+'dataClustering/hadoopHierarchicalClustering',
 		    	 	   			method:'post',
 		    	 	   			params:{
 		    	 	   			searchJson:searchJson,

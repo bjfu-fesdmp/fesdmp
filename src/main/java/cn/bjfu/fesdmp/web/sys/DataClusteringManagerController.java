@@ -1,6 +1,7 @@
 package cn.bjfu.fesdmp.web.sys;
 
 import cn.bjfu.fesdmp.algorithm.GetDayAve;
+import cn.bjfu.fesdmp.algorithm.HadoopHierarchicalClustering;
 import cn.bjfu.fesdmp.algorithm.HierarchicalClustering;
 import cn.bjfu.fesdmp.algorithm.Kmeans;
 import cn.bjfu.fesdmp.algorithm.Kmedoids;
@@ -529,7 +530,60 @@ public Map<String, Object> hierarchicalClustering(HttpServletRequest request,Str
 
 		//result.put(SUCCESS, Boolean.FALSE);	
 	return result;
-}	@RequestMapping(value = "/checkThresHlod", method = RequestMethod.POST)
+}	
+
+@RequestMapping(value = "/hadoopHierarchicalClustering", method = RequestMethod.POST)
+@ResponseBody
+public Map<String, Object> hadoopHierarchicalClustering(HttpServletRequest request,String allTable, String searchJson) throws Exception {
+	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+	logger.info("hierarchicalClustering method.");
+	Map<String, Object> result = new HashMap<String, Object>();
+	String tables[]=allTable.split(",");
+	int hierarchicalClusteringCenter=0;
+	HierarchicalClusteringJson hierarchicalClusteringJson = new HierarchicalClusteringJson();
+	if (!StringUtils.isEmpty(searchJson)) {
+		hierarchicalClusteringJson = mapper.readValue(searchJson,HierarchicalClusteringJson.class);
+	}
+	for(int i=0;i<tables.length;i++){
+		if(tables[i].equals(hierarchicalClusteringJson.getHierarchicalClusteringCenterId())){
+			hierarchicalClusteringCenter=i;
+			break;
+		}
+	}
+	DataJson dataJson[][]=new DataJson[tables.length][];
+	String tableName[]=new String[tables.length];
+	for(int i=0;i<tables.length;i++){
+	tableName[i]=this.indexResourceService.findByKey(Integer.parseInt(tables[i].substring(5))).getIndexEnName();
+	}
+	for(int i=0;i<tables.length;i++){
+		if(i!=hierarchicalClusteringCenter){
+			DataJson temp[]=this.dataService.timeCoordination(hierarchicalClusteringJson,tables[i]);
+			dataJson[i]=temp;
+		
+		}
+		else
+			dataJson[i]=this.dataService.findData(hierarchicalClusteringJson);
+	}
+	int Threshold=Integer.parseInt(hierarchicalClusteringJson.getThresHlod());//设定阈值
+	
+	HadoopHierarchicalClustering hierarchicalClustering=new HadoopHierarchicalClustering(dataJson,Threshold,tableName);
+	
+	
+	String finalResult=hierarchicalClustering.comput();
+	
+	
+	
+	
+	
+	
+	result.put(RESULT, finalResult);
+	result.put(SUCCESS, Boolean.TRUE);
+	
+
+		//result.put(SUCCESS, Boolean.FALSE);	
+	return result;
+}	
+@RequestMapping(value = "/checkThresHlod", method = RequestMethod.POST)
 @ResponseBody
 public Map<String, Object> checkThresHlod(HttpServletRequest request,String thresHlod) throws Exception {
 	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
