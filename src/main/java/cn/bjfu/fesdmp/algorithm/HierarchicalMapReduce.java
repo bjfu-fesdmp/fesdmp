@@ -10,8 +10,6 @@ import java.net.URI;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
-import org.apache.hadoop.examples.WordCount;
-import org.apache.hadoop.examples.WordCount.TokenizerMapper;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
@@ -65,6 +63,7 @@ public class HierarchicalMapReduce extends Configured implements Tool {
 		HierarchicalMapReduce.alert=alert;
 		HierarchicalMapReduce.tableName=tableName;
 		HierarchicalMapReduce.stringLimit=stringLimit;
+		HierarchicalMapReduce.N=alert.length;
 	};
 	
 	HierarchicalMapReduce(){
@@ -160,8 +159,8 @@ public class HierarchicalMapReduce extends Configured implements Tool {
 		
 	}
 
-	static Node Pointer[]=new Node[Treenum];//所有树的指针
-	static Node finalNode[]=new Node[Treenum];
+	static Node Pointer[];//所有树的指针
+	static Node finalNode[];
 	enum Counter
 	{
 		LINESKIP,
@@ -195,7 +194,7 @@ public class HierarchicalMapReduce extends Configured implements Tool {
 
 			Node tree[]=new Node[Treenum];						//获取当前作为cover的节点
 			for(int i=0;i<Treenum;i++)
-				tree[i]=Pointer[i];
+				tree[i]=Pointer[i+1];
 			String line[]=key.toString().split(",");
 			for(int i=0;i<Treenum;i++){
 				while(!tree[i].data.equals(line[i]))
@@ -215,9 +214,7 @@ public class HierarchicalMapReduce extends Configured implements Tool {
     			for(int i=0;i<N;i++){
     				alertNum=alertNum+alert[i].alertNum;
     				for(int j=0;j<Treenum;j++){
-    					distanceSum=distanceSum+alert[i].alertNum*tree[j].distance(alert[i].getElement
-
-(j).data);		
+    					distanceSum=distanceSum+alert[i].alertNum*tree[j].distance(alert[i].getElement(j).data);		
     				}		
     			}
     			if(distanceSum/alertNum<finalAveDis){
@@ -236,7 +233,7 @@ public class HierarchicalMapReduce extends Configured implements Tool {
         		}
         		
         		
-        		int tempmin=list[0].length;						//找出最短数组，并把最短
+        		int tempmin=list[0].length;						//找出最短数组，并把最短数组放在第一位，若包含警报总数小于阈值直接跳出
         		int minnum=0;
         		for(int i=1;i<list.length;i++){
         			if(list[i].length<tempmin){
@@ -246,9 +243,7 @@ public class HierarchicalMapReduce extends Configured implements Tool {
         		}
         		int tempo[]=list[minnum];
         		
-        		int minIndex=0;									//将数组由小到大排
-
-
+        		int minIndex=0;									//将数组由小到大排序
         		int temp[];
         		for(int i=0;i<list.length;i++){
         			minIndex=i;
@@ -278,9 +273,7 @@ public class HierarchicalMapReduce extends Configured implements Tool {
         			for(int i=0;i<tempo.length;i++){
         				alertNumNew=alertNumNew+alert[tempo[i]].alertNum;
             			for(int j=0;j<Treenum;j++){		
-            				distanceSumNew=distanceSumNew+alert[tempo[i]].alertNum*tree[j].distance(alert
-
-[tempo[i]].getElement(j).data);
+            				distanceSumNew=distanceSumNew+alert[tempo[i]].alertNum*tree[j].distance(alert[tempo[i]].getElement(j).data);
             			}
         			}
             		float distanceAve=distanceSumNew/alertNumNew;
@@ -303,11 +296,10 @@ public class HierarchicalMapReduce extends Configured implements Tool {
 	{
 		Configuration conf=getConf();
 		
-        String path = "D:/ubuntu_de_wenjian/hadoop/conf/";
-        conf.addResource(new Path(path + "core-site.xml"));
-        conf.addResource(new Path(path + "hdfs-site.xml"));
-        conf.addResource(new Path(path + "mapred-site.xml"));
-	    //conf.set("mapred.jar", "D:/HierarchicalMapReduce.jar");
+//        String path = "D:/ubuntu_de_wenjian/hadoop/conf/";
+//        conf.addResource(new Path(path + "core-site.xml"));
+//        conf.addResource(new Path(path + "hdfs-site.xml"));
+//        conf.addResource(new Path(path + "mapred-site.xml"));
 		Job job=new Job(conf,"cover");
 		job.setJarByClass(HierarchicalMapReduce.class);
 		
@@ -340,10 +332,12 @@ public class HierarchicalMapReduce extends Configured implements Tool {
 		Long start = System.currentTimeMillis();//起始时间
 		Node FileCreatePointer[]=new Node[Treenum+1];			//所有树的指针
 		Node luo=new Node("luo");								//用来判断抽象事件
-
-
+		finalNode=new Node[Treenum];
 		Node yang=new Node("yang");
-		Pointer=new Node[Treenum];
+		yang.father=luo;
+		luo.son=yang;
+		Pointer=new Node[Treenum+1];
+		Pointer[0]=luo;
 												//构建第一棵树(时间)
 		String fistTime[]=alert[0].getElement(0).data.split("-");	
 		Node year=new Node(fistTime[0]);//第一棵树分为3层，分别为年份；月份；天
@@ -389,7 +383,7 @@ public class HierarchicalMapReduce extends Configured implements Tool {
 		}
 		
 		
-		Pointer[0]=year;
+		Pointer[1]=year;
 		
 		Node root[]=new Node[Treenum-1];
 		Node middleTier[][]=new Node[Treenum-1][middleNumber];
@@ -446,36 +440,23 @@ public class HierarchicalMapReduce extends Configured implements Tool {
 		}
 		
 		for(int i=0;i<root.length;i++){
-			Pointer[i+1]=root[i];
+			Pointer[i+2]=root[i];
 			FileCreatePointer[i+2]=root[i];
 		}
 		
 		
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-	
 
-   		Node rePointer[]=new Node[Treenum];
-   		for(int i=0;i<Pointer.length;i++){
-   			rePointer[i]=Pointer[i];
-   			while(rePointer[i].father!=null)
-   				rePointer[i]=rePointer[i].father;
-   			rePointer[i]=rePointer[i].son;
-   		}
+			
+		Node rePointer[]=new Node[Treenum];
+   		for(int i=0;i<Pointer.length-1;i++)
+   			rePointer[i]=Pointer[i+1].nextNode();
+   		
    		while(rePointer[0].father!=null){
    			List<Integer> coverNode=new ArrayList();
 			Node L=rePointer[0].leftLeaf();
 			Node R=rePointer[0].rightLeaf();
-			for(int i=0;i<N;i++){								//把第一棵树每个节
+			for(int i=0;i<N;i++){								//把第一棵树每个节点所包含的事件放入相应的节点中
 				if(alert[i].getElement(0).isBigger(L) && alert[i].getElement(0).isSmaller(R)){
 					coverNode.add(alert[i].staticNum);
 				}
@@ -490,8 +471,8 @@ public class HierarchicalMapReduce extends Configured implements Tool {
 			rePointer[0].coverNode=covernode;
    			rePointer[0]=rePointer[0].nextNode();
    		}
-		for(int k=0;k<Treenum-1;k++){			//根据每棵树排序，同时把相应的树每个节点所包含的事件放入相
-
+   		
+		for(int k=0;k<Treenum-1;k++){			//根据每棵树排序，同时把相应的树每个节点所包含的事件放入相应的节点中
 			spell(alert,k,Treenum);
 			nonRecrutQuickSort(alert);
 			for(int i=0;i<N;i++)
@@ -533,8 +514,7 @@ public class HierarchicalMapReduce extends Configured implements Tool {
        		}
 			
 		}
-		for(int i=0;i<N;i++){								//将警报名按照原始顺序拼起
-
+		for(int i=0;i<N;i++){								//将警报名按照原始顺序拼起来
 			alert[i].alertName=alert[i].getElement(0).data;
 			int o=1;
 			while(o<Treenum){
@@ -543,6 +523,7 @@ public class HierarchicalMapReduce extends Configured implements Tool {
 			}
 		}	
 		nonRecrutQuickSort(alert);
+	
 	    Configuration conf = new Configuration();
 
 		

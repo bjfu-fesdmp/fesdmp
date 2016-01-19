@@ -49,7 +49,7 @@ public class HadoopHierarchicalClustering  {
     static Configuration conf = new Configuration();
     static FileSystem hdfs;
     static {
-        String path = "D:/ubuntu_de_wenjian/hadoop/conf/";
+        String path = "/home/ivysaur/hadoop/conf/";
         conf.addResource(new Path(path + "core-site.xml"));
         conf.addResource(new Path(path + "hdfs-site.xml"));
         conf.addResource(new Path(path + "mapred-site.xml"));
@@ -425,72 +425,72 @@ public class HadoopHierarchicalClustering  {
 			
 			
 	   		
-       		Node rePointer[]=new Node[Treenum];
-       		for(int i=0;i<Pointer.length-1;i++)
-       			rePointer[i]=Pointer[i+1].nextNode();
-       		
-       		while(rePointer[0].father!=null){
-       			List<Integer> coverNode=new ArrayList();
-				Node L=rePointer[0].leftLeaf();
-				Node R=rePointer[0].rightLeaf();
-				for(int i=0;i<N;i++){								//把第一棵树每个节点所包含的事件放入相应的节点中
-					if(alert[i].getElement(0).isBigger(L) && alert[i].getElement(0).isSmaller(R)){
-						coverNode.add(alert[i].staticNum);
-					}
-					else if(alert[i].getElement(0).isBigger(R))
-						break;
-				}
-   				int m=coverNode.size();
-   				int[] covernode=new int[m];
-				for(int i=0;i<m;i++){
-					covernode[i]=coverNode.get(i);
-				}
-				rePointer[0].coverNode=covernode;
-       			rePointer[0]=rePointer[0].nextNode();
-       		}
-       		
-    		for(int k=0;k<Treenum-1;k++){			//根据每棵树排序，同时把相应的树每个节点所包含的事件放入相应的节点中
-    			spell(alert,k,Treenum);
-    			nonRecrutQuickSort(alert);
-    			for(int i=0;i<N;i++)
-    				alert[i].setOrder(i, k+1);
-           		while(rePointer[k+1].father!=null){
-       			List<Integer> coverNode=new ArrayList();
-				Node L=rePointer[k+1].leftLeaf();
-				Node R=rePointer[k+1].rightLeaf();
-				for(int i=0;i<N;i++){
-					if(alert[i].getElement(k+1).isBigger(L) && alert[i].getElement(k+1).isSmaller(R)){
-						coverNode.add(alert[i].staticNum);
-					}
-					else if(alert[i].getElement(k+1).isBigger(R))
-						break;
-				}
-   				int m=coverNode.size();
-   				int[] covernode=new int[m];
-				for(int i=0;i<m;i++){
-					covernode[i]=coverNode.get(i);
-				}
-				
-				int minIndex=0;//将节点包含的事件数字顺序排列
-				int temp=0;
-				for(int i=0;i<covernode.length;i++){
-					minIndex=i;
-					for(int j=i+1;j<covernode.length;j++){
-						if(covernode[j]<covernode[minIndex])
-							minIndex=j;
-						}
-						if(minIndex!=i){
-					temp=covernode[i];
-					covernode[i]=covernode[minIndex];
-					covernode[minIndex]=temp;
-					}
-					
-				}
-				rePointer[k+1].coverNode=covernode;
-       			rePointer[k+1]=rePointer[k+1].nextNode();
-           		}
-    			
-    		}
+//       		Node rePointer[]=new Node[Treenum];
+//       		for(int i=0;i<Pointer.length-1;i++)
+//       			rePointer[i]=Pointer[i+1].nextNode();
+//       		
+//       		while(rePointer[0].father!=null){
+//       			List<Integer> coverNode=new ArrayList();
+//				Node L=rePointer[0].leftLeaf();
+//				Node R=rePointer[0].rightLeaf();
+//				for(int i=0;i<N;i++){								//把第一棵树每个节点所包含的事件放入相应的节点中
+//					if(alert[i].getElement(0).isBigger(L) && alert[i].getElement(0).isSmaller(R)){
+//						coverNode.add(alert[i].staticNum);
+//					}
+//					else if(alert[i].getElement(0).isBigger(R))
+//						break;
+//				}
+//   				int m=coverNode.size();
+//   				int[] covernode=new int[m];
+//				for(int i=0;i<m;i++){
+//					covernode[i]=coverNode.get(i);
+//				}
+//				rePointer[0].coverNode=covernode;
+//       			rePointer[0]=rePointer[0].nextNode();
+//       		}
+//       		
+//    		for(int k=0;k<Treenum-1;k++){			//根据每棵树排序，同时把相应的树每个节点所包含的事件放入相应的节点中
+//    			spell(alert,k,Treenum);
+//    			nonRecrutQuickSort(alert);
+//    			for(int i=0;i<N;i++)
+//    				alert[i].setOrder(i, k+1);
+//           		while(rePointer[k+1].father!=null){
+//       			List<Integer> coverNode=new ArrayList();
+//				Node L=rePointer[k+1].leftLeaf();
+//				Node R=rePointer[k+1].rightLeaf();
+//				for(int i=0;i<N;i++){
+//					if(alert[i].getElement(k+1).isBigger(L) && alert[i].getElement(k+1).isSmaller(R)){
+//						coverNode.add(alert[i].staticNum);
+//					}
+//					else if(alert[i].getElement(k+1).isBigger(R))
+//						break;
+//				}
+//   				int m=coverNode.size();
+//   				int[] covernode=new int[m];
+//				for(int i=0;i<m;i++){
+//					covernode[i]=coverNode.get(i);
+//				}
+//				
+//				int minIndex=0;//将节点包含的事件数字顺序排列
+//				int temp=0;
+//				for(int i=0;i<covernode.length;i++){
+//					minIndex=i;
+//					for(int j=i+1;j<covernode.length;j++){
+//						if(covernode[j]<covernode[minIndex])
+//							minIndex=j;
+//						}
+//						if(minIndex!=i){
+//					temp=covernode[i];
+//					covernode[i]=covernode[minIndex];
+//					covernode[minIndex]=temp;
+//					}
+//					
+//				}
+//				rePointer[k+1].coverNode=covernode;
+//       			rePointer[k+1]=rePointer[k+1].nextNode();
+//           		}
+//    			
+//    		}
 //    		for(int i=0;i<a1.coverNode.length;i++)
 //   		System.out.println(a1.coverNode[i]);
 			for(int i=0;i<N;i++){								//将警报名按照原始顺序拼起来
@@ -503,7 +503,7 @@ public class HadoopHierarchicalClustering  {
 			}	
 			nonRecrutQuickSort(alert);
     		//创建上传到hdfs的文件，即所有抽象事件
-			File m=new File("D:/allTree");
+			File m=new File("/home/ivysaur/workspace2/temp/allTree");
 			try{
 				
 				FileWriter fw=new FileWriter(m);
@@ -534,7 +534,7 @@ public class HadoopHierarchicalClustering  {
 				fw.close();
 			}catch(Exception o){}
 			
-        String src = "D:/allTree";
+        String src = "/home/ivysaur/workspace2/temp/allTree";
         String dir="/user/ivysaur/temp/temp";
        // ofs.createDir(dir);
         ofs.copyFile(src, dir);
@@ -542,14 +542,8 @@ public class HadoopHierarchicalClustering  {
         
         mapreduce=new HierarchicalMapReduce(threshold,Treenum,alert,tableName,stringLimit);
         String fineResult=mapreduce.comput();
-        
-        
-        
-        
-        ofs.deleteFile("/user/ivysaur/temp/allTree");
-			
-			
-			
+        ofs.deleteFile("/user/ivysaur/temp/temp");
+        ofs.deleteFile("/user/ivysaur/output");
 			return fineResult;
 			
 			
