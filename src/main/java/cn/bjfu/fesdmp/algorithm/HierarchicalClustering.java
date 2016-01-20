@@ -12,18 +12,20 @@ import cn.bjfu.fesdmp.json.DataJson;
 
 public class HierarchicalClustering {
 	private int threshold;//阈值
-	private int middleNumber=2;//中间层节点数
-	private int leafNumber=2;//每个中间层的叶子数
+	private int middleNumber;//中间层节点数
+	private int leafNumber;//每个中间层的叶子数
 	private DataJson dataJson[][];
 	private String tableName[];
 	public float finalAveDis=3.4e38f;
 	public int finalNodeNum=0;
 	public HierarchicalClustering() {
 	}
-	public HierarchicalClustering(DataJson dataJson[][],int threshold,String tableName[]) {
+	public HierarchicalClustering(DataJson dataJson[][],int threshold,String tableName[],int middleNumber,int leafNumber) {
 		this.threshold = threshold;
 		this.dataJson=dataJson;
 		this.tableName=tableName;
+		this.middleNumber=middleNumber;
+		this.leafNumber=leafNumber;
 	}
 	public static void spell(Alert alert[],int k,int Treenum){					//将警报名以第k个为起始按照顺序拼起来
 		for(int i=0;i<alert.length;i++){															
@@ -288,7 +290,7 @@ public class HierarchicalClustering {
 				int middleTierPointer=0;
 				int leafTierPointer=0;
 				root[rootPointer]=new Node(tableName[i-1]);
-				middleTier[i-1][middleTierPointer]=new Node(stringLimit[i-1][0]+"-"+stringLimit[i-1][2]);
+				middleTier[i-1][middleTierPointer]=new Node(stringLimit[i-1][0]+"-"+stringLimit[i-1][leafNumber]);
 				root[rootPointer].son=middleTier[i-1][middleTierPointer];
 				middleTier[i-1][middleTierPointer].father=root[rootPointer];
 				for(int j=1;j<middleNumber;j++){
@@ -297,7 +299,7 @@ public class HierarchicalClustering {
 					leafTier[i-1][leafTierPointer].father=middleTier[i-1][middleTierPointer];
 					leafTierPointer++;
 					for(int x=1;x<leafNumber;x++){
-						leafTier[i-1][leafTierPointer]=new Node(stringLimit[i-1][x]+"-"+stringLimit[i-1][x+1]);
+						leafTier[i-1][leafTierPointer]=new Node(stringLimit[i-1][leafTierPointer]+"-"+stringLimit[i-1][leafTierPointer+1]);
 						leafTier[i-1][leafTierPointer].father=middleTier[i-1][middleTierPointer];
 						leafTier[i-1][leafTierPointer-1].brother=leafTier[i-1][leafTierPointer];
 						leafTierPointer++;
@@ -537,7 +539,7 @@ public class HierarchicalClustering {
 		
 		
 		String finalReault="";
-		finalReault=finalReault+"所求cover为	[";						//结果输出
+		finalReault=finalReault+"最小覆盖事件为	[";						//结果输出
 		for(int i=0;i<Treenum-1;i++){
 			finalReault=finalReault+finalNode[i].data+" , ";
 			}

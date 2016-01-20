@@ -35,8 +35,8 @@ import cn.bjfu.fesdmp.json.DataJson;
 public class HadoopHierarchicalClustering  {
 	HierarchicalMapReduce mapreduce;
 	private static int threshold;//阈值
-	private int middleNumber=2;//中间层节点数
-	private int leafNumber=2;//每个中间层的叶子数
+	private int middleNumber;//中间层节点数
+	private int leafNumber;//每个中间层的叶子数
 	private static Node Pointer[];
 	private static Alert alert[];
 	private static int Treenum;
@@ -115,10 +115,12 @@ public class HadoopHierarchicalClustering  {
 	public HadoopHierarchicalClustering() {
 		
 	}
-	public HadoopHierarchicalClustering(DataJson dataJson[][],int threshold,String tableName[]) {
+	public HadoopHierarchicalClustering(DataJson dataJson[][],int threshold,String tableName[],int middleNumber,int leafNumber) {
 		this.threshold = threshold;
 		this.dataJson=dataJson;
 		this.tableName=tableName;
+		this.middleNumber=middleNumber;
+		this.leafNumber=leafNumber;
 	}
 	//将警报名以第k个为起始按照顺序拼起来
 	public static void spell(Alert alert[],int k,int Treenum){				
@@ -377,7 +379,7 @@ public class HadoopHierarchicalClustering  {
 				int middleTierPointer=0;
 				int leafTierPointer=0;
 				root[rootPointer]=new Node(tableName[i-1]);
-				middleTier[i-1][middleTierPointer]=new Node(stringLimit[i-1][0]+"-"+stringLimit[i-1][2]);
+				middleTier[i-1][middleTierPointer]=new Node(stringLimit[i-1][0]+"-"+stringLimit[i-1][leafNumber]);
 				root[rootPointer].son=middleTier[i-1][middleTierPointer];
 				middleTier[i-1][middleTierPointer].father=root[rootPointer];
 				for(int j=1;j<middleNumber;j++){
@@ -386,7 +388,7 @@ public class HadoopHierarchicalClustering  {
 					leafTier[i-1][leafTierPointer].father=middleTier[i-1][middleTierPointer];
 					leafTierPointer++;
 					for(int x=1;x<leafNumber;x++){
-						leafTier[i-1][leafTierPointer]=new Node(stringLimit[i-1][x]+"-"+stringLimit[i-1][x+1]);
+						leafTier[i-1][leafTierPointer]=new Node(stringLimit[i-1][leafTierPointer]+"-"+stringLimit[i-1][leafTierPointer+1]);
 						leafTier[i-1][leafTierPointer].father=middleTier[i-1][middleTierPointer];
 						leafTier[i-1][leafTierPointer-1].brother=leafTier[i-1][leafTierPointer];
 						leafTierPointer++;

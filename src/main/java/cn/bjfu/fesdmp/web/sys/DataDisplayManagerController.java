@@ -382,7 +382,7 @@ public class DataDisplayManagerController extends BaseController {
 					long tempResource = tempLocation * 10000 + j+1;
 					tempTree.setId(tempResource);
 					
-					tempTree.setText(temp+"_"+resourceGroupList.get(j).getGroupName());
+					tempTree.setText(resourceGroupList.get(j).getGroupName());
 					tempTree.setLeaf(true);
 					
 					treeOtherList.add(tempTree);
@@ -472,7 +472,7 @@ public class DataDisplayManagerController extends BaseController {
 								Integer tempIndexResource = tempResource * 100000 + n;
 								newtempTree.setId(tempIndexResource);
 								newtempTree.setParentId(tempResource);
-								newtempTree.setText(indexResourceList.get(n).getIndexEnName());
+								newtempTree.setText(indexResourceList.get(n).getIndexName());
 								newtempTree.setLeaf(true);
 								treeOtherList.add(newtempTree);
 								if(tempTree.getLeaf()==true)

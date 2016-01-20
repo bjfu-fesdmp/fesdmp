@@ -534,7 +534,7 @@ public class HierarchicalMapReduce extends Configured implements Tool {
 	  
 		Long end = System.currentTimeMillis();
 		String finalReault="";
-		finalReault=finalReault+"所求cover为	[";						//结果输出
+		finalReault=finalReault+"最小覆盖事件为	[";						//结果输出
 		for(int i=0;i<Treenum-1;i++){
 			finalReault=finalReault+finalNode[i].data+" , ";
 			}

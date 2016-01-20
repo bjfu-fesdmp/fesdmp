@@ -78,9 +78,71 @@ Ext.define('Bjfu.hierarchicalClustering.view.hierarchicalClustering',{
     	        emptyText : '请选择...'	,
     	        queryMode:'local'
     	    },{
-    	        fieldLabel: '阈值', 
+    	        fieldLabel: '阈值<font color="red">*</font>', 
     	        allowBlank : false,
     	        name: 'thresHlod',
+    	        listeners:{
+	    	        'blur' : function(_this, the, e) {
+						var v = _this.getValue();
+						var vv = Ext.String.trim(v);
+						_this.setValue(vv);			
+							if (vv.length > 0) {
+								Ext.Ajax.request({
+									url : Global_Path+'dataClustering/checkThresHlod',
+									params : {
+										thresHlod : vv
+									},
+									success : function(response) {
+										var result = Ext.decode(response.responseText);
+										if(!result.success){
+												Ext.Msg.alert("提示", "请输入正确的数字");
+												_this.setValue('');
+												return;
+										}
+									},
+									failure: function(response) {
+										var result = Ext.decode(response.responseText);
+										Ext.Msg.alert('错误', result.__msg);
+									}
+								});
+							}			    
+    	        	}
+    	        } 
+    	    },{
+    	        fieldLabel: '根结点度数<font color="red">*</font>', 
+    	        allowBlank : false,
+    	        name: 'middleNumber',
+    	        listeners:{
+	    	        'blur' : function(_this, the, e) {
+						var v = _this.getValue();
+						var vv = Ext.String.trim(v);
+						_this.setValue(vv);			
+							if (vv.length > 0) {
+								Ext.Ajax.request({
+									url : Global_Path+'dataClustering/checkThresHlod',
+									params : {
+										thresHlod : vv
+									},
+									success : function(response) {
+										var result = Ext.decode(response.responseText);
+										if(!result.success){
+												Ext.Msg.alert("提示", "请输入正确的数字");
+												_this.setValue('');
+												return;
+										}
+									},
+									failure: function(response) {
+										var result = Ext.decode(response.responseText);
+										Ext.Msg.alert('错误', result.__msg);
+									}
+								});
+							}			    
+    	        	}
+    	        } 
+    	    },{
+    	        fieldLabel: '一层结点度数<font color="red">*</font>', 
+    	        allowBlank : false,
+    	        name: 'leafNumber',
     	        listeners:{
 	    	        'blur' : function(_this, the, e) {
 						var v = _this.getValue();

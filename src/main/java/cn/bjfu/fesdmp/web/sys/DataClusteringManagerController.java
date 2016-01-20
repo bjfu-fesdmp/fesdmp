@@ -514,7 +514,7 @@ public Map<String, Object> hierarchicalClustering(HttpServletRequest request,Str
 	}
 	int Threshold=Integer.parseInt(hierarchicalClusteringJson.getThresHlod());//设定阈值
 	
-	HierarchicalClustering hierarchicalClustering=new HierarchicalClustering(dataJson,Threshold,tableName);
+	HierarchicalClustering hierarchicalClustering=new HierarchicalClustering(dataJson,Threshold,tableName,hierarchicalClusteringJson.getMiddleNumber(),hierarchicalClusteringJson.getLeafNumber());
 	
 	
 	String finalResult=hierarchicalClustering.comput();
@@ -553,7 +553,7 @@ public Map<String, Object> hadoopHierarchicalClustering(HttpServletRequest reque
 	DataJson dataJson[][]=new DataJson[tables.length][];
 	String tableName[]=new String[tables.length];
 	for(int i=0;i<tables.length;i++){
-	tableName[i]=this.indexResourceService.findByKey(Integer.parseInt(tables[i].substring(5))).getIndexEnName();
+	tableName[i]=this.indexResourceService.findByKey(Integer.parseInt(tables[i].substring(5))).getIndexName();
 	}
 	for(int i=0;i<tables.length;i++){
 		if(i!=hierarchicalClusteringCenter){
@@ -566,7 +566,7 @@ public Map<String, Object> hadoopHierarchicalClustering(HttpServletRequest reque
 	}
 	int Threshold=Integer.parseInt(hierarchicalClusteringJson.getThresHlod());//设定阈值
 	
-	HadoopHierarchicalClustering hierarchicalClustering=new HadoopHierarchicalClustering(dataJson,Threshold,tableName);
+	HadoopHierarchicalClustering hierarchicalClustering=new HadoopHierarchicalClustering(dataJson,Threshold,tableName,hierarchicalClusteringJson.getMiddleNumber(),hierarchicalClusteringJson.getLeafNumber());
 	
 	
 	String finalResult=hierarchicalClustering.comput();

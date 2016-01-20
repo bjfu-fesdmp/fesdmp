@@ -10,6 +10,21 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 
 public class HierarchicalClusteringJson {
+	private int middleNumber;
+	private int leafNumber;
+	
+	public int getMiddleNumber() {
+		return middleNumber;
+	}
+	public void setMiddleNumber(int middleNumber) {
+		this.middleNumber = middleNumber;
+	}
+	public int getLeafNumber() {
+		return leafNumber;
+	}
+	public void setLeafNumber(int leafNumber) {
+		this.leafNumber = leafNumber;
+	}
 	private String hierarchicalClusteringCenterId;
 	/**
 	 * @return the hierarchicalClusteringCenterId
