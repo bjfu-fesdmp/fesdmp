@@ -2,6 +2,7 @@ package cn.bjfu.fesdmp.web.sys;
 
 import cn.bjfu.fesdmp.algorithm.GetDayAve;
 import cn.bjfu.fesdmp.algorithm.HadoopHierarchicalClustering;
+import cn.bjfu.fesdmp.algorithm.HadoopKmeans;
 import cn.bjfu.fesdmp.algorithm.HierarchicalClustering;
 import cn.bjfu.fesdmp.algorithm.Kmeans;
 import cn.bjfu.fesdmp.algorithm.Kmedoids;
@@ -78,7 +79,7 @@ public class DataClusteringManagerController extends BaseController {
 	}
 	@RequestMapping(value = "/kmeans", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> kmeans(HttpServletRequest request,String ids, String tableName,String num) throws Exception {
+	public Map<String, Object> kmeans(HttpServletRequest request,String ids, String tableName,String num,String mode) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		logger.info("kmeans method.");
 		Map<String, Object> result = new HashMap<String, Object>();
@@ -106,10 +107,16 @@ public class DataClusteringManagerController extends BaseController {
 		}
 
 		}
-		
-		
+		List<DataJson>[] results;
+		if (mode.equals("1")){
         Kmeans kmeans = new Kmeans(list,Integer.parseInt(str2));  
-        List<DataJson>[] results = kmeans.comput();  
+        	results = kmeans.comput();  
+		}
+		else{
+			HadoopKmeans hadoopKmeans = new HadoopKmeans(list,Integer.parseInt(str2));  
+	       results = hadoopKmeans.comput();  
+		}
+        
         
 		List<StatisticsBean> list1 = new ArrayList<StatisticsBean>();
 		
@@ -129,6 +136,10 @@ public class DataClusteringManagerController extends BaseController {
 			statBoyBean.setName("聚类中心为"+bd.setScale(2,bd.ROUND_HALF_UP)); 
 			list1.add(statBoyBean);
 		}
+		
+		
+		
+		
 		result.put(RESULT, list1);
 		result.put(SUCCESS, Boolean.TRUE);
 		return result;

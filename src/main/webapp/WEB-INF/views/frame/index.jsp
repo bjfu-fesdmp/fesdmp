@@ -125,23 +125,9 @@
 				});
                     }
 			},' ',{
-				text : '数据管理',
+				text : '聚类分析',
 				menu: {
 			            items: [
-			                {
-			                 
-			                    text: '数据展示',
-								handler : function() {
-									Ext.getCmp('centerPanel').getLoader().load({
-										autoLoad : true,
-    									url: Global_Path + "dataDisplay/listView",
-            	 						scripts : true,
-            	 						loadMask : true,
-            	 						noCache : true	
-    								});
-								}
-                
-			                },
 			{
 				                 
 				                    text: '划分聚类',
@@ -187,11 +173,42 @@
 			            ]
 			        }
 			},' ',{
+				text : '数据管理',
+				menu: {
+			            items: [
+			                {
+			                 
+			                    text: '数据展示',
+								handler : function() {
+									Ext.getCmp('centerPanel').getLoader().load({
+										autoLoad : true,
+    									url: Global_Path + "dataDisplay/listView",
+            	 						scripts : true,
+            	 						loadMask : true,
+            	 						noCache : true	
+    								});
+								}
+                
+			                }
+			            ]
+			        }
+			},' ',{
 				text : '指标与权限管理',
 				id : 'indexManager',
 				menu: {
 			            items: [{
-									text: '指标资源管理',
+				       				text: '区域设置',
+				       				handler: function () {
+									Ext.getCmp('centerPanel').getLoader().load({
+									autoLoad : true,
+	    							url: Global_Path + "location/listView",
+                	 				scripts : true,
+                	 				loadMask : true,
+                	 				noCache : true	
+	    							});
+				       					}
+				      				 },{
+									text: '资源组与指标资源管理',
 									handler:  function () {
 									Ext.getCmp('centerPanel').getLoader().load({
 									autoLoad : true,	
@@ -254,18 +271,7 @@
                 	 					noCache : true	
 	    							});
 				                    }
-				                },{
-					       				text: '区域设置',
-					       				handler: function () {
-										Ext.getCmp('centerPanel').getLoader().load({
-										autoLoad : true,
-		    							url: Global_Path + "location/listView",
-	                	 				scripts : true,
-	                	 				loadMask : true,
-	                	 				noCache : true	
-		    							});
-					       					}
-					      				 } 
+				                }
 			            ]
 			        }
 			},'->',{

@@ -124,59 +124,60 @@ Ext.define('Bjfu.dataClustering.view.KMeans',{
         	    }],
             	buttonAlign:'center', 
                 buttons: [{
-            		        text: '开始运算',
-            		        formBind: true,
-            		        disabled: true,
-            		        handler: function() {
-            		            var form = this.up('form').getForm();
-            		            var window = this.up('window');
-            		            if (form.isValid()) { 
-            		            	var tableValues = form.getValues();
-            		            	dataStore.load({
-            	    	               		params: {
-                   		    	 	   			tableName:me.tableName,
-                		    	 	   			ids:me.ids,
-                		    	 	   			num:Ext.encode(tableValues)
-            	    	           			}
-            	    	            });
-            		            	this.up('window').close();
-            		            	
-            		            	 var win = Ext.create('Ext.Window', {
-            		                     width: 800,
-            		                     height: 600,
-            		                     minHeight: 400,
-            		                     minWidth: 550,
-            		                     hidden: false,
-            		                     maximizable: true,
-            		                     title: '聚类结果图',
-            		                     autoShow: true,
-            		                     layout: 'fit',
-            		                     tbar: [{
-            		                         text: '下载图表',
-            		                         handler: function() {
-            		                             Ext.MessageBox.confirm('下载提示', '是否下载当前图表?', function(choice){
-            		                                 if(choice == 'yes'){
-            		                                     chart.save({
-            		                                         type: 'image/png'
-            		                                     });
-            		                                 }
-            		                             });
-            		                         }
-            		                     }, {
-            		         				enableToggle : true,
-            		        				pressed : false,
-            		        				text : 'Donut',
-            		        				toggleHandler : function(btn, pressed) {
-            		        					chart.series.first().donut = pressed ? 35 : false;
-            		        					chart.refresh();
-            		        				}
-            		        			} ],
-            		                     items: chart
-            		                 });
-            		            	 dataStore.removeAll();
-                                }
-            		        }
-            		    }]
+    		        text: '开始计算',
+    		        formBind: true,
+    		        disabled: true,
+    		        handler: function() {
+    		            var form = this.up('form').getForm();
+    		            var window = this.up('window');
+    		            if (form.isValid()) { 
+    		            	var tableValues = form.getValues();
+    		            	dataStore.load({
+    	    	               		params: {
+           		    	 	   			tableName:me.tableName,
+        		    	 	   			ids:me.ids,
+        		    	 	   			num:Ext.encode(tableValues),
+        		    	 	   			mode:'1'
+    	    	           			}
+    	    	            });
+    		            	this.up('window').close();
+    		            	
+    		            	 var win = Ext.create('Ext.Window', {
+    		                     width: 800,
+    		                     height: 600,
+    		                     minHeight: 400,
+    		                     minWidth: 550,
+    		                     hidden: false,
+    		                     maximizable: true,
+    		                     title: '聚类结果图',
+    		                     autoShow: true,
+    		                     layout: 'fit',
+    		                     tbar: [{
+    		                         text: '下载图表',
+    		                         handler: function() {
+    		                             Ext.MessageBox.confirm('下载提示', '是否下载当前图表?', function(choice){
+    		                                 if(choice == 'yes'){
+    		                                     chart.save({
+    		                                         type: 'image/png'
+    		                                     });
+    		                                 }
+    		                             });
+    		                         }
+    		                     }, {
+    		         				enableToggle : true,
+    		        				pressed : false,
+    		        				text : 'Donut',
+    		        				toggleHandler : function(btn, pressed) {
+    		        					chart.series.first().donut = pressed ? 35 : false;
+    		        					chart.refresh();
+    		        				}
+    		        			} ],
+    		                     items: chart
+    		                 });
+    		            	 dataStore.removeAll();
+                        }
+    		        }
+    		    }]
         	});
         	me.callParent(arguments);
     	},

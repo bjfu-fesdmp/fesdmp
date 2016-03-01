@@ -544,7 +544,7 @@ public class HadoopHierarchicalClustering  {
         
         mapreduce=new HierarchicalMapReduce(threshold,Treenum,alert,tableName,stringLimit);
         String fineResult=mapreduce.comput();
-        ofs.deleteFile("/user/ivysaur/temp/temp");
+        ofs.deleteFile("/user/ivysaur/temp");
         ofs.deleteFile("/user/ivysaur/output");
 			return fineResult;
 			
