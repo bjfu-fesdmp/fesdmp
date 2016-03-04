@@ -38,8 +38,10 @@ public interface IDataDao extends IGenericDao<DataJson> {
 	public abstract void deleteTable(String tableName);
 	public abstract void modifyTableName(String oldName,String newName);
 	public abstract DataJson findDataById(String id,String tableName);
+	public abstract List<DataJson>  findAllData(String tableName);
 	public abstract boolean checkIfHasTable(String tableName);
 	public abstract List<ResourceTable> findTableByEnName(String tableName);
 	public abstract DataJson[] findData(String tableName,Date startTime,Date endTime);
+	public abstract DataJson[] findData(String tableName);
 }
  

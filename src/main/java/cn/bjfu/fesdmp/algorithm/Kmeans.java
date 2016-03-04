@@ -15,13 +15,13 @@ public class Kmeans {
 	/**
 	 * 所有数据列表
 	 */
-	private List<DataJson> datas = new ArrayList<DataJson>();
+	private List<DataJson[]> datas=new ArrayList<DataJson[]>();
 
 
 	/**
 	 * 初始化列表
 	 */
-	private List<DataJson> initdatas;
+	private List<DataJson[]> initdatas=new ArrayList<DataJson[]>();
 
 
 	/**
@@ -29,6 +29,14 @@ public class Kmeans {
 	 */
 	private int k = 1;
 
+	/**
+	 * 表数
+	 */
+	private int N = 0;
+	/**
+	 * 数据总数
+	 */
+	private int allNum = 0;
 	public Kmeans() {
 
 	}
@@ -39,31 +47,40 @@ public class Kmeans {
 	 * @param list
 	 * @param k
 	 */
-	public Kmeans(List<DataJson> list, int k) {
-		this.datas = list;
+	public Kmeans(DataJson[][] dataJson, int k) {
 		this.k = k;
-		DataJson t = list.get(0);
+		this.N=dataJson.length;
+		this.allNum=dataJson[0].length;
+		for(int i=0;i<dataJson[0].length;i++){
+			DataJson temp[]=new DataJson[N];
+			for(int j=0;j<N;j++){
+				temp[j]=dataJson[j][i];
+			}
+			datas.add(temp);
+		}
 
-		initdatas = new ArrayList<DataJson>();
 		for (int i = 0; i < k; i++) {
 			initdatas.add(datas.get(i));
 		}
 	}
 
-	public List<DataJson>[] comput() {
-		List<DataJson>[] results = new ArrayList[k];
+	public List comput() {
+	
+		List<DataJson[]>[] results=new ArrayList[k];
 
+		
 		boolean centerchange = true;
 		while (centerchange) {
 			centerchange = false;
-			for (int i = 0; i < k; i++) {
-				results[i] = new ArrayList<DataJson>();
+			for(int i=0;i<k;i++){
+				results[i]=new ArrayList();
+				
 			}
 			for (int i = 0; i < datas.size(); i++) {
-				DataJson p = datas.get(i);
+				DataJson[] p = datas.get(i);
 				double[] dists = new double[k];
 				for (int j = 0; j < initdatas.size(); j++) {
-					DataJson initP = initdatas.get(j);
+					DataJson[] initP = initdatas.get(j);
 					/* 计算距离 */
 					double dist = distance(initP, p);
 					dists[j] = dist;
@@ -74,8 +91,8 @@ public class Kmeans {
 			}
 
 			for (int i = 0; i < k; i++) {
-				DataJson player_new = findNewCenter(results[i]);
-				DataJson player_old = initdatas.get(i);
+				DataJson[] player_new = findNewCenter(results[i]);
+				DataJson[] player_old = initdatas.get(i);
 				if (!IsPlayerEqual(player_new, player_old)) {
 					centerchange = true;
 					initdatas.set(i, player_new);
@@ -84,8 +101,14 @@ public class Kmeans {
 			}
 
 		}
-
-		return results;
+		List list = new ArrayList();
+		list.add(initdatas);
+		List<Integer> num = new ArrayList();
+		for(int i=0;i<results.length;i++){
+			num.add(results[i].size());
+		}
+		list.add(num);
+		return list;
 	}
 
 	/**
@@ -95,15 +118,18 @@ public class Kmeans {
 	 * @param p2
 	 * @return
 	 */
-	public boolean IsPlayerEqual(DataJson p1, DataJson p2) {
-		if (Double.parseDouble(p1.getData()) == Double.parseDouble(p2.getData())) {
-			return true;
+	public boolean IsPlayerEqual(DataJson[] p1, DataJson[] p2) {
+		boolean m=true;
+		for(int i=0;i<p1.length;i++){
+			if ((int)Double.parseDouble(p1[i].getData())*100!= (int)Double.parseDouble(p2[i].getData())*100) {
+				m=false;
+				break;
+			}
+			
 		}
-		else
-			return false;
 		
-
-	
+		
+			return m;
 		
 
 	}
@@ -114,19 +140,31 @@ public class Kmeans {
 	 * @param ps
 	 * @return
 	 */
-	public DataJson findNewCenter(List<DataJson> ps) {
+	public DataJson[] findNewCenter(List<DataJson[]> ps) {
 		try {
-			DataJson t = new DataJson();
+			DataJson[] t = new DataJson[N];
 			if (ps == null || ps.size() == 0) {
 				return t;
 			}
-			double sum=0;
+			double sum[]=new double[N];
+			for(int i=0;i<N;i++){
+				t[i]=new DataJson();
+			}
+			
+			
 			for(int i=0;i<ps.size();i++){
-				sum=sum+Double.parseDouble(ps.get(i).getData());
+				for(int j=0;j<N;j++){
+					sum[j]=sum[j]+Double.parseDouble(ps.get(i)[j].getData());	
+				}
 			}
 			double num=ps.size();
-			double ave=sum/num; 
-			t.setData(String.valueOf(ave));
+			for(int j=0;j<N;j++){
+				sum[j]=sum[j]/num;
+			}
+			for(int j=0;j<N;j++){
+				t[j].setData(String.valueOf(sum[j]));
+			}
+			
 			return t;
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -167,11 +205,13 @@ public class Kmeans {
 	 * @param p1
 	 * @return
 	 */
-	public double distance(DataJson p0, DataJson p1) {
+	public double distance(DataJson p0[], DataJson p1[]) {
 		double dis = 0;
-		Double field0Value=Double.parseDouble(p0.getData());
-		Double field1Value=Double.parseDouble(p1.getData());
+		for(int i=0;i<p0.length;i++){
+		Double field0Value=Double.parseDouble(p0[i].getData());
+		Double field1Value=Double.parseDouble(p1[i].getData());
 		dis += Math.pow(field0Value - field1Value, 2); 
+		}
 		return Math.sqrt(dis);
 
 	}

@@ -3,6 +3,7 @@ package cn.bjfu.fesdmp.web.sys;
 import cn.bjfu.fesdmp.algorithm.GetDayAve;
 import cn.bjfu.fesdmp.algorithm.HadoopHierarchicalClustering;
 import cn.bjfu.fesdmp.algorithm.HadoopKmeans;
+import cn.bjfu.fesdmp.algorithm.HadoopKmedoids;
 import cn.bjfu.fesdmp.algorithm.HierarchicalClustering;
 import cn.bjfu.fesdmp.algorithm.Kmeans;
 import cn.bjfu.fesdmp.algorithm.Kmedoids;
@@ -12,6 +13,7 @@ import cn.bjfu.fesdmp.json.AveDataJson;
 import cn.bjfu.fesdmp.json.ChartDataJson;
 import cn.bjfu.fesdmp.json.DataJson;
 import cn.bjfu.fesdmp.json.HierarchicalClusteringJson;
+import cn.bjfu.fesdmp.json.ClusteringJson;
 import cn.bjfu.fesdmp.json.HierarchicalClusteringTableJson;
 import cn.bjfu.fesdmp.json.StatisticsBean;
 import cn.bjfu.fesdmp.sys.service.IDataService;
@@ -79,141 +81,214 @@ public class DataClusteringManagerController extends BaseController {
 	}
 	@RequestMapping(value = "/kmeans", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> kmeans(HttpServletRequest request,String ids, String tableName,String num,String mode) throws Exception {
+	public Map<String, Object> kmeans(HttpServletRequest request, String allTable,String mode, String searchJson) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 		logger.info("kmeans method.");
 		Map<String, Object> result = new HashMap<String, Object>();
-		if(tableName!=null){
-			if(tableName.length()==16){
-				String newTableName = tableName.substring(0, 4) + "_"
-						+ Integer.parseInt(tableName.substring(14));
+		String tables[]=allTable.split(",");
 		List<DataJson> list = new ArrayList<DataJson>();
-
-		String id[] = ids.split(",");
-		for (int i = 0; i < id.length; i++) {
-			DataJson dataJson = new DataJson();
-			dataJson = this.dataService.findDataById(id[i], newTableName);
-			list.add(dataJson);
+		list= this.dataService.findAllData(tables[0]);
+		ClusteringJson clusteringJson = new ClusteringJson();
+		if (!StringUtils.isEmpty(searchJson)) {
+			clusteringJson = mapper.readValue(searchJson,ClusteringJson.class);
 		}
-
-
-		num=num.trim();
-		String str2="";
-		if(num != null && !"".equals(num)){
-		for(int i=0;i<num.length();i++){
-		if(num.charAt(i)>=48 && num.charAt(i)<=57){
-		str2+=num.charAt(i);
+		String clusteringCenter=clusteringJson.getClusteringCenterId();
+		DataJson dataJson[][]=new DataJson[tables.length][];
+		for(int i=0;i<tables.length;i++){
+			if(!clusteringCenter.equals(tables[i])){
+				DataJson temp[]=this.dataService.timeCoordination(clusteringCenter,tables[i]);
+				dataJson[i]=temp;
+			
+			}
+			else
+				dataJson[i]=this.dataService.findData(tables[i]);
 		}
-		}
-
-		}
-		List<DataJson>[] results;
+		
+		Object results1=new ArrayList();
+		Object results2=new ArrayList();
 		if (mode.equals("1")){
-        Kmeans kmeans = new Kmeans(list,Integer.parseInt(str2));  
-        	results = kmeans.comput();  
+        Kmeans kmeans = new Kmeans(dataJson,clusteringJson.getNumber());  
+         results1 = kmeans.comput().get(0);  
+         results2 = kmeans.comput().get(1);  
 		}
 		else{
-			HadoopKmeans hadoopKmeans = new HadoopKmeans(list,Integer.parseInt(str2));  
-	       results = hadoopKmeans.comput();  
+			HadoopKmeans hadoopKmeans = new HadoopKmeans(dataJson,clusteringJson.getNumber());  
+	      
+		         results1 = hadoopKmeans.comput().get(0);
+		         results2 = hadoopKmeans.comput().get(1); 
 		}
-        
-        
+		List<DataJson[]> center=(List<DataJson[]>) results1;
+		List<Integer> number=(List<Integer>) results2;
 		List<StatisticsBean> list1 = new ArrayList<StatisticsBean>();
 		
-		for(int i=0;i<results.length;i++)
+		for(int i=0;i<number.size();i++)
 		{
 			StatisticsBean statBoyBean = new StatisticsBean();
-			statBoyBean.setData(String.valueOf(results[i].size()));
+			statBoyBean.setData(String.valueOf(number.get(i)));
 			statBoyBean.setId(i+1);
-			double k=0;
-			for(int j=0;j<results[i].size();j++)
-			{
-			k=k+Double.parseDouble(results[i].get(j).getData());
+			List<BigDecimal> bd=new ArrayList();
+			for(int j=0;j<center.get(0).length;j++){
+				//bd.add(new BigDecimal(Double.parseDouble(center.get(i)[j].getData())));
+				bd.add(new BigDecimal(Double.parseDouble(center.get(i)[j].getData())));
 			}
-			k=k/results[i].size();
 			
-			BigDecimal bd=new BigDecimal(k);
-			statBoyBean.setName("聚类中心为"+bd.setScale(2,bd.ROUND_HALF_UP)); 
+			String text="";
+			text="聚类中心为"+"\n";
+			for(int j=0;j<bd.size()-1;j++){
+				text=text+bd.get(j).setScale(2,bd.get(j).ROUND_HALF_UP);
+				text=text+" , ";
+			}
+			text=text+bd.get(bd.size()-1).setScale(2,bd.get(bd.size()-1).ROUND_HALF_UP);
+			statBoyBean.setName(text);
+			
+			//statBoyBean.setName("聚类中心为"+bd.setScale(2,bd.ROUND_HALF_UP)); 
 			list1.add(statBoyBean);
 		}
 		
-		
-		
-		
 		result.put(RESULT, list1);
+		
 		result.put(SUCCESS, Boolean.TRUE);
 		return result;
 				
-			}
-			}
-		else
-			result.put(SUCCESS, Boolean.FALSE);	
-		
-		return result;
+			
 	}
-	@RequestMapping(value = "/unionKmeans", method = RequestMethod.POST)
+	
+	@RequestMapping(value = "/kmedoids", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> unionKmeans(HttpServletRequest request,String ids, String tableName,String num) throws Exception {
+	public Map<String, Object> kmedoids(HttpServletRequest request, String allTable,String mode, String searchJson) throws Exception {
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-		logger.info("unionKmeans method.");
+		logger.info("kmedoids method.");
 		Map<String, Object> result = new HashMap<String, Object>();
-		if(tableName!=null){
-			if(this.dataService.checkIfHasTable(tableName)){
-
+		String tables[]=allTable.split(",");
 		List<DataJson> list = new ArrayList<DataJson>();
-
-		String id[] = ids.split(",");
-		for (int i = 0; i < id.length; i++) {
-			DataJson dataJson = new DataJson();
-			dataJson.setData(id[i]);
-			list.add(dataJson);
+		list= this.dataService.findAllData(tables[0]);
+		ClusteringJson clusteringJson = new ClusteringJson();
+		if (!StringUtils.isEmpty(searchJson)) {
+			clusteringJson = mapper.readValue(searchJson,ClusteringJson.class);
 		}
-
-
-		num=num.trim();
-		String str2="";
-		if(num != null && !"".equals(num)){
-		for(int i=0;i<num.length();i++){
-		if(num.charAt(i)>=48 && num.charAt(i)<=57){
-		str2+=num.charAt(i);
-		}
-		}
-
+		String clusteringCenter=clusteringJson.getClusteringCenterId();
+		DataJson dataJson[][]=new DataJson[tables.length][];
+		for(int i=0;i<tables.length;i++){
+			if(!clusteringCenter.equals(tables[i])){
+				DataJson temp[]=this.dataService.timeCoordination(clusteringCenter,tables[i]);
+				dataJson[i]=temp;
+			
+			}
+			else
+				dataJson[i]=this.dataService.findData(tables[i]);
 		}
 		
-		
-        Kmeans kmeans = new Kmeans(list,Integer.parseInt(str2));  
-        List<DataJson>[] results = kmeans.comput();  
-        
+		Object results1=new ArrayList();
+		Object results2=new ArrayList();
+		if (mode.equals("1")){
+		Kmedoids kmedoids = new Kmedoids(dataJson,clusteringJson.getNumber());  
+         results1 = kmedoids.comput().get(0);  
+         results2 = kmedoids.comput().get(1);  
+		}
+		else{
+			HadoopKmedoids hadoopKmedoids = new HadoopKmedoids(dataJson,clusteringJson.getNumber());  
+		      
+	         results1 = hadoopKmedoids.comput().get(0);
+	         results2 = hadoopKmedoids.comput().get(1); 
+		}
+		List<DataJson[]> center=(List<DataJson[]>) results1;
+		List<Integer> number=(List<Integer>) results2;
 		List<StatisticsBean> list1 = new ArrayList<StatisticsBean>();
 		
-		for(int i=0;i<results.length;i++)
+		for(int i=0;i<number.size();i++)
 		{
 			StatisticsBean statBoyBean = new StatisticsBean();
-			statBoyBean.setData(String.valueOf(results[i].size()));
+			statBoyBean.setData(String.valueOf(number.get(i)));
 			statBoyBean.setId(i+1);
-			double k=0;
-			for(int j=0;j<results[i].size();j++)
-			{
-			k=k+Double.parseDouble(results[i].get(j).getData());
+			List<BigDecimal> bd=new ArrayList();
+			for(int j=0;j<center.get(0).length;j++){
+				//bd.add(new BigDecimal(Double.parseDouble(center.get(i)[j].getData())));
+				bd.add(new BigDecimal(Double.parseDouble(center.get(i)[j].getData())));
 			}
-			k=k/results[i].size();
 			
-			BigDecimal bd=new BigDecimal(k);
-			statBoyBean.setName("聚类中心为"+bd.setScale(2,bd.ROUND_HALF_UP)); 
+			String text="";
+			text="聚类中心为"+"\n";
+			for(int j=0;j<bd.size()-1;j++){
+				text=text+bd.get(j).setScale(2,bd.get(j).ROUND_HALF_UP);
+				text=text+" , ";
+			}
+			text=text+bd.get(bd.size()-1).setScale(2,bd.get(bd.size()-1).ROUND_HALF_UP);
+			statBoyBean.setName(text);
+			
+			//statBoyBean.setName("聚类中心为"+bd.setScale(2,bd.ROUND_HALF_UP)); 
 			list1.add(statBoyBean);
 		}
+		
 		result.put(RESULT, list1);
+		
 		result.put(SUCCESS, Boolean.TRUE);
 		return result;
 				
-			}
-			}
-		else
-			result.put(SUCCESS, Boolean.FALSE);	
-		
-		return result;
+			
 	}
+//	@RequestMapping(value = "/unionKmeans", method = RequestMethod.POST)
+//	@ResponseBody
+//	public Map<String, Object> unionKmeans(HttpServletRequest request,String ids, String tableName,String num) throws Exception {
+//		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+//		logger.info("unionKmeans method.");
+//		Map<String, Object> result = new HashMap<String, Object>();
+//		if(tableName!=null){
+//			if(this.dataService.checkIfHasTable(tableName)){
+//
+//		List<DataJson> list = new ArrayList<DataJson>();
+//
+//		String id[] = ids.split(",");
+//		for (int i = 0; i < id.length; i++) {
+//			DataJson dataJson = new DataJson();
+//			dataJson.setData(id[i]);
+//			list.add(dataJson);
+//		}
+//
+//
+//		num=num.trim();
+//		String str2="";
+//		if(num != null && !"".equals(num)){
+//		for(int i=0;i<num.length();i++){
+//		if(num.charAt(i)>=48 && num.charAt(i)<=57){
+//		str2+=num.charAt(i);
+//		}
+//		}
+//
+//		}
+//		
+//		
+//        Kmeans kmeans = new Kmeans(list,Integer.parseInt(str2));  
+//        List<DataJson>[] results = kmeans.comput();  
+//        
+//		List<StatisticsBean> list1 = new ArrayList<StatisticsBean>();
+//		
+//		for(int i=0;i<results.length;i++)
+//		{
+//			StatisticsBean statBoyBean = new StatisticsBean();
+//			statBoyBean.setData(String.valueOf(results[i].size()));
+//			statBoyBean.setId(i+1);
+//			double k=0;
+//			for(int j=0;j<results[i].size();j++)
+//			{
+//			k=k+Double.parseDouble(results[i].get(j).getData());
+//			}
+//			k=k/results[i].size();
+//			
+//			BigDecimal bd=new BigDecimal(k);
+//			statBoyBean.setName("聚类中心为"+bd.setScale(2,bd.ROUND_HALF_UP)); 
+//			list1.add(statBoyBean);
+//		}
+//		result.put(RESULT, list1);
+//		result.put(SUCCESS, Boolean.TRUE);
+//		return result;
+//				
+//			}
+//			}
+//		else
+//			result.put(SUCCESS, Boolean.FALSE);	
+//		
+//		return result;
+//	}
 	@RequestMapping(value = "/checkIfIsNumber", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> checkIfIsNumber(String num) throws Exception {
@@ -266,132 +341,69 @@ public Map<String, Object> dayAve(HttpServletRequest request,String ids, String 
 	return result;
 }
 
-@RequestMapping(value = "/kmedoids", method = RequestMethod.POST)
-@ResponseBody
-public Map<String, Object> kmedoids(HttpServletRequest request,String ids, String tableName,String num) throws Exception {
-	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-	logger.info("kmedoids method.");
-	Map<String, Object> result = new HashMap<String, Object>();
-	if(tableName!=null){
-		if(tableName.length()==16){
-			String newTableName = tableName.substring(0, 4) + "_"
-					+ Integer.parseInt(tableName.substring(14));
-	List<DataJson> list = new ArrayList<DataJson>();
 
-	String id[] = ids.split(",");
-	for (int i = 0; i < id.length; i++) {
-		DataJson dataJson = new DataJson();
-		dataJson = this.dataService.findDataById(id[i], newTableName);
-		list.add(dataJson);
-	}
-
-
-	num=num.trim();
-	String str2="";
-	if(num != null && !"".equals(num)){
-	for(int i=0;i<num.length();i++){
-	if(num.charAt(i)>=48 && num.charAt(i)<=57){
-	str2+=num.charAt(i);
-	}
-	}
-
-	}
-	
-	
-	Kmedoids kmedoids = new Kmedoids(list,Integer.parseInt(str2));  
-    List<DataJson>[] results = kmedoids.comput();  
-    
-	List<StatisticsBean> list1 = new ArrayList<StatisticsBean>();
-	
-	for(int i=0;i<results.length;i++)
-	{
-		StatisticsBean statBoyBean = new StatisticsBean();
-		statBoyBean.setData(String.valueOf(results[i].size()));
-		statBoyBean.setId(i+1);
-		double k=0;
-		for(int j=0;j<results[i].size();j++)
-		{
-		k=k+Double.parseDouble(results[i].get(j).getData());
-		}
-		k=k/results[i].size();
-		
-		BigDecimal bd=new BigDecimal(k);
-		statBoyBean.setName("聚类中心为"+bd.setScale(2,bd.ROUND_HALF_UP)); 
-		list1.add(statBoyBean);
-	}
-	result.put(RESULT, list1);
-	result.put(SUCCESS, Boolean.TRUE);
-	return result;
-			
-		}
-		}
-	else
-		result.put(SUCCESS, Boolean.FALSE);	
-	
-	return result;
-}
-@RequestMapping(value = "/unionKmedoids", method = RequestMethod.POST)
-@ResponseBody
-public Map<String, Object> unionKmedoids(HttpServletRequest request,String ids, String tableName,String num) throws Exception {
-	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-	logger.info("kmedoids method.");
-	Map<String, Object> result = new HashMap<String, Object>();
-	if(tableName!=null){
-			if(this.dataService.checkIfHasTable(tableName)){
-	List<DataJson> list = new ArrayList<DataJson>();
-
-	String id[] = ids.split(",");
-	for (int i = 0; i < id.length; i++) {
-		DataJson dataJson = new DataJson();
-		dataJson.setData(id[i]);;
-		list.add(dataJson);
-	}
-
-
-	num=num.trim();
-	String str2="";
-	if(num != null && !"".equals(num)){
-	for(int i=0;i<num.length();i++){
-	if(num.charAt(i)>=48 && num.charAt(i)<=57){
-	str2+=num.charAt(i);
-	}
-	}
-
-	}
-	
-	
-	Kmedoids kmedoids = new Kmedoids(list,Integer.parseInt(str2));  
-    List<DataJson>[] results = kmedoids.comput();  
-    
-	List<StatisticsBean> list1 = new ArrayList<StatisticsBean>();
-	
-	for(int i=0;i<results.length;i++)
-	{
-		StatisticsBean statBoyBean = new StatisticsBean();
-		statBoyBean.setData(String.valueOf(results[i].size()));
-		statBoyBean.setId(i+1);
-		double k=0;
-		for(int j=0;j<results[i].size();j++)
-		{
-		k=k+Double.parseDouble(results[i].get(j).getData());
-		}
-		k=k/results[i].size();
-		
-		BigDecimal bd=new BigDecimal(k);
-		statBoyBean.setName("聚类中心为"+bd.setScale(2,bd.ROUND_HALF_UP)); 
-		list1.add(statBoyBean);
-	}
-	result.put(RESULT, list1);
-	result.put(SUCCESS, Boolean.TRUE);
-	return result;
-			}
-		
-		}
-	else
-		result.put(SUCCESS, Boolean.FALSE);	
-	
-	return result;
-}
+//@RequestMapping(value = "/unionKmedoids", method = RequestMethod.POST)
+//@ResponseBody
+//public Map<String, Object> unionKmedoids(HttpServletRequest request,String ids, String tableName,String num) throws Exception {
+//	mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+//	logger.info("kmedoids method.");
+//	Map<String, Object> result = new HashMap<String, Object>();
+//	if(tableName!=null){
+//			if(this.dataService.checkIfHasTable(tableName)){
+//	List<DataJson> list = new ArrayList<DataJson>();
+//
+//	String id[] = ids.split(",");
+//	for (int i = 0; i < id.length; i++) {
+//		DataJson dataJson = new DataJson();
+//		dataJson.setData(id[i]);;
+//		list.add(dataJson);
+//	}
+//
+//
+//	num=num.trim();
+//	String str2="";
+//	if(num != null && !"".equals(num)){
+//	for(int i=0;i<num.length();i++){
+//	if(num.charAt(i)>=48 && num.charAt(i)<=57){
+//	str2+=num.charAt(i);
+//	}
+//	}
+//
+//	}
+//	
+//	
+//	Kmedoids kmedoids = new Kmedoids(list,Integer.parseInt(str2));  
+//    List<DataJson>[] results = kmedoids.comput();  
+//    
+//	List<StatisticsBean> list1 = new ArrayList<StatisticsBean>();
+//	
+//	for(int i=0;i<results.length;i++)
+//	{
+//		StatisticsBean statBoyBean = new StatisticsBean();
+//		statBoyBean.setData(String.valueOf(results[i].size()));
+//		statBoyBean.setId(i+1);
+//		double k=0;
+//		for(int j=0;j<results[i].size();j++)
+//		{
+//		k=k+Double.parseDouble(results[i].get(j).getData());
+//		}
+//		k=k/results[i].size();
+//		
+//		BigDecimal bd=new BigDecimal(k);
+//		statBoyBean.setName("聚类中心为"+bd.setScale(2,bd.ROUND_HALF_UP)); 
+//		list1.add(statBoyBean);
+//	}
+//	result.put(RESULT, list1);
+//	result.put(SUCCESS, Boolean.TRUE);
+//	return result;
+//			}
+//		
+//		}
+//	else
+//		result.put(SUCCESS, Boolean.FALSE);	
+//	
+//	return result;
+//}
 //返回月平均数据
 @RequestMapping(value = "/monthAve", method = RequestMethod.POST)
 @ResponseBody

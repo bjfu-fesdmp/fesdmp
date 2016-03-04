@@ -31,6 +31,9 @@ public interface IDataService {
 	public abstract List<TableJson> findTable();
 	public abstract TableJson findTableByYearAndIndexResource(String year,int id);
 	public abstract DataJson[] timeCoordination(HierarchicalClusteringJson hierarchicalClusteringJson,String table);
+	public abstract DataJson[] timeCoordination(String centerId,String table);
 	public abstract DataJson[] findData(HierarchicalClusteringJson hierarchicalClusteringJson);
+	public abstract DataJson[] findData(String tableName);
+	public abstract List<DataJson> findAllData(String tableName);
 }
  

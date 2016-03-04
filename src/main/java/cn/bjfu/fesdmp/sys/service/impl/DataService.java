@@ -64,7 +64,10 @@ public class DataService implements IDataService {
 	public List<DataJson> queryAll(IOrder order) {
 		return this.dataDao.findAll(order);
 	}
-	
+	@Override
+	public List<DataJson>  findAllData(String tableName) {
+		return this.dataDao.findAllData(tableName);
+	}
 	@Transactional(readOnly = true)
 	@Override
 	public void queryByCondition(Object condition, IOrder order,
@@ -199,9 +202,112 @@ public class DataService implements IDataService {
 			return newModify;	
 		
 	};
+	
+	@Override
+	public DataJson[] timeCoordination(String centerId,String table){
+		DataJson[] standard=this.dataDao.findData(centerId);
+		DataJson[] modify=this.dataDao.findData(table);
+		DataJson[] newModify=standard;
+		
+		
+		
+		int start=0;
+		int pointerS=0;
+		int pointerM=0;
+
+		//防止存在modify第一个的时间要比standard前几个都晚
+		while(standard[pointerS].getTime().getTime()<modify[pointerM].getTime().getTime()){
+			start++;
+			pointerS++;
+		}
+		
+		
+		if(pointerS>0){
+			for(int i=0;i<pointerS;i++)
+			{
+				newModify[i].setData(null);
+			}
+		}
+		
+		while(pointerS!=standard.length&&pointerM!=modify.length){
+			if(standard[pointerS].getTime().getTime()==modify[pointerM].getTime().getTime()){
+				newModify[pointerS].setData(modify[pointerM].getData());
+				pointerS++;
+				pointerM++;
+			}
+			else if(standard[pointerS].getTime().getTime()>modify[pointerM].getTime().getTime()){
+				for(int i=pointerM;i<modify.length;i++){
+					if((standard[pointerS].getTime().getTime()>modify[pointerM].getTime().getTime()))
+					{
+						pointerM++;
+					}
+					else
+						break;
+				}
+				if(standard[pointerS].getTime().getTime()==modify[pointerM].getTime().getTime()){
+					newModify[pointerS].setData(modify[pointerM].getData());
+					pointerS++;
+					pointerM++;
+				}
+				else{
+					Double a=Double.parseDouble(modify[pointerM].getData());
+					Double b=Double.parseDouble(modify[pointerM-1].getData());
+					Long timeA=modify[pointerM].getTime().getTime();
+					Long timeB=modify[pointerM-1].getTime().getTime();
+					Long timeC=standard[pointerS].getTime().getTime();
+					Double res=((a*(timeA-timeC)+b*(timeC-timeB))/(timeA-timeB));
+					newModify[pointerS].setData(String.format("%.2f",res));
+					pointerS++;
+				}
+			}
+			else{
+				for(int i=pointerM;i>0;i--){
+					if((standard[pointerS].getTime().getTime()<modify[pointerM].getTime().getTime()))
+					{
+						pointerM--;
+					}
+					else
+						break;
+				}
+				if(standard[pointerS].getTime().getTime()==modify[pointerM].getTime().getTime()){
+					newModify[pointerS].setData(modify[pointerM].getData());
+					pointerS++;
+					pointerM++;
+				}
+				else{
+
+					Double a=Double.parseDouble(modify[pointerM+1].getData());
+					Double b=Double.parseDouble(modify[pointerM].getData());
+					Long timeA=modify[pointerM+1].getTime().getTime();
+					Long timeB=modify[pointerM].getTime().getTime();
+					Long timeC=standard[pointerS].getTime().getTime();
+					Double res=((a*(timeA-timeC)+b*(timeC-timeB))/(timeA-timeB));
+					newModify[pointerS].setData(String.format("%.2f",res));
+					pointerS++;
+				}
+				
+			}
+		}	
+		//防止存在modify最后一个的时间要比standard最后几个都早
+		if(pointerS!=standard.length){
+			for(int i=pointerS;i<standard.length;i++)
+			{
+				newModify[i].setData(null);
+			}
+		}
+		
+		
+		
+			return newModify;	
+		
+	};
 	@Override
 	public DataJson[] findData(HierarchicalClusteringJson hierarchicalClusteringJson){
 		return this.dataDao.findData(hierarchicalClusteringJson.getHierarchicalClusteringCenterId(),hierarchicalClusteringJson.getStartTime(),hierarchicalClusteringJson.getEndTime());
+	};
+	@Override
+	public DataJson[] findData(String tableName ){
+		return this.dataDao.findData(tableName);
 	};
 }
 
